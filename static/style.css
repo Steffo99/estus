@@ -1,0 +1,27 @@
+.goldfish
+{
+  width: 25vh;
+}
+
+.container
+{
+  text-align: center;
+  border-radius: 8px;
+}
+
+body
+{
+  background-color: black;
+  font-family: "Calibri", sans-serif;
+  color: white;
+}
+
+table
+{
+  border-collapse: collapse;
+}
+
+table, td, tr, th
+{
+  border: 1px solid white;
+}
