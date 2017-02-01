@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, url_for, session, redirect, jsonify
+from flask import Flask, session, url_for, redirect, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.secret_key = 'itsapepperonisecret'
+app.secret_key = "pepsecret"
 
 # SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -24,48 +24,48 @@ class User(db.Model):
 # Ente (Unione Terre di Castelli, Comune di Vignola...)
 class Ente(db.Model):
     eid = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(64))
-    nomebreve = db.Column(db.String(16))
+    nomeente = db.Column(db.String(64))
+    nomebreveente = db.Column(db.String(16))
     servizi = db.relationship("Servizio", backref='ente', lazy='dynamic')
 
-    def __init__(self, nome, nomebreve):
-        self.nome = nome
-        self.nomebreve = nomebreve
+    def __init__(self, nomeente, nomebreveente):
+        self.nomeente = nomeente
+        self.nomebreveente = nomebreveente
 
     def __repr__(self):
-        return "<Ente {}>".format(self.nomebreve)
+        return "<Ente {}>".format(self.nomebreveente)
 
 
 # Servizio di un ente
 class Servizio(db.Model):
     sid = db.Column(db.Integer, primary_key=True)
     eid = db.Column(db.Integer, db.ForeignKey('ente.eid'))
-    nome = db.Column(db.String(128))
+    nomeservizio = db.Column(db.String(128))
     impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
 
-    def __init__(self, eid, nome):
+    def __init__(self, eid, nomeservizio):
         self.eid = eid
-        self.nome = nome
+        self.nomeservizio = nomeservizio
 
     def __repr__(self):
-        return "<Servizio {}>".format(self.nome)
+        return "<Servizio {}>".format(self.nomeservizio)
 
 
 class Impiegato(db.Model):
     iid = db.Column(db.Integer, primary_key=True)
     sid = db.Column(db.Integer, db.ForeignKey('servizio.sid'))
-    nome = db.Column(db.String(128))
+    nomeimpiegato = db.Column(db.String(128))
     username = db.Column(db.String(32), unique=True)
     passwd = db.Column(db.String(32))
 
-    def __init__(self, sid, nome, username, passwd):
+    def __init__(self, sid, nomeimpiegato, username, passwd):
         self.sid = sid
-        self.nome = nome
+        self.nomeimpiegato = nomeimpiegato
         self.username = username
         self.passwd = passwd
 
     def __repr__(self):
-        return "<Impiegato {}>".format(self.nome)
+        return "<Impiegato {}>".format(self.nomeimpiegato)
 
 # Funzioni del sito
 def login(username, password):
@@ -103,12 +103,10 @@ def page_ente_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        # Visualizza la pagina di creazione ente
         css = url_for("static", filename="style.css")
-        return render_template("ente_add.html.j2", css=css)
+        return render_template("ente/add.html.j2", css=css)
     else:
-        # Crea un nuovo ente
-        nuovoent = Ente(request.form['nome'], request.form['nomebreve'])
+        nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
         db.session.commit()
         return redirect(url_for('page_ente_list'))
@@ -118,6 +116,12 @@ def page_ente_del(eid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     ente = Ente.query.get(eid)
+    servizi = Servizio.query.filter_by(eid=ente.eid).all()
+    for serv in servizi:
+        impiegati = Impiegato.query.filter_by(sid=serv.sid).all()
+        for imp in impiegati:
+            db.session.delete(imp)
+        db.session.delete(serv)
     db.session.delete(ente)
     db.session.commit()
     return redirect(url_for('page_ente_list'))
@@ -128,7 +132,7 @@ def page_ente_list():
         return redirect(url_for('page_login'))
     enti = Ente.query.all()
     css = url_for("static", filename="style.css")
-    return render_template("ente_list.html.j2", css=css, enti=enti)
+    return render_template("ente/list.html.j2", css=css, enti=enti)
 
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
 def page_ente_show(eid):
@@ -137,10 +141,125 @@ def page_ente_show(eid):
     if request.method == "GET":
         ente = Ente.query.get(eid)
         css = url_for("static", filename="style.css")
-        return render_template("ente_show.html.j2", css=css, ente=ente)
+        return render_template("ente/show.html.j2", css=css, ente=ente)
     else:
         ente = Ente.query.get(eid)
-        ente.nome = request.form["nome"]
-        ente.nomebreve = request.form["nomebreve"]
+        ente.nomeente = request.form["nomeente"]
+        ente.nomebreveente = request.form["nomebreveente"]
         db.session.commit()
         return redirect(url_for('page_ente_list'))
+
+@app.route('/serv_add', methods=['GET', 'POST'])
+def page_serv_add():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        enti = Ente.query.all()
+        css = url_for("static", filename="style.css")
+        return render_template("servizio/add.html.j2", css=css, enti=enti)
+    else:
+        nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'])
+        db.session.add(nuovoserv)
+        db.session.commit()
+        return redirect(url_for('page_serv_list'))
+
+@app.route('/serv_del/<int:sid>')
+def page_serv_del(sid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    serv = Servizio.query.get(sid)
+    impiegati = Impiegato.query.filter_by(sid=serv.sid).all()
+    for imp in impiegati:
+        db.session.delete(imp)
+    db.session.delete(serv)
+    db.session.commit()
+    return redirect(url_for('page_serv_list'))
+
+@app.route('/serv_list')
+def page_serv_list():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    serv = Servizio.query.join(Ente).all()
+    css = url_for("static", filename="style.css")
+    return render_template("servizio/list.html.j2", css=css, serv=serv)
+
+@app.route('/serv_list/<int:eid>')
+def page_serv_list_plus(eid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
+    css = url_for("static", filename="style.css")
+    return render_template("servizio/list.html.j2", css=css, serv=serv)
+
+@app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
+def page_serv_show(sid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == "GET":
+        serv = Servizio.query.get(sid)
+        enti = Ente.query.all()
+        css = url_for("static", filename="style.css")
+        return render_template("servizio/show.html.j2", css=css, serv=serv, enti=enti)
+    else:
+        serv = Servizio.query.get(sid)
+        serv.eid = request.form["eid"]
+        serv.nomeservizio = request.form["nomeservizio"]
+        db.session.commit()
+        return redirect(url_for('page_serv_list'))
+
+@app.route('/imp_add', methods=['GET', 'POST'])
+def page_imp_add():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        servizi = Servizio.query.all()
+        css = url_for("static", filename="style.css")
+        return render_template("impiegato/add.html.j2", css=css, servizi=servizi)
+    else:
+        nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'], request.form['passwd'],)
+        db.session.add(nuovoimp)
+        db.session.commit()
+        return redirect(url_for('page_imp_list'))
+
+@app.route('/imp_del/<int:iid>')
+def page_imp_del(iid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    imp = Impiegato.query.get(iid)
+    db.session.delete(imp)
+    db.session.commit()
+    return redirect(url_for('page_imp_list'))
+
+@app.route('/imp_list')
+def page_imp_list():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    impiegati = Impiegato.query.join(Servizio).join(Ente).all()
+    css = url_for("static", filename="style.css")
+    return render_template("impiegato/list.html.j2", css=css, impiegati=impiegati)
+
+@app.route('/imp_list/<int:sid>')
+def page_imp_list_plus(sid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
+    css = url_for("static", filename="style.css")
+    return render_template("impiegato/list.html.j2", css=css, impiegati=impiegati)
+
+@app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
+def page_imp_show(iid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == "GET":
+        imp = Impiegato.query.get(iid)
+        servizi = Servizio.query.all()
+        css = url_for("static", filename="style.css")
+        return render_template("impiegato/show.html.j2", css=css, imp=imp, servizi=servizi)
+    else:
+        imp = Impiegato.query.get(iid)
+        imp.sid = request.form["sid"]
+        imp.nomeimpiegato = request.form["nomeimpiegato"]
+        imp.username = request.form["username"]
+        imp.passwd = request.form["passwd"]
+        db.session.commit()
+        return redirect(url_for('page_imp_list'))

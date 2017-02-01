@@ -23,8 +23,8 @@ class User(db.Model):
 # Ente (Unione Terre di Castelli, Comune di Vignola...)
 class Ente(db.Model):
     eid = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(64))
-    nomebreve = db.Column(db.String(16))
+    nomeente = db.Column(db.String(64))
+    nomebreveente = db.Column(db.String(16))
     servizi = db.relationship("Servizio", backref='ente', lazy='dynamic')
 
     def __init__(self, nome, nomebreve):
@@ -39,7 +39,7 @@ class Ente(db.Model):
 class Servizio(db.Model):
     sid = db.Column(db.Integer, primary_key=True)
     eid = db.Column(db.Integer, db.ForeignKey('ente.eid'))
-    nome = db.Column(db.String(128))
+    nomeservizio = db.Column(db.String(128))
     impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
 
     def __init__(self, eid, nome):
@@ -53,7 +53,7 @@ class Servizio(db.Model):
 class Impiegato(db.Model):
     iid = db.Column(db.Integer, primary_key=True)
     sid = db.Column(db.Integer, db.ForeignKey('servizio.sid'))
-    nome = db.Column(db.String(128))
+    nomeimpiegato = db.Column(db.String(128))
     username = db.Column(db.String(32), unique=True)
     passwd = db.Column(db.String(32))
 
