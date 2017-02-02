@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>Elenco dispositivi - Inventario</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{css}}">
+  </head>
+  <body>
+    {% include 'nav.html.j2' %}
+    <div class="container">
+      <h1>
+         Dispositivi esistenti
+      </h1>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Tipo dispositivo</th>
+            <th>Utenti</th>
+            <th>Inventario CED</th>
+            <th>Inventario ente</th>
+            <th>Marca</th>
+            <th>Modello</th>
+            <th>Fornitore</th>
+            <th>Ispeziona</th>
+            <th>Modifica</th>
+            <th>Elimina</th>
+          </tr>
+        </thead>
+        {% for dispositivo in dispositivi %}
+          <tr>
+            <td>{{ dispositivo.tipo }}</td>
+            <td> ITS A FEATURE </td>
+            <td>{{ dispositivo.inv_ced }}</td>
+            <td>{{ dispositivo.inv_ente }}</td>
+            <td>{{ dispositivo.marca }}</td>
+            <td>{{ dispositivo.modello }}</td>
+            <td>{{ dispositivo.fornitore }}</td>
+            <td><a href="/details_host/{{ dispositivo.did }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
+            <td><a href="/disp_show/{{ dispositivo.did }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td><a href="/disp_del/{{ dispositivo.did }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+          </tr>
+        {% endfor %}
+      </table>
+      <a class="btn btn-success" href="/disp_add">Aggiungi</a>
+    </div>
+  </body>
+</html>

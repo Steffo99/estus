@@ -78,8 +78,7 @@ class Dispositivo(db.Model):
     inv_ente = db.Column(db.String(8))
     fornitore = db.Column(db.String(64))
 
-    def __init__(self, did, tipo, marca, modello, inv_ced, inv_ente, fornitore):
-        self.did = did
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore
         self.tipo = tipo
         self.marca = marca
         self.modello = modello

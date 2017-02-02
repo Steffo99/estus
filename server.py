@@ -79,8 +79,7 @@ class Dispositivo(db.Model):
     inv_ente = db.Column(db.String(8))
     fornitore = db.Column(db.String(64))
 
-    def __init__(self, did, tipo, marca, modello, inv_ced, inv_ente, fornitore):
-        self.did = did
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -313,3 +312,67 @@ def page_imp_show(iid):
         imp.passwd = request.form["passwd"]
         db.session.commit()
         return redirect(url_for('page_imp_list'))
+
+@app.route('/disp_add', methods=['GET', 'POST'])
+def page_disp_add():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        opzioni=["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router", "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        impiegati = Impiegato.query.all()
+        css = url_for("static", filename="style.css")
+        return render_template("dispositivo/add.html.j2", css=css, impiegati=impiegati,opzioni=opzioni, type="dev", user=session["username"])
+    else:
+        nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'], request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'])
+        db.session.add(nuovodisp)
+        db.session.commit()
+        return redirect(url_for('page_disp_list'))
+
+@app.route('/disp_del/<int:did>')
+def page_disp_del(did):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    disp = Dispositivo.query.get(did)
+    db.session.delete(disp)
+    db.session.commit()
+    return redirect(url_for('page_disp_list'))
+
+@app.route('/disp_list')
+def page_disp_list():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    dispositivi = Dispositivo.query.all()
+    css = url_for("static", filename="style.css")
+    return render_template("dispositivo/list.html.j2", css=css, dispositivi=dispositivi, type="disp", user=session["username"])
+
+@app.route('/disp_list/<int:did>')
+def page_disp_list_plus(did):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    dispositivi = Dispositivo.query.all()
+    css = url_for("static", filename="style.css")
+    return render_template("dispositivo/list.html.j2", css=css, impiegati=impiegati, user=session["username"])
+
+@app.route('/disp_show/<int:did>', methods=['GET', 'POST'])
+def page_disp_show(did):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == "GET":
+        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router", "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        dev = Dispositivo.query.get(did)
+        css = url_for("static", filename="style.css")
+        return render_template("dispositivo/show.html.j2", css=css, dispositivo=dev, tipi=opzioni, user=session["username"])
+    else:
+        dev = Dispositivo.query.get(did)
+        dev.tipo = request.form["tipo"]
+        dev.marca = request.form["marca"]
+        dev.modello = request.form["modello"]
+        dev.inv_ced = request.form["inv_ced"]
+        dev.inv_ente = request.form["inv_ente"]
+        dev.fornitore = request.form["fornitore"]
+        db.session.commit()
+        return redirect(url_for('page_disp_list'))
+
+@app.route('/details_host')
+def page_details_host():
+    return "Non implementato"
