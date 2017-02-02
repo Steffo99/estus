@@ -11,9 +11,9 @@
          Modifica impiegato
       </h1>
       <form class="form-inline" action="/imp_show/{{imp.iid}}" method="post">
-        <select class="form-control" name="sid" value="{{imp.sid}}">
+        <select class="form-control" name="sid">
           {% for servizio in servizi %}
-            <option value="{{servizio.sid}}">{{servizio.nomeservizio}}</option>
+            <option value="{{servizio.sid}}" {% if imp.sid == servizio.sid %}selected="selected"{% endif %}>{{servizio.ente.nomebreveente}} - {{servizio.nomeservizio}}</option>
           {% endfor %}
         </select>
         <input class="form-control" type="text" placeholder="Nome e cognome" name="nomeimpiegato" value="{{imp.nomeimpiegato}}">

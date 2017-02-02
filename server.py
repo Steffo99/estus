@@ -1,4 +1,4 @@
-from flask import Flask, session, url_for, redirect, request, render_template
+from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -57,6 +57,7 @@ class Impiegato(db.Model):
     nomeimpiegato = db.Column(db.String(128))
     username = db.Column(db.String(32), unique=True)
     passwd = db.Column(db.String(32))
+    dispositivi = db.relationship("Accesso", backref='impiegato', lazy='dynamic')
 
     def __init__(self, sid, nomeimpiegato, username, passwd):
         self.sid = sid
@@ -65,12 +66,53 @@ class Impiegato(db.Model):
         self.passwd = passwd
 
     def __repr__(self):
-        return "<Impiegato {}>".format(self.nomeimpiegato)
+        return "<Impiegato {}>".format(self.nome)
+
+
+class Dispositivo(db.Model):
+    did = db.Column(db.Integer, primary_key=True)
+    utenti = db.relationship("Accesso", backref='dispositivo', lazy='dynamic')
+    tipo = db.Column(db.String(32))
+    marca = db.Column(db.String(64))
+    modello = db.Column(db.String(32))
+    inv_ced = db.Column(db.String(8))
+    inv_ente = db.Column(db.String(8))
+    fornitore = db.Column(db.String(64))
+
+    def __init__(self, did, tipo, marca, modello, inv_ced, inv_ente, fornitore):
+        self.did = did
+        self.tipo = tipo
+        self.marca = marca
+        self.modello = modello
+        self.inv_ced = inv_ced
+        self.inv_ente = inv_ente
+        self.fornitore = fornitore
+
+    def __repr__(self):
+        return "<Dispositivo {}>".format(self.inv_ced)
+
+
+class Accesso(db.Model):
+    aid = db.Column(db.Integer, primary_key=True)
+    iid = db.Column(db.Integer, db.ForeignKey('impiegato.iid'))
+    did = db.Column(db.Integer, db.ForeignKey('dispositivo.did'))
+
+    def __init__(self, iid, did):
+        self.iid = iid
+        self.did = did
+
+    def __repr__(self):
+        return "<Accesso {} su {}>".format(iid, did)
+
 
 # Funzioni del sito
 def login(username, password):
     user = User.query.filter_by(username=username).first()
-    return password == user.passwd
+    try:
+        return password == user.passwd
+    except AttributeError:
+        # Se non esiste l'Utente
+        return False
 
 # Sito
 @app.route('/')
@@ -92,7 +134,7 @@ def page_login():
             session['username'] = request.form['username']
             return redirect(url_for('page_dashboard'))
         else:
-            return "Errore."
+            abort(403)
 
 @app.route('/dashboard')
 def page_dashboard():
@@ -220,7 +262,7 @@ def page_imp_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        servizi = Servizio.query.all()
+        servizi = Servizio.query.join(Ente).all()
         css = url_for("static", filename="style.css")
         return render_template("impiegato/add.html.j2", css=css, servizi=servizi, type="imp", user=session["username"])
     else:

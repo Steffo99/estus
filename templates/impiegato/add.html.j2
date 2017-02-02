@@ -13,7 +13,7 @@
       <form class="form-inline" action="/imp_add" method="post">
         <select class="form-control" name="sid">
           {% for servizio in servizi %}
-            <option value="{{servizio.sid}}">{{servizio.nomeservizio}}</option>
+            <option value="{{servizio.sid}}">{{servizio.ente.nomebreveente}} - {{servizio.nomeservizio}}</option>
           {% endfor %}
         </select>
         <input class="form-control" type="text" placeholder="Nome e cognome" name="nomeimpiegato">

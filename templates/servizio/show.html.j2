@@ -13,7 +13,7 @@
       <form class="form-inline" action="/serv_show/{{serv.sid}}" method="post">
         <select class="form-control" name="eid" value="serv.eid">
           {% for ente in enti %}
-            <option value="{{ente.eid}}">{{ente.nomeente}}</option>
+            <option value="{{ente.eid}}" {% if serv.eid == ente.eid %}selected="selected"{% endif %}>{{ente.nomeente}}</option>
           {% endfor %}
         </select>
         <input class="form-control" type="text" placeholder="Nome servizio" name="nomeservizio" value="{{serv.nomeservizio}}">
