@@ -1,18 +1,24 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand {% if type is equalto "main" %}active{% endif %}" href="/dashboard">Inventario</a>
+      {% if user %}
+        <a class="navbar-brand" href="/dashboard">Inventario</a>
+      {% else %}
+        <a class="navbar-brand active" href="/login">Inventario</a>
+      {% endif %}
     </div>
-    <ul class="nav navbar-nav">
-      <li class="{% if type is equalto "ente" %}active{% endif %}"><a href="/ente_list">Enti</a></li>
-      <li class="{% if type is equalto "serv" %}active{% endif %}"><a href="/serv_list">Servizi</a></li>
-      <li class="{% if type is equalto "imp" %}active{% endif %}"><a href="/imp_list">Impiegati</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <p class="navbar-text">
-        {{user}}
-      </p>
-      <a href="/login" class="btn btn-danger navbar-btn btn-right">Logout</a>
-    </ul>
+    {% if user %}
+      <ul class="nav navbar-nav">
+        <li class="{% if type is equalto "ente" %}active{% endif %}"><a href="/ente_list">Enti</a></li>
+        <li class="{% if type is equalto "serv" %}active{% endif %}"><a href="/serv_list">Servizi</a></li>
+        <li class="{% if type is equalto "imp" %}active{% endif %}"><a href="/imp_list">Impiegati</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <p class="navbar-text">
+          {{user}}
+        </p>
+        <a href="/login" class="btn btn-danger navbar-btn btn-right">Logout</a>
+      </ul>
+    {% endif %}
   </div>
 </nav>

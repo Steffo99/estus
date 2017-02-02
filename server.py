@@ -96,7 +96,15 @@ def page_login():
 
 @app.route('/dashboard')
 def page_dashboard():
-    return "Buongiornissimo {}".format(session['username'])
+    enti = Ente.query.all()
+    conteggioservizi = dict()
+    for ente in enti:
+        conteggioservizi[ente.nomeente] = Servizio.query.join(Ente).filter_by(eid=ente.eid).count()
+    conteggioutenti = dict()
+    for ente in enti:
+        conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
+    css = url_for("static", filename="style.css")
+    return render_template("dashboard.html.j2", css=css, type="main", user=session["username"], conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi)
 
 @app.route('/ente_add', methods=['GET', 'POST'])
 def page_ente_add():
@@ -104,7 +112,7 @@ def page_ente_add():
         return redirect(url_for('page_login'))
     if request.method == 'GET':
         css = url_for("static", filename="style.css")
-        return render_template("ente/add.html.j2", css=css, type="ente")
+        return render_template("ente/add.html.j2", css=css, type="ente", user=session["username"])
     else:
         nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
