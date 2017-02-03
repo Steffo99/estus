@@ -27,12 +27,12 @@ class Ente(db.Model):
     nomebreveente = db.Column(db.String(16))
     servizi = db.relationship("Servizio", backref='ente', lazy='dynamic')
 
-    def __init__(self, nome, nomebreve):
-        self.nome = nome
-        self.nomebreve = nomebreve
+    def __init__(self, nomeente, nomebreveente):
+        self.nomeente = nomeente
+        self.nomebreveente = nomebreveente
 
     def __repr__(self):
-        return "<Ente {}>".format(self.nomebreve)
+        return "<Ente {}>".format(self.nomebreveente)
 
 
 # Servizio di un ente
@@ -42,12 +42,12 @@ class Servizio(db.Model):
     nomeservizio = db.Column(db.String(128))
     impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
 
-    def __init__(self, eid, nome):
+    def __init__(self, eid, nomeservizio):
         self.eid = eid
-        self.nome = nome
+        self.nomeservizio = nomeservizio
 
     def __repr__(self):
-        return "<Servizio {}>".format(self.nome)
+        return "<Servizio {}>".format(self.nomeservizio)
 
 
 class Impiegato(db.Model):
@@ -58,9 +58,9 @@ class Impiegato(db.Model):
     passwd = db.Column(db.String(32))
     dispositivi = db.relationship("Accesso", backref='impiegato', lazy='dynamic')
 
-    def __init__(self, sid, nome, username, passwd):
+    def __init__(self, sid, nomeimpiegato, username, passwd):
         self.sid = sid
-        self.nome = nome
+        self.nomeimpiegato = nomeimpiegato
         self.username = username
         self.passwd = passwd
 
@@ -78,7 +78,7 @@ class Dispositivo(db.Model):
     inv_ente = db.Column(db.String(8))
     fornitore = db.Column(db.String(64))
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -101,6 +101,7 @@ class Accesso(db.Model):
 
     def __repr__(self):
         return "<Accesso {} su {}>".format(iid, did)
+
 
 db.create_all()
 

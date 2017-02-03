@@ -101,7 +101,7 @@ class Accesso(db.Model):
         self.did = did
 
     def __repr__(self):
-        return "<Accesso {} su {}>".format(iid, did)
+        return "<Accesso {} su {}>".format(self.iid, self.did)
 
 
 # Funzioni del sito
@@ -326,6 +326,20 @@ def page_disp_add():
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'], request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'])
         db.session.add(nuovodisp)
         db.session.commit()
+        # Trova tutti gli utenti, edizione sporco hack in html
+        users = list()
+        while True:
+            # Trova tutti gli utenti esistenti
+            userstring = 'utente{}'.format(len(users))
+            if userstring in request.form:
+                users.append(request.form[userstring])
+            else:
+                break
+        for user in users:
+            nuovologin = Accesso(int(user), nuovodisp.did)
+            db.session.add(nuovologin)
+        db.session.commit()
+        #TODO: se un dispositivo non ha utenti si incasina parecchio
         return redirect(url_for('page_disp_list'))
 
 @app.route('/disp_del/<int:did>')
@@ -341,38 +355,14 @@ def page_disp_del(did):
 def page_disp_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
+    accessi = list()
     dispositivi = Dispositivo.query.all()
+    for dispositivo in dispositivi:
+        accesso = Accesso.query.join(Dispositivo).filter_by(did=dispositivo.did).join(Impiegato).all()
+        accessi.append(accesso)
     css = url_for("static", filename="style.css")
-    return render_template("dispositivo/list.html.j2", css=css, dispositivi=dispositivi, type="disp", user=session["username"])
+    return render_template("dispositivo/list.html.j2", css=css, accessi=accessi, type="disp", user=session["username"])
 
-@app.route('/disp_list/<int:did>')
-def page_disp_list_plus(did):
-    if 'username' not in session:
-        return redirect(url_for('page_login'))
-    dispositivi = Dispositivo.query.all()
-    css = url_for("static", filename="style.css")
-    return render_template("dispositivo/list.html.j2", css=css, impiegati=impiegati, user=session["username"])
-
-@app.route('/disp_show/<int:did>', methods=['GET', 'POST'])
-def page_disp_show(did):
-    if 'username' not in session:
-        return redirect(url_for('page_login'))
-    if request.method == "GET":
-        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router", "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        dev = Dispositivo.query.get(did)
-        css = url_for("static", filename="style.css")
-        return render_template("dispositivo/show.html.j2", css=css, dispositivo=dev, tipi=opzioni, user=session["username"])
-    else:
-        dev = Dispositivo.query.get(did)
-        dev.tipo = request.form["tipo"]
-        dev.marca = request.form["marca"]
-        dev.modello = request.form["modello"]
-        dev.inv_ced = request.form["inv_ced"]
-        dev.inv_ente = request.form["inv_ente"]
-        dev.fornitore = request.form["fornitore"]
-        db.session.commit()
-        return redirect(url_for('page_disp_list'))
-
-@app.route('/details_host')
+@app.route('/disp_details')
 def page_details_host():
-    return "Non implementato"
+    raise NotImplementedError()
