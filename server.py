@@ -354,12 +354,13 @@ def page_disp_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
+        serial = request.args.get("scanned_barcode")
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         impiegati = Impiegato.query.all()
         css = url_for("static", filename="style.css")
         return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, type="dev",
-                               user=session["username"])
+                               user=session["username"], serial=serial)
     else:
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
                                 request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'])
