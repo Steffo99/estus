@@ -13,6 +13,7 @@
             <th>Marca</th>
             <th>Modello</th>
             <th>Fornitore</th>
+            <th>Seriale</th>
             <th>Ispeziona</th>
             <th>Elimina</th>
         </tr>
@@ -26,7 +27,7 @@
                 <td>{{ d[0].dispositivo.marca }}</td>
                 <td>{{ d[0].dispositivo.modello }}</td>
                 <td>{{ d[0].dispositivo.fornitore }}</td>
-                <td>{{ d[0].dispositivo.rete.nome }}</td>
+                <td>{{ d[0].dispositivo.seriale }}</td>
                 <td><a href="/disp_details/{{ d[0].did }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
                 <td><a href="/disp_del/{{ d[0].did }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>

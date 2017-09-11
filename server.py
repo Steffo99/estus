@@ -86,8 +86,9 @@ class Dispositivo(db.Model):
     fornitore = db.Column(db.String(64))
     nid = db.Column(db.Integer, db.ForeignKey('network.nid'))
     rete = db.relationship("Network", backref='dispositivo')
+    seriale = db.Column(db.String(30))
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid):
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -95,6 +96,7 @@ class Dispositivo(db.Model):
         self.inv_ente = inv_ente
         self.fornitore = fornitore
         self.nid = nid
+        self.seriale = seriale
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -379,7 +381,7 @@ def page_disp_add():
                                user=session["username"])
     else:
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'], request.form['rete'])
+                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'], request.form['rete'], request.form['seriale'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
