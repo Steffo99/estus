@@ -8,6 +8,7 @@ app.secret_key = "pepsecret"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 db = SQLAlchemy(app)
 
+
 # Utente login inventario
 class User(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
@@ -20,6 +21,7 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User {}>".format(self.username, self.passwd)
+
 
 # Ente (Unione Terre di Castelli, Comune di Vignola...)
 class Ente(db.Model):
@@ -113,6 +115,7 @@ def login(username, password):
         # Se non esiste l'Utente
         return False
 
+
 # Sito
 @app.route('/')
 def page_home():
@@ -121,6 +124,7 @@ def page_home():
     else:
         session.pop('username')
         return "Logout eseguito con successo."
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def page_login():
@@ -135,6 +139,7 @@ def page_login():
         else:
             abort(403)
 
+
 @app.route('/dashboard')
 def page_dashboard():
     enti = Ente.query.all()
@@ -145,7 +150,9 @@ def page_dashboard():
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
     css = url_for("static", filename="style.css")
-    return render_template("dashboard.html.j2", css=css, type="main", user=session["username"], conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi)
+    return render_template("dashboard.html.j2", css=css, type="main", user=session["username"],
+                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi)
+
 
 @app.route('/ente_add', methods=['GET', 'POST'])
 def page_ente_add():
@@ -159,6 +166,7 @@ def page_ente_add():
         db.session.add(nuovoent)
         db.session.commit()
         return redirect(url_for('page_ente_list'))
+
 
 @app.route('/ente_del/<int:eid>')
 def page_ente_del(eid):
@@ -175,6 +183,7 @@ def page_ente_del(eid):
     db.session.commit()
     return redirect(url_for('page_ente_list'))
 
+
 @app.route('/ente_list')
 def page_ente_list():
     if 'username' not in session:
@@ -182,6 +191,7 @@ def page_ente_list():
     enti = Ente.query.all()
     css = url_for("static", filename="style.css")
     return render_template("ente/list.html.j2", css=css, enti=enti, type="ente", user=session["username"])
+
 
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
 def page_ente_show(eid):
@@ -198,6 +208,7 @@ def page_ente_show(eid):
         db.session.commit()
         return redirect(url_for('page_ente_list'))
 
+
 @app.route('/serv_add', methods=['GET', 'POST'])
 def page_serv_add():
     if 'username' not in session:
@@ -212,6 +223,7 @@ def page_serv_add():
         db.session.commit()
         return redirect(url_for('page_serv_list'))
 
+
 @app.route('/serv_del/<int:sid>')
 def page_serv_del(sid):
     if 'username' not in session:
@@ -224,6 +236,7 @@ def page_serv_del(sid):
     db.session.commit()
     return redirect(url_for('page_serv_list'))
 
+
 @app.route('/serv_list')
 def page_serv_list():
     if 'username' not in session:
@@ -232,13 +245,6 @@ def page_serv_list():
     css = url_for("static", filename="style.css")
     return render_template("servizio/list.html.j2", css=css, serv=serv, type="serv", user=session["username"])
 
-@app.route('/serv_list/<int:eid>')
-def page_serv_list_plus(eid):
-    if 'username' not in session:
-        return redirect(url_for('page_login'))
-    serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
-    css = url_for("static", filename="style.css")
-    return render_template("servizio/list.html.j2", css=css, user=session["username"])
 
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
 def page_serv_show(sid):
@@ -256,6 +262,7 @@ def page_serv_show(sid):
         db.session.commit()
         return redirect(url_for('page_serv_list'))
 
+
 @app.route('/imp_add', methods=['GET', 'POST'])
 def page_imp_add():
     if 'username' not in session:
@@ -265,10 +272,12 @@ def page_imp_add():
         css = url_for("static", filename="style.css")
         return render_template("impiegato/add.html.j2", css=css, servizi=servizi, type="imp", user=session["username"])
     else:
-        nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'], request.form['passwd'],)
+        nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
+                             request.form['passwd'],)
         db.session.add(nuovoimp)
         db.session.commit()
         return redirect(url_for('page_imp_list'))
+
 
 @app.route('/imp_del/<int:iid>')
 def page_imp_del(iid):
@@ -279,6 +288,7 @@ def page_imp_del(iid):
     db.session.commit()
     return redirect(url_for('page_imp_list'))
 
+
 @app.route('/imp_list')
 def page_imp_list():
     if 'username' not in session:
@@ -287,6 +297,7 @@ def page_imp_list():
     css = url_for("static", filename="style.css")
     return render_template("impiegato/list.html.j2", css=css, impiegati=impiegati, type="imp", user=session["username"])
 
+
 @app.route('/imp_list/<int:sid>')
 def page_imp_list_plus(sid):
     if 'username' not in session:
@@ -294,6 +305,7 @@ def page_imp_list_plus(sid):
     impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
     css = url_for("static", filename="style.css")
     return render_template("impiegato/list.html.j2", css=css, impiegati=impiegati, user=session["username"])
+
 
 @app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
 def page_imp_show(iid):
@@ -313,17 +325,21 @@ def page_imp_show(iid):
         db.session.commit()
         return redirect(url_for('page_imp_list'))
 
+
 @app.route('/disp_add', methods=['GET', 'POST'])
 def page_disp_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        opzioni=["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router", "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
+                   "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         impiegati = Impiegato.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("dispositivo/add.html.j2", css=css, impiegati=impiegati,opzioni=opzioni, type="dev", user=session["username"])
+        return render_template("dispositivo/add.html.j2", css=css, impiegati=impiegati, opzioni=opzioni, type="dev",
+                               user=session["username"])
     else:
-        nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'], request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'])
+        nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
+                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -339,8 +355,9 @@ def page_disp_add():
             nuovologin = Accesso(int(user), nuovodisp.did)
             db.session.add(nuovologin)
         db.session.commit()
-        #TODO: se un dispositivo non ha utenti si incasina parecchio
+        # TODO: se un dispositivo non ha utenti si incasina parecchio
         return redirect(url_for('page_disp_list'))
+
 
 @app.route('/disp_del/<int:did>')
 def page_disp_del(did):
@@ -350,6 +367,7 @@ def page_disp_del(did):
     db.session.delete(disp)
     db.session.commit()
     return redirect(url_for('page_disp_list'))
+
 
 @app.route('/disp_list')
 def page_disp_list():
@@ -362,6 +380,7 @@ def page_disp_list():
         accessi.append(accesso)
     css = url_for("static", filename="style.css")
     return render_template("dispositivo/list.html.j2", css=css, accessi=accessi, type="disp", user=session["username"])
+
 
 @app.route('/disp_details')
 def page_details_host():
