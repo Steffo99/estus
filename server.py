@@ -1,5 +1,6 @@
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
+import bcrypt
 
 app = Flask(__name__)
 app.secret_key = "pepsecret"
@@ -13,7 +14,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
-    passwd = db.Column(db.String(80))
+    passwd = db.Column(db.LargeBinary)
 
     def __init__(self, username, passwd):
         self.username = username
@@ -94,9 +95,8 @@ class Dispositivo(db.Model):
 
 
 class Accesso(db.Model):
-    aid = db.Column(db.Integer, primary_key=True)
-    iid = db.Column(db.Integer, db.ForeignKey('impiegato.iid'))
-    did = db.Column(db.Integer, db.ForeignKey('dispositivo.did'))
+    iid = db.Column(db.Integer, db.ForeignKey('impiegato.iid'), primary_key=True)
+    did = db.Column(db.Integer, db.ForeignKey('dispositivo.did'), primary_key=True)
 
     def __init__(self, iid, did):
         self.iid = iid
@@ -110,7 +110,7 @@ class Accesso(db.Model):
 def login(username, password):
     user = User.query.filter_by(username=username).first()
     try:
-        return password == user.passwd
+        return bcrypt.checkpw(bytes(password, encoding="utf-8"), user.passwd)
     except AttributeError:
         # Se non esiste l'Utente
         return False
@@ -389,7 +389,9 @@ def page_details_host():
 
 if __name__ == "__main__":
     # db.create_all()
-    # u = User("lavaleria", "lava")
-    # db.session.add(u)
+    # p = b"admin"
+    # cenere = bcrypt.hashpw(p, bcrypt.gensalt())
+    # nuovouser = User('admin', cenere)
+    # db.session.add(nuovouser)
     # db.session.commit()
     app.run(debug=True)
