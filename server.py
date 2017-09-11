@@ -84,14 +84,17 @@ class Dispositivo(db.Model):
     inv_ced = db.Column(db.String(8))
     inv_ente = db.Column(db.String(8))
     fornitore = db.Column(db.String(64))
+    nid = db.Column(db.Integer, db.ForeignKey('network.nid'))
+    rete = db.relationship("Network", backref='dispositivo')
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore):
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
         self.inv_ced = inv_ced
         self.inv_ente = inv_ente
         self.fornitore = fornitore
+        self.nid = nid
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -107,6 +110,19 @@ class Accesso(db.Model):
 
     def __repr__(self):
         return "<Accesso {} su {}>".format(self.iid, self.did)
+
+
+class Network(db.Model):
+    nid = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(80))
+    ip = db.Column(db.String(20))
+
+    def __init__(self, nome, ip):
+        self.nome=nome
+        self.ip=ip
+
+    def __repr__(self):
+        return "<Rete {},{}>".format(self.nid, self.nome)
 
 
 class FakeAccesso:
@@ -356,13 +372,14 @@ def page_disp_add():
     if request.method == 'GET':
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        reti = Network.query.all()
         impiegati = Impiegato.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, type="dev",
+        return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, reti=reti, type="dev",
                                user=session["username"])
     else:
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'])
+                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'], request.form['rete'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -426,6 +443,40 @@ def page_details_imp(iid):
     impiegato = Impiegato.query.filter_by(iid=iid).first()
     css = url_for("static", filename="style.css")
     return render_template("impiegato/details.htm", css=css, imp=impiegato, type="imp",user=session["username"])
+
+
+@app.route('/net_add', methods=['GET', 'POST'])
+def page_net_add():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        css = url_for("static", filename="style.css")
+        return render_template("net/add.htm", css=css, type="net", user=session["username"])
+    else:
+        nuovonet = Network(request.form['nomerete'], request.form['ip'])
+        db.session.add(nuovonet)
+        db.session.commit()
+        return redirect(url_for('page_net_list'))
+
+
+@app.route('/net_del/<int:nid>')
+def page_ned_del(nid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    rete = Network.query.get(nid)
+    db.session.delete(rete)
+    db.session.commit()
+    return redirect(url_for('page_net_list'))
+
+
+@app.route('/net_list')
+def page_net_list():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    reti = Network.query.all()
+    css = url_for("static", filename="style.css")
+    return render_template("net/list.htm", css=css, reti=reti, type="net", user=session["username"])
+
 
 if __name__ == "__main__":
     #db.create_all()

@@ -79,6 +79,16 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-xs-2" for="">Rete</label>
+            <div class="col-xs-10">
+                <select id="form-rete" class="form-control" name="rete">
+                    {% for rete in reti %}
+                        <option value="{{ rete.nid }}">{{ rete.nome }} - {{ rete.ip }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-xs-2" for="form-control"></label>
             <div class="col-xs-10">
                 <input class="form-control btn btn-primary" type="submit">

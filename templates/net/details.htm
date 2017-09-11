@@ -1,0 +1,33 @@
+{% extends "base.htm" %}
+{% block title %}Dettagli Impiegato{% endblock %}
+{% block content %}
+    <h1>
+        Ispeziona Rete
+    </h1>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Nome Rete
+            </h4>
+            <div class="list-group-item-text">
+                {{ imp.nomeimpiegato }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                IP
+            </h4>
+            <div class="list-group-item-text">
+                {{ imp.username }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Dispositivi
+            </h4>
+            <div class="list-group-item-text">
+
+            </div>
+        </li>
+    </ul>
+{% endblock %}

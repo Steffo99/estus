@@ -1,0 +1,11 @@
+{% extends "base.htm" %}
+{% block content %}
+    <h1>
+        Aggiunta nuova rete
+    </h1>
+    <form class="form-inline" action="/net_add" method="post">
+        <input class="form-control" type="text" placeholder="Nome rete" name="nomerete">
+        <input class="form-control" type="text" placeholder="Set IP" name="ip">
+        <input class="btn btn-primary" type="submit">
+    </form>
+{% endblock %}
