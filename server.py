@@ -481,6 +481,16 @@ def page_net_list():
     return render_template("net/list.htm", css=css, reti=reti, type="net", user=session["username"])
 
 
+@app.route('/net_details/<int:nid>')
+def page_details_net(nid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    dispositivi=Dispositivo.query.join(Network).filter_by(nid=nid).all()
+    rete = Network.query.filter_by(nid=nid).first()
+    css = url_for("static", filename="style.css")
+    return render_template("net/details.htm", css=css, net=rete, dispositivi=dispositivi, type="net", user=session["username"])
+
+
 if __name__ == "__main__":
     #db.create_all()
     #p = b"admin"

@@ -16,7 +16,7 @@
             {% for rete in reti %}
                 <td>{{ rete.nome }}</td>
                 <td>{{ rete.ip }}</td>
-                <td><a href="/disp_details/{{ rete.nid }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
+                <td><a href="/net_details/{{ rete.nid }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
                 <td><a href="/net_del/{{ rete.nid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
         </tr>
         {% endfor %}
