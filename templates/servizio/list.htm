@@ -9,6 +9,7 @@
           <tr>
             <th>Nome ente</th>
             <th>Nome servizio</th>
+            <th>Locazione</th>
             <th>Ispeziona</th>
             <th>Modifica</th>
             <th>Elimina</th>
@@ -18,6 +19,7 @@
           <tr>
             <td>{{ servizio.ente.nomeente }}</td>
             <td>{{ servizio.nomeservizio }}</td>
+            <td>{{ servizio.locazione }}</td>
             <td><a href="/imp_list/{{ servizio.sid }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
             <td><a href="/serv_show/{{ servizio.sid }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
             <td><a href="/serv_del/{{ servizio.sid }}"><span class="glyphicon glyphicon-remove"></span></a></td>

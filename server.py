@@ -45,11 +45,13 @@ class Servizio(db.Model):
     sid = db.Column(db.Integer, primary_key=True)
     eid = db.Column(db.Integer, db.ForeignKey('ente.eid'))
     nomeservizio = db.Column(db.String(128))
+    locazione = db.Column(db.String(128))
     impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
 
-    def __init__(self, eid, nomeservizio):
+    def __init__(self, eid, nomeservizio, locazione):
         self.eid = eid
         self.nomeservizio = nomeservizio
+        self.locazione = locazione
 
     def __repr__(self):
         return "<Servizio {}>".format(self.nomeservizio)
@@ -229,7 +231,7 @@ def page_serv_add():
         css = url_for("static", filename="style.css")
         return render_template("servizio/add.htm", css=css, enti=enti, type="serv", user=session["username"])
     else:
-        nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'])
+        nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)
         db.session.commit()
         return redirect(url_for('page_serv_list'))
@@ -279,6 +281,7 @@ def page_serv_show(sid):
         serv = Servizio.query.get(sid)
         serv.eid = request.form["eid"]
         serv.nomeservizio = request.form["nomeservizio"]
+        serv.locazione = request.form["locazione"]
         db.session.commit()
         return redirect(url_for('page_serv_list'))
 
@@ -425,10 +428,10 @@ def page_details_imp(iid):
     return render_template("impiegato/details.htm", css=css, imp=impiegato, type="imp",user=session["username"])
 
 if __name__ == "__main__":
-    # db.create_all()
-    # p = b"admin"
-    # cenere = bcrypt.hashpw(p, bcrypt.gensalt())
-    # nuovouser = User('admin', cenere)
-    # db.session.add(nuovouser)
-    # db.session.commit()
+    #db.create_all()
+    #p = b"admin"
+    #cenere = bcrypt.hashpw(p, bcrypt.gensalt())
+    #nuovouser = User('admin', cenere)
+    #db.session.add(nuovouser)
+    #db.session.commit()
     app.run(debug=True)
