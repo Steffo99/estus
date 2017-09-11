@@ -21,8 +21,8 @@
                 <td>{{ imp.servizio.ente.nomeente }}</td>
                 <td>{{ imp.servizio.nomeservizio }}
                 <td>{{ imp.nomeimpiegato }}</td>
-                <td><span class="monospace">{{ imp.username }}</span></td>
-                <td><span class="monospace">{{ imp.passwd }}</span></td>
+                <td><code>{{ imp.username }}</code></td>
+                <td><code>{{ imp.passwd }}</code></td>
                 <td><a href="/imp_show/{{ imp.iid }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
                 <td><a href="/imp_del/{{ imp.iid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>

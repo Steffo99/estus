@@ -1,5 +1,4 @@
 {% extends "base.htm" %}
-{% block title %}Elenco dispositivi{% endblock %}
 {% block content %}
     <h1>
         Dispositivi esistenti
@@ -27,8 +26,8 @@
                 <td>{{ d[0].dispositivo.marca }}</td>
                 <td>{{ d[0].dispositivo.modello }}</td>
                 <td>{{ d[0].dispositivo.fornitore }}</td>
-                <td><a href="/disp_details/{{ d.did }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
-                <td><a href="/disp_del/{{ d.did }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="/disp_details/{{ d[0].did }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
+                <td><a href="/disp_del/{{ d[0].did }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
     </table>

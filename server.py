@@ -1,6 +1,7 @@
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
+import os
 
 app = Flask(__name__)
 app.secret_key = "pepsecret"
@@ -105,6 +106,16 @@ class Accesso(db.Model):
     def __repr__(self):
         return "<Accesso {} su {}>".format(self.iid, self.did)
 
+
+class FakeAccesso:
+    def __init__(self, dispositivo):
+        self.did = dispositivo.did
+        self.iid = None
+        self.dispositivo = dispositivo
+
+    def __getitem__(self, key):
+        if key == 0:
+            return self.dispositivo
 
 # Funzioni del sito
 def login(username, password):
@@ -246,6 +257,15 @@ def page_serv_list():
     return render_template("servizio/list.htm", css=css, serv=serv, type="serv", user=session["username"])
 
 
+@app.route('/serv_list/<int:eid>')
+def page_serv_list_plus(eid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
+    css = url_for("static", filename="style.css")
+    return render_template("servizio/list.htm", css=css, serv=serv, type="serv", user=session["username"])
+
+
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
 def page_serv_show(sid):
     if 'username' not in session:
@@ -377,14 +397,21 @@ def page_disp_list():
     dispositivi = Dispositivo.query.all()
     for dispositivo in dispositivi:
         accesso = Accesso.query.join(Dispositivo).filter_by(did=dispositivo.did).join(Impiegato).all()
-        accessi.append(accesso)
+        if not accesso:
+            accessi.append([FakeAccesso(dispositivo)])
+        else:
+            accessi.append(accesso)
     css = url_for("static", filename="style.css")
     return render_template("dispositivo/list.htm", css=css, accessi=accessi, type="disp", user=session["username"])
 
 
-@app.route('/disp_details')
-def page_details_host():
-    raise NotImplementedError()
+@app.route('/disp_details/<int:did>')
+def page_details_host(did):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    disp = Dispositivo.query.get(did)
+    css = url_for("static", filename="style.css")
+    return render_template("dispositivo/details.htm", css=css, disp=disp, type="disp", user=session["username"])
 
 
 if __name__ == "__main__":
