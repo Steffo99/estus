@@ -410,11 +410,19 @@ def page_disp_list():
 def page_details_host(did):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    disp = Dispositivo.query.filter_by(did=did).first()
+    disp = Dispositivo.query.filter_by(did=did).first_or_404()
     accessi = Accesso.query.filter_by(did=did).all()
     css = url_for("static", filename="style.css")
     return render_template("dispositivo/details.htm", css=css, disp=disp, accessi=accessi, type="disp", user=session["username"])
 
+
+@app.route('/imp_details/<int:iid>')
+def page_details_imp(iid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    impiegato = Impiegato.query.filter_by(iid=iid).first()
+    css = url_for("static", filename="style.css")
+    return render_template("impiegato/details.htm", css=css, imp=impiegato, type="imp",user=session["username"])
 
 if __name__ == "__main__":
     # db.create_all()
