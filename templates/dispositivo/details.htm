@@ -1,15 +1,67 @@
 {% extends "base.htm" %}
+{% block title %}Dettagli Dispositivo{% endblock %}
 {% block content %}
+    <h1>
+        Ispeziona dispositivo
+    </h1>
     <ul class="list-group">
-        {% for ente in conteggioservizi %}
-            <li class="list-group-item">
-                <div class="list-group-item-heading">
-                    Sassi
-                </div>
-                <div class="list-group-item-text">
-                    10
-                </div>
-            </li>
-        {% endfor %}
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Tipo Dispositivo
+            </h4>
+            <div class="list-group-item-text">
+                {{ disp.tipo }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Marca
+            </h4>
+            <div class="list-group-item-text">
+                {{ disp.marca }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Modello
+            </h4>
+            <div class="list-group-item-text">
+                {{ disp.modello }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Modello
+            </h4>
+            <div class="list-group-item-text">
+                {{ disp.fornitore }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Utenti
+            </h4>
+            <div class="list-group-item-text">
+                {% for accesso in accessi %}
+                    <a href="/imp_show/{{ accesso.iid }}">{{ accesso.impiegato.nomeimpiegato }}</a><br>
+                {% endfor %}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Codice Inventario CED
+            </h4>
+            <div class="list-group-item-text">
+                <code>{{ disp.inv_ced }}</code>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Codice Inventario Ente
+            </h4>
+            <div class="list-group-item-text">
+                <code>{{ disp.inv_ente }}</code>
+            </div>
+        </li>
     </ul>
 {% endblock %}

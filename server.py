@@ -398,6 +398,7 @@ def page_disp_list():
     for dispositivo in dispositivi:
         accesso = Accesso.query.join(Dispositivo).filter_by(did=dispositivo.did).join(Impiegato).all()
         if not accesso:
+            # oh dio mio a cosa stavo pensando viva il duck typing
             accessi.append([FakeAccesso(dispositivo)])
         else:
             accessi.append(accesso)
@@ -409,9 +410,10 @@ def page_disp_list():
 def page_details_host(did):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    disp = Dispositivo.query.get(did)
+    disp = Dispositivo.query.filter_by(did=did).first()
+    accessi = Accesso.query.filter_by(did=did).all()
     css = url_for("static", filename="style.css")
-    return render_template("dispositivo/details.htm", css=css, disp=disp, type="disp", user=session["username"])
+    return render_template("dispositivo/details.htm", css=css, disp=disp, accessi=accessi, type="disp", user=session["username"])
 
 
 if __name__ == "__main__":
