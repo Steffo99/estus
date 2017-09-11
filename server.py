@@ -131,7 +131,7 @@ def page_login():
     if request.method == 'GET':
         css = url_for("static", filename="style.css")
         goldfish = url_for("static", filename="goldfish.png")
-        return render_template("login.html.j2", css=css, goldfish=goldfish)
+        return render_template("login.htm", css=css, goldfish=goldfish)
     else:
         if login(request.form['username'], request.form['password']):
             session['username'] = request.form['username']
@@ -150,7 +150,7 @@ def page_dashboard():
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
     css = url_for("static", filename="style.css")
-    return render_template("dashboard.html.j2", css=css, type="main", user=session["username"],
+    return render_template("dashboard.htm", css=css, type="main", user=session["username"],
                            conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi)
 
 
@@ -160,7 +160,7 @@ def page_ente_add():
         return redirect(url_for('page_login'))
     if request.method == 'GET':
         css = url_for("static", filename="style.css")
-        return render_template("ente/add.html.j2", css=css, type="ente", user=session["username"])
+        return render_template("ente/add.htm", css=css, type="ente", user=session["username"])
     else:
         nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
@@ -190,7 +190,7 @@ def page_ente_list():
         return redirect(url_for('page_login'))
     enti = Ente.query.all()
     css = url_for("static", filename="style.css")
-    return render_template("ente/list.html.j2", css=css, enti=enti, type="ente", user=session["username"])
+    return render_template("ente/list.htm", css=css, enti=enti, type="ente", user=session["username"])
 
 
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
@@ -200,7 +200,7 @@ def page_ente_show(eid):
     if request.method == "GET":
         ente = Ente.query.get(eid)
         css = url_for("static", filename="style.css")
-        return render_template("ente/show.html.j2", css=css, ente=ente, user=session["username"])
+        return render_template("ente/show.htm", css=css, ente=ente, user=session["username"])
     else:
         ente = Ente.query.get(eid)
         ente.nomeente = request.form["nomeente"]
@@ -216,7 +216,7 @@ def page_serv_add():
     if request.method == 'GET':
         enti = Ente.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("servizio/add.html.j2", css=css, enti=enti, type="serv", user=session["username"])
+        return render_template("servizio/add.htm", css=css, enti=enti, type="serv", user=session["username"])
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'])
         db.session.add(nuovoserv)
@@ -243,7 +243,7 @@ def page_serv_list():
         return redirect(url_for('page_login'))
     serv = Servizio.query.join(Ente).all()
     css = url_for("static", filename="style.css")
-    return render_template("servizio/list.html.j2", css=css, serv=serv, type="serv", user=session["username"])
+    return render_template("servizio/list.htm", css=css, serv=serv, type="serv", user=session["username"])
 
 
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
@@ -254,7 +254,7 @@ def page_serv_show(sid):
         serv = Servizio.query.get(sid)
         enti = Ente.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("servizio/show.html.j2", css=css, serv=serv, enti=enti, user=session["username"])
+        return render_template("servizio/show.htm", css=css, serv=serv, enti=enti, user=session["username"])
     else:
         serv = Servizio.query.get(sid)
         serv.eid = request.form["eid"]
@@ -270,7 +270,7 @@ def page_imp_add():
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).all()
         css = url_for("static", filename="style.css")
-        return render_template("impiegato/add.html.j2", css=css, servizi=servizi, type="imp", user=session["username"])
+        return render_template("impiegato/add.htm", css=css, servizi=servizi, type="imp", user=session["username"])
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
                              request.form['passwd'],)
@@ -295,7 +295,7 @@ def page_imp_list():
         return redirect(url_for('page_login'))
     impiegati = Impiegato.query.join(Servizio).join(Ente).all()
     css = url_for("static", filename="style.css")
-    return render_template("impiegato/list.html.j2", css=css, impiegati=impiegati, type="imp", user=session["username"])
+    return render_template("impiegato/list.htm", css=css, impiegati=impiegati, type="imp", user=session["username"])
 
 
 @app.route('/imp_list/<int:sid>')
@@ -304,7 +304,7 @@ def page_imp_list_plus(sid):
         return redirect(url_for('page_login'))
     impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
     css = url_for("static", filename="style.css")
-    return render_template("impiegato/list.html.j2", css=css, impiegati=impiegati, user=session["username"])
+    return render_template("impiegato/list.htm", css=css, impiegati=impiegati, user=session["username"])
 
 
 @app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
@@ -315,7 +315,7 @@ def page_imp_show(iid):
         imp = Impiegato.query.get(iid)
         servizi = Servizio.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("impiegato/show.html.j2", css=css, imp=imp, servizi=servizi, user=session["username"])
+        return render_template("impiegato/show.htm", css=css, imp=imp, servizi=servizi, user=session["username"])
     else:
         imp = Impiegato.query.get(iid)
         imp.sid = request.form["sid"]
@@ -335,7 +335,7 @@ def page_disp_add():
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         impiegati = Impiegato.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("dispositivo/add.html.j2", css=css, impiegati=impiegati, opzioni=opzioni, type="dev",
+        return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, type="dev",
                                user=session["username"])
     else:
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
@@ -379,9 +379,17 @@ def page_disp_list():
         accesso = Accesso.query.join(Dispositivo).filter_by(did=dispositivo.did).join(Impiegato).all()
         accessi.append(accesso)
     css = url_for("static", filename="style.css")
-    return render_template("dispositivo/list.html.j2", css=css, accessi=accessi, type="disp", user=session["username"])
+    return render_template("dispositivo/list.htm", css=css, accessi=accessi, type="disp", user=session["username"])
 
 
 @app.route('/disp_details')
 def page_details_host():
     raise NotImplementedError()
+
+
+if __name__ == "__main__":
+    # db.create_all()
+    # u = User("lavaleria", "lava")
+    # db.session.add(u)
+    # db.session.commit()
+    app.run(debug=True)

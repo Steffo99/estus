@@ -1,12 +1,6 @@
-<html>
-  <head>
-    <title>Elenco servizi - Inventario</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{css}}">
-  </head>
-  <body>
-    {% include 'nav.html.j2' %}
-    <div class="container">
+{% extends "base.htm" %}
+{% block title %}Lista Servizi{% endblock %}
+{% block content %}
       <h1>
          Servizi esistenti
       </h1>
@@ -31,6 +25,4 @@
         {% endfor %}
       </table>
       <a class="btn btn-success" href="/serv_add">Aggiungi</a>
-    </div>
-  </body>
-</html>
+{% endblock %}

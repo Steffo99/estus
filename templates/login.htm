@@ -1,0 +1,15 @@
+{% extends "base.htm" %}
+{% block title %}Benvenuto all'Acquario{% endblock %}
+{% block content %}
+    <h1>
+        Login
+    </h1>
+    <form class="form-inline" action="/login" method="post">
+        <input class="form-control" type="text" placeholder="Username" name="username">
+        <input class="form-control" type="password" placeholder="Password" name="password">
+        <input class="btn btn-primary" type="submit">
+    </form>
+    <img class="goldfish" src="{{goldfish}}">
+    <img class="goldfish" src="{{goldfish}}">
+    <img class="goldfish" src="{{goldfish}}">
+{% endblock %}

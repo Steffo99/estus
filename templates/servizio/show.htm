@@ -1,12 +1,6 @@
-<html>
-  <head>
-    <title>Modifica servizio - Inventario</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{css}}">
-  </head>
-  <body>
-    {% include 'nav.html.j2' %}
-    <div class="container">
+{% extends "base.htm" %}
+{% block title %}Modifica Servizio{% endblock %}
+{% block content %}
       <h1>
          Modifica servizio
       </h1>
@@ -19,6 +13,4 @@
         <input class="form-control" type="text" placeholder="Nome servizio" name="nomeservizio" value="{{serv.nomeservizio}}">
         <input class="btn btn-primary" type="submit">
       </form>
-   </div>
-  </body>
-</html>
+{% endblock %}

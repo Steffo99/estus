@@ -1,0 +1,16 @@
+{% extends "base.htm" %}
+{% block title %}Aggiunta Servizio{% endblock %}
+{% block content %}
+    <h1>
+        Aggiunta nuovo servizio
+    </h1>
+    <form class="form-inline" action="/serv_add" method="post">
+        <select class="form-control" name="eid">
+            {% for ente in enti %}
+                <option value="{{ ente.eid }}">{{ ente.nomeente }}</option>
+            {% endfor %}
+        </select>
+        <input class="form-control" type="text" placeholder="Nome ente" name="nomeservizio">
+        <input class="form-control" type="submit">
+    </form>
+{% endblock %}

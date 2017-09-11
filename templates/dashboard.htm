@@ -1,0 +1,35 @@
+{% extends "base.htm" %}
+{% block title %}Dashboard - Estus{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>
+                Servizi per ente
+            </h2>
+            <ul class="list-group">
+                {% for ente in conteggioservizi %}
+                    <li class="list-group-item">
+                        {{ ente }}
+                        <span class="badge">{{ conteggioservizi[ente] }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-4">
+            <h2>
+                Utenti per ente
+            </h2>
+            <ul class="list-group">
+                {% for ente in conteggioutenti %}
+                    <li class="list-group-item">
+                        {{ ente }}
+                        <span class="badge">{{ conteggioutenti[ente] }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-4">
+            Destra
+        </div>
+    </div>
+{% endblock %}
