@@ -89,7 +89,7 @@
             <div class="col-xs-10">
                 <select id="form-rete" class="form-control" name="rete">
                     {% for rete in reti %}
-                        <option value="{{ rete.nid }}">{{ rete.nome }} - {{ rete.ip }}</option>
+                        <option value="{{ rete.nid }}">{{ rete.nome }} - {{ rete.network_ip }}/{{ rete.subnet }}</option>
                     {% endfor %}
                 </select>
             </div>

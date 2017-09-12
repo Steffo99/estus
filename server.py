@@ -204,6 +204,7 @@ def page_dashboard():
     enti = Ente.query.all()
     conteggioservizi = dict()
     goldfish = url_for("static", filename="goldfish.png")
+    terredicastello = url_for("static", filename="UTdClogo.png")
     for ente in enti:
         conteggioservizi[ente.nomeente] = Servizio.query.join(Ente).filter_by(eid=ente.eid).count()
     conteggioutenti = dict()
@@ -211,7 +212,7 @@ def page_dashboard():
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
     css = url_for("static", filename="style.css")
     return render_template("dashboard.htm", css=css, type="main", user=session["username"],
-                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish)
+                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish, terredicastello=terredicastello)
 
 
 @app.route('/ente_add', methods=['GET', 'POST'])
@@ -523,6 +524,41 @@ def page_net_details(nid):
     css = url_for("static", filename="style.css")
     return render_template("net/details.htm", css=css, net=net, subnet=subnet, dispositivi=dispositivi, type="net",
                            user=session["username"])
+
+
+@app.route('/user_list')
+def page_user_list():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    utenti = User.query.all()
+    css = url_for("static", filename="style.css")
+    return render_template("user/list.htm", css=css, utenti=utenti, type="user", user=session["username"])
+
+
+@app.route('/user_del/<int:uid>')
+def page_user_del(uid):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    utente = User.query.get(uid)
+    db.session.delete(utente)
+    db.session.commit()
+    return redirect(url_for('page_user_list'))
+
+
+@app.route('/user_add', methods=['GET', 'POST'])
+def page_user_add():
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        css = url_for("static", filename="style.css")
+        return render_template("user/add.htm", css=css, type="user", user=session["username"])
+    else:
+        p = bytes(request.form["passwd"], encoding="utf-8")
+        cenere = bcrypt.hashpw(p, bcrypt.gensalt())
+        nuovo = User(request.form['username'], cenere)
+        db.session.add(nuovo)
+        db.session.commit()
+        return redirect(url_for('page_user_list'))
 
 
 if __name__ == "__main__":
