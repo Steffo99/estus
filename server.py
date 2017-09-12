@@ -13,8 +13,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-# Utente login inventario
 class User(db.Model):
+    """Utente per il login sul sito dell'inventario."""
     __tablename__ = "website_users"
 
     uid = db.Column(db.Integer, primary_key=True)
@@ -29,8 +29,8 @@ class User(db.Model):
         return "<User {}>".format(self.username, self.passwd)
 
 
-# Ente (Unione Terre di Castelli, Comune di Vignola...)
 class Ente(db.Model):
+    """Ente (Unione Terre di Castelli, Comune di Vignola...)."""
     __tablename__ = "enti"
 
     eid = db.Column(db.Integer, primary_key=True)
@@ -46,8 +46,8 @@ class Ente(db.Model):
         return "<Ente {}>".format(self.nomebreveente)
 
 
-# Servizio di un ente
 class Servizio(db.Model):
+    """Servizio di un ente (Anagrafe, Ufficio Scuola, Sindaco)."""
     __tablename__ = "servizi"
 
     sid = db.Column(db.Integer, primary_key=True)
@@ -66,6 +66,7 @@ class Servizio(db.Model):
 
 
 class Impiegato(db.Model):
+    """Impiegato in uno dei servizi."""
     __tablename__ = "impiegati"
 
     iid = db.Column(db.Integer, primary_key=True)
@@ -86,6 +87,7 @@ class Impiegato(db.Model):
 
 
 class Dispositivo(db.Model):
+    """Dispositivo gestito dal CED registrato nell'inventario."""
     __tablename__ = "dispositivi"
 
     did = db.Column(db.Integer, primary_key=True)
@@ -115,6 +117,7 @@ class Dispositivo(db.Model):
 
 
 class Accesso(db.Model):
+    """Tabella di associazione tra dispositivi e impiegati."""
     __tablename__ = "assoc_accessi"
 
     iid = db.Column(db.Integer, db.ForeignKey('impiegati.iid'), primary_key=True)
@@ -129,6 +132,7 @@ class Accesso(db.Model):
 
 
 class Rete(db.Model):
+    """Configurazione di rete di uno o più computer."""
     __tablename__ = "reti"
 
     nid = db.Column(db.Integer, primary_key=True)
@@ -150,6 +154,8 @@ class Rete(db.Model):
 
 
 class FakeAccesso:
+    """Hackerino usato nel caso in cui non ci sia nessun impiegato assegnato a un dispositivo.
+    Viva il duck typing!"""
     def __init__(self, dispositivo):
         self.did = dispositivo.did
         self.iid = None
@@ -162,12 +168,9 @@ class FakeAccesso:
 
 # Funzioni del sito
 def login(username, password):
+    """Controlla se l'username e la password di un utente del sito sono corrette."""
     user = User.query.filter_by(username=username).first()
-    try:
-        return bcrypt.checkpw(bytes(password, encoding="utf-8"), user.passwd)
-    except AttributeError:
-        # Se non esiste l'Utente
-        return False
+    return user is not None and bcrypt.checkpw(bytes(password, encoding="utf-8"), user.passwd)
 
 
 def subnet_to_string(integer):
@@ -179,15 +182,21 @@ def subnet_to_string(integer):
 # Sito
 @app.route('/')
 def page_home():
+    """Pagina principale del sito:
+    se non sei loggato reindirizza alla pagina del login,
+    se sei loggato effettua il logout e dopo reindirizza al login"""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     else:
         session.pop('username')
-        return "Logout eseguito con successo."
+        return redirect(url_for('page_login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def page_login():
+    """Pagina di login:
+    accetta richieste GET per la visualizzazione della pagina
+    e richieste POST con form data per il login"""
     if request.method == 'GET':
         goldfish = url_for("static", filename="goldfish.png")
         return render_template("login.htm", goldfish=goldfish)
@@ -201,6 +210,9 @@ def page_login():
 
 @app.route('/dashboard')
 def page_dashboard():
+    """Dashboard del sito:
+    Conteggia i servizi e visualizza la navbar
+    Sì, è un po' inutile."""
     enti = Ente.query.all()
     conteggioservizi = dict()
     goldfish = url_for("static", filename="goldfish.png")
@@ -215,6 +227,10 @@ def page_dashboard():
 
 @app.route('/ente_add', methods=['GET', 'POST'])
 def page_ente_add():
+    """Pagina di creazione nuovo ente:
+    come tutte le altre pagine di creazione del sito,
+    accetta GET per visualizzare la pagina
+    e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
@@ -228,6 +244,8 @@ def page_ente_add():
 
 @app.route('/ente_del/<int:eid>')
 def page_ente_del(eid):
+    """Pagina di cancellazione ente:
+    accetta richieste GET per cancellare l'ente specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     ente = Ente.query.get(eid)
@@ -244,6 +262,7 @@ def page_ente_del(eid):
 
 @app.route('/ente_list')
 def page_ente_list():
+    """Pagina di elenco degli enti disponibili sul sito."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     enti = Ente.query.all()
@@ -267,6 +286,10 @@ def page_ente_show(eid):
 
 @app.route('/serv_add', methods=['GET', 'POST'])
 def page_serv_add():
+    """Pagina di creazione nuovo servizio:
+    come tutte le altre pagine di creazione del sito,
+    accetta GET per visualizzare la pagina
+    e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
@@ -281,6 +304,8 @@ def page_serv_add():
 
 @app.route('/serv_del/<int:sid>')
 def page_serv_del(sid):
+    """Pagina di cancellazione servizio:
+    accetta richieste GET per cancellare il servizio specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     serv = Servizio.query.get(sid)
@@ -294,6 +319,7 @@ def page_serv_del(sid):
 
 @app.route('/serv_list')
 def page_serv_list():
+    """Pagina di elenco dei servizi registrati sul sito."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     serv = Servizio.query.join(Ente).all()
@@ -302,6 +328,7 @@ def page_serv_list():
 
 @app.route('/serv_list/<int:eid>')
 def page_serv_list_plus(eid):
+    """Pagina di elenco dei servizi registrati sul sito, filtrati per ente."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
@@ -327,6 +354,10 @@ def page_serv_show(sid):
 
 @app.route('/imp_add', methods=['GET', 'POST'])
 def page_imp_add():
+    """Pagina di creazione nuovo impiegato:
+    come tutte le altre pagine di creazione del sito,
+    accetta GET per visualizzare la pagina
+    e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
@@ -352,6 +383,7 @@ def page_imp_del(iid):
 
 @app.route('/imp_list')
 def page_imp_list():
+    """Pagina di elenco degli impiegati registrati nell'inventario."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     impiegati = Impiegato.query.join(Servizio).join(Ente).all()
@@ -360,6 +392,7 @@ def page_imp_list():
 
 @app.route('/imp_list/<int:sid>')
 def page_imp_list_plus(sid):
+    """Pagina di elenco degli impiegati registrati nell'inventario, filtrati per servizio."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
@@ -368,6 +401,8 @@ def page_imp_list_plus(sid):
 
 @app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
 def page_imp_show(iid):
+    """Pagina di cancellazione impiegato:
+    accetta richieste GET per cancellare l'impiegato specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == "GET":
@@ -384,8 +419,21 @@ def page_imp_show(iid):
         return redirect(url_for('page_imp_list'))
 
 
+@app.route('/imp_details/<int:iid>')
+def page_imp_details(iid):
+    """Pagina dei dettagli di un impiegato"""
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    impiegato = Impiegato.query.filter_by(iid=iid).first()
+    return render_template("impiegato/details.htm", imp=impiegato, type="imp", user=session["username"])
+
+
 @app.route('/disp_add', methods=['GET', 'POST'])
 def page_disp_add():
+    """Pagina di creazione nuovo dispositivo:
+    come tutte le altre pagine di creazione del sito,
+    accetta GET per visualizzare la pagina
+    e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
@@ -421,6 +469,8 @@ def page_disp_add():
 
 @app.route('/disp_del/<int:did>')
 def page_disp_del(did):
+    """Pagina di cancellazione dispositivo:
+    accetta richieste GET per cancellare il dispositivo specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     disp = Dispositivo.query.get(did)
@@ -431,6 +481,7 @@ def page_disp_del(did):
 
 @app.route('/disp_list')
 def page_disp_list():
+    """Pagina di elenco dei dispositivi registrati nell'inventario."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     accessi = list()
@@ -446,7 +497,8 @@ def page_disp_list():
 
 
 @app.route('/disp_details/<int:did>')
-def page_details_host(did):
+def page_disp_details(did):
+    """Pagina di dettagli di un dispositivo, contenente anche gli utenti che vi hanno accesso."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     disp = Dispositivo.query.filter_by(did=did).first_or_404()
@@ -455,16 +507,12 @@ def page_details_host(did):
                            user=session["username"])
 
 
-@app.route('/imp_details/<int:iid>')
-def page_details_imp(iid):
-    if 'username' not in session:
-        return redirect(url_for('page_login'))
-    impiegato = Impiegato.query.filter_by(iid=iid).first()
-    return render_template("impiegato/details.htm", imp=impiegato, type="imp", user=session["username"])
-
-
 @app.route('/net_add', methods=['GET', 'POST'])
 def page_net_add():
+    """Pagina di creazione nuova rete:
+    come tutte le altre pagine di creazione del sito,
+    accetta GET per visualizzare la pagina
+    e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
@@ -479,6 +527,8 @@ def page_net_add():
 
 @app.route('/net_del/<int:nid>')
 def page_net_del(nid):
+    """Pagina di cancellazione rete:
+    accetta richieste GET per cancellare la rete specificata."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     rete = Rete.query.get(nid)
@@ -508,6 +558,8 @@ def page_net_details(nid):
 
 @app.route('/user_list')
 def page_user_list():
+    """Pagina di elenco degli utenti che possono connettersi al sito.
+    Le password sono hashate."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     utenti = User.query.all()
@@ -516,6 +568,8 @@ def page_user_list():
 
 @app.route('/user_del/<int:uid>')
 def page_user_del(uid):
+    """Pagina di cancellazione impiegato:
+    accetta richieste GET per cancellare l'utente specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     utente = User.query.get(uid)
@@ -526,6 +580,11 @@ def page_user_del(uid):
 
 @app.route('/user_add', methods=['GET', 'POST'])
 def page_user_add():
+    """Pagina di creazione nuovo utente del sito:
+    come tutte le altre pagine di creazione del sito,
+    accetta GET per visualizzare la pagina
+    e POST con form data per l'aggiunta effettiva.
+    Le password vengono hashate con bcrypt."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
@@ -540,16 +599,21 @@ def page_user_add():
 
 
 if __name__ == "__main__":
+    # Se non esiste il database, crealo e inizializzalo!
     if not os.path.isfile("data.db"):
         db.create_all()
         try:
+            # L'utente predefinito è "stagista" "smecds".
             nuovapassword = bcrypt.hashpw(b"smecds", bcrypt.gensalt())
             nuovouser = User('stagista', nuovapassword)
             db.session.add(nuovouser)
+            # Crea una rete nulla da utilizzare quando non ci sono altre reti disponibili
             retenulla = Rete(nome="Sconosciuta", network_ip="0.0.0.0", subnet=0, primary_dns="0.0.0.0",
                              secondary_dns="0.0.0.0")
             db.session.add(retenulla)
             db.session.commit()
         except OperationalError:
+            # Se queste operazioni sono già state compiute in precedenza, annullale
             db.session.rollback()
+    # Esegui il sito in modalità debug
     app.run(debug=True)
