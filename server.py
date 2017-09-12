@@ -445,6 +445,16 @@ def page_disp_add():
         return render_template("dispositivo/add.htm", impiegati=impiegati, opzioni=opzioni, reti=reti,
                                type="dev", user=session["username"], serial=serial)
     else:
+        if request.form["inv_ced"]:
+            try:
+                int(request.form["inv_ced"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario CED deve contenere un numero.")
+        if request.form["inv_ente"]:
+            try:
+                int(request.form["inv_ente"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
                                 request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'],
                                 request.form['rete'], request.form['seriale'])
@@ -473,7 +483,9 @@ def page_disp_del(did):
     accetta richieste GET per cancellare il dispositivo specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    disp = Dispositivo.query.get_or_404(did)
+    disp = Dispositivo.query.filter_by(did=did).join(Accesso).first_or_404()
+    for accesso in disp.accessi:
+        db.session.delete(accesso)
     db.session.delete(disp)
     db.session.commit()
     return redirect(url_for('page_disp_list'))

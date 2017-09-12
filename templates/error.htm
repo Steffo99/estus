@@ -1,0 +1,18 @@
+{% extends 'base.htm' %}
+{% block extrahead %}
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.history.back();
+            }, 7000)
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="alert alert-danger" role="alert">
+        <b>ERRORE:</b> {{ error }}
+    </div>
+    <div>
+        Sarai reindirizzato alla pagina precedente entro 7 secondi.
+    </div>
+{% endblock %}
