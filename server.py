@@ -1,6 +1,7 @@
 import os
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import OperationalError
 import bcrypt
 
 app = Flask(__name__)
@@ -203,14 +204,13 @@ def page_dashboard():
     enti = Ente.query.all()
     conteggioservizi = dict()
     goldfish = url_for("static", filename="goldfish.png")
-    terredicastello = url_for("static", filename="UTdClogo.png")
     for ente in enti:
         conteggioservizi[ente.nomeente] = Servizio.query.join(Ente).filter_by(eid=ente.eid).count()
     conteggioutenti = dict()
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
     return render_template("dashboard.htm", type="main", user=session["username"],
-                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish, terredicastello=terredicastello)
+                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish)
 
 
 @app.route('/ente_add', methods=['GET', 'POST'])
@@ -550,6 +550,6 @@ if __name__ == "__main__":
                              secondary_dns="0.0.0.0")
             db.session.add(retenulla)
             db.session.commit()
-        except Exception:
+        except OperationalError:
             db.session.rollback()
     app.run(debug=True)
