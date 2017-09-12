@@ -15,9 +15,9 @@
         <tr>
             {% for rete in reti %}
                 <td>{{ rete.nome }}</td>
-                <td>{{ rete.ip }}</td>
+                <td>{{ rete.network_ip }}/{{ rete.subnet }}</td>
                 <td><a href="/net_details/{{ rete.nid }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
-                <td><a href="/net_del/{{ rete.nid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td>{% if not rete.network_ip == "0.0.0.0" %}<a href="/net_del/{{ rete.nid }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
         </tr>
         {% endfor %}
     </table>

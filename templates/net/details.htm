@@ -15,10 +15,18 @@
         </li>
         <li class="list-group-item">
             <h4 class="list-group-item-heading">
-                IP
+                Indirizzo di rete
             </h4>
             <div class="list-group-item-text">
-                {{ net.ip }}
+                {{ net.network_ip }}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading">
+                Subnet mask
+            </h4>
+            <div class="list-group-item-text">
+                {{ subnet }} (/{{ net.subnet }})
             </div>
         </li>
         <li class="list-group-item">

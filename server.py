@@ -1,3 +1,4 @@
+import os
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
@@ -7,11 +8,14 @@ app.secret_key = "pepsecret"
 
 # SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
 # Utente login inventario
 class User(db.Model):
+    __tablename__ = "website_users"
+
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     passwd = db.Column(db.LargeBinary)
@@ -26,6 +30,8 @@ class User(db.Model):
 
 # Ente (Unione Terre di Castelli, Comune di Vignola...)
 class Ente(db.Model):
+    __tablename__ = "enti"
+
     eid = db.Column(db.Integer, primary_key=True)
     nomeente = db.Column(db.String(64))
     nomebreveente = db.Column(db.String(16))
@@ -41,8 +47,10 @@ class Ente(db.Model):
 
 # Servizio di un ente
 class Servizio(db.Model):
+    __tablename__ = "servizi"
+
     sid = db.Column(db.Integer, primary_key=True)
-    eid = db.Column(db.Integer, db.ForeignKey('ente.eid'))
+    eid = db.Column(db.Integer, db.ForeignKey('enti.eid'))
     nomeservizio = db.Column(db.String(128))
     locazione = db.Column(db.String(128))
     impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
@@ -57,8 +65,10 @@ class Servizio(db.Model):
 
 
 class Impiegato(db.Model):
+    __tablename__ = "impiegati"
+
     iid = db.Column(db.Integer, primary_key=True)
-    sid = db.Column(db.Integer, db.ForeignKey('servizio.sid'))
+    sid = db.Column(db.Integer, db.ForeignKey('servizi.sid'))
     nomeimpiegato = db.Column(db.String(128))
     username = db.Column(db.String(32), unique=True)
     passwd = db.Column(db.String(32))
@@ -75,16 +85,18 @@ class Impiegato(db.Model):
 
 
 class Dispositivo(db.Model):
+    __tablename__ = "dispositivi"
+
     did = db.Column(db.Integer, primary_key=True)
-    utenti = db.relationship("Accesso", backref='dispositivo', lazy='dynamic')
+    accessi = db.relationship("Accesso", backref='dispositivo', lazy='dynamic')
     tipo = db.Column(db.String(32))
     marca = db.Column(db.String(64))
     modello = db.Column(db.String(32))
     inv_ced = db.Column(db.String(8))
     inv_ente = db.Column(db.String(8))
     fornitore = db.Column(db.String(64))
-    nid = db.Column(db.Integer, db.ForeignKey('network.nid'))
-    rete = db.relationship("Network", backref='dispositivo')
+    nid = db.Column(db.Integer, db.ForeignKey('reti.nid'))
+    rete = db.relationship("Rete", backref='dispositivi')
     seriale = db.Column(db.String(30))
 
     def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale):
@@ -102,8 +114,10 @@ class Dispositivo(db.Model):
 
 
 class Accesso(db.Model):
-    iid = db.Column(db.Integer, db.ForeignKey('impiegato.iid'), primary_key=True)
-    did = db.Column(db.Integer, db.ForeignKey('dispositivo.did'), primary_key=True)
+    __tablename__ = "assoc_accessi"
+
+    iid = db.Column(db.Integer, db.ForeignKey('impiegati.iid'), primary_key=True)
+    did = db.Column(db.Integer, db.ForeignKey('dispositivi.did'), primary_key=True)
 
     def __init__(self, iid, did):
         self.iid = iid
@@ -113,14 +127,22 @@ class Accesso(db.Model):
         return "<Accesso {} su {}>".format(self.iid, self.did)
 
 
-class Network(db.Model):
-    nid = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(80))
-    ip = db.Column(db.String(20))
+class Rete(db.Model):
+    __tablename__ = "reti"
 
-    def __init__(self, nome, ip):
+    nid = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(64))
+    network_ip = db.Column(db.String(64), unique=True, nullable=False)
+    subnet = db.Column(db.Integer, nullable=False)
+    primary_dns = db.Column(db.String(64))
+    secondary_dns = db.Column(db.String(64))
+
+    def __init__(self, nome, network_ip, subnet, primary_dns, secondary_dns):
         self.nome = nome
-        self.ip = ip
+        self.network_ip = network_ip
+        self.subnet = subnet
+        self.primary_dns = primary_dns
+        self.secondary_dns = secondary_dns
 
     def __repr__(self):
         return "<Rete {},{}>".format(self.nid, self.nome)
@@ -145,6 +167,12 @@ def login(username, password):
     except AttributeError:
         # Se non esiste l'Utente
         return False
+
+
+def subnet_to_string(integer):
+    """Converte una subnet mask in numero in una stringa"""
+    still_int = (0xFFFFFFFF << (32 - integer)) & 0xFFFFFFFF
+    return f"{still_int >> 24}.{(still_int >> 16) & 0xFF}.{(still_int >> 8)}.{still_int & 0xFF}"
 
 
 # Sito
@@ -376,7 +404,7 @@ def page_disp_add():
         serial = request.args.get("scanned_barcode")
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        reti = Network.query.all()
+        reti = Rete.query.all()
         impiegati = Impiegato.query.all()
         css = url_for("static", filename="style.css")
         return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, reti=reti,
@@ -448,7 +476,7 @@ def page_details_imp(iid):
         return redirect(url_for('page_login'))
     impiegato = Impiegato.query.filter_by(iid=iid).first()
     css = url_for("static", filename="style.css")
-    return render_template("impiegato/details.htm", css=css, imp=impiegato, type="imp",user=session["username"])
+    return render_template("impiegato/details.htm", css=css, imp=impiegato, type="imp", user=session["username"])
 
 
 @app.route('/net_add', methods=['GET', 'POST'])
@@ -459,17 +487,18 @@ def page_net_add():
         css = url_for("static", filename="style.css")
         return render_template("net/add.htm", css=css, type="net", user=session["username"])
     else:
-        nuovonet = Network(request.form['nomerete'], request.form['ip'])
+        nuovonet = Rete(nome=request.form["nome"], network_ip=request.form["network_ip"], subnet=request.form["subnet"],
+                        primary_dns=request.form["primary_dns"], secondary_dns=request.form["secondary_dns"])
         db.session.add(nuovonet)
         db.session.commit()
         return redirect(url_for('page_net_list'))
 
 
 @app.route('/net_del/<int:nid>')
-def page_ned_del(nid):
+def page_net_del(nid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    rete = Network.query.get(nid)
+    rete = Rete.query.get(nid)
     db.session.delete(rete)
     db.session.commit()
     return redirect(url_for('page_net_list'))
@@ -479,27 +508,34 @@ def page_ned_del(nid):
 def page_net_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    reti = Network.query.all()
+    reti = Rete.query.all()
     css = url_for("static", filename="style.css")
     return render_template("net/list.htm", css=css, reti=reti, type="net", user=session["username"])
 
 
 @app.route('/net_details/<int:nid>')
-def page_details_net(nid):
+def page_net_details(nid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    dispositivi = Dispositivo.query.join(Network).filter_by(nid=nid).all()
-    rete = Network.query.filter_by(nid=nid).first()
+    net = Rete.query.filter_by(nid=nid).first()
+    dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
+    subnet = subnet_to_string(net.subnet)
     css = url_for("static", filename="style.css")
-    return render_template("net/details.htm", css=css, net=rete, dispositivi=dispositivi, type="net",
+    return render_template("net/details.htm", css=css, net=net, subnet=subnet, dispositivi=dispositivi, type="net",
                            user=session["username"])
 
 
 if __name__ == "__main__":
-    # db.create_all()
-    # p = b"admin"
-    # cenere = bcrypt.hashpw(p, bcrypt.gensalt())
-    # nuovouser = User('admin', cenere)
-    # db.session.add(nuovouser)
-    # db.session.commit()
+    if not os.path.isfile("data.db"):
+        db.create_all()
+        try:
+            nuovapassword = bcrypt.hashpw(b"smecds", bcrypt.gensalt())
+            nuovouser = User('stagista', nuovapassword)
+            db.session.add(nuovouser)
+            retenulla = Rete(nome="Sconosciuta", network_ip="0.0.0.0", subnet=0, primary_dns="0.0.0.0",
+                             secondary_dns="0.0.0.0")
+            db.session.add(retenulla)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
     app.run(debug=True)
