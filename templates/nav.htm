@@ -1,10 +1,10 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             {% if user %}
-                <a class="navbar-brand" href="/dashboard">Inventario</a>
+                <a class="navbar-brand" href="/dashboard"><img alt="Inventario" src="{{ url_for('static', filename='UTdClogo.png') }}"></a>
             {% else %}
-                <a class="navbar-brand active" href="/login">Inventario</a>
+                <a class="navbar-brand" href="/login"><img alt="Inventario" src="{{ url_for('static', filename='UTdClogo.png') }}"></a>
             {% endif %}
         </div>
         {% if user %}
@@ -17,9 +17,9 @@
             <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Utenti</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <p class="navbar-text">
+                <li class="navbar-text">
                     {{user}}
-                </p>
+                </li>
                 <a href="/login" class="btn btn-danger navbar-btn btn-right">Logout</a>
             </ul>
       {% endif %}
