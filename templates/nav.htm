@@ -1,27 +1,27 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      {% if user %}
-        <a class="navbar-brand" href="/dashboard">Inventario</a>
-      {% else %}
-        <a class="navbar-brand active" href="/login">Inventario</a>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            {% if user %}
+                <a class="navbar-brand" href="/dashboard">Inventario</a>
+            {% else %}
+                <a class="navbar-brand active" href="/login">Inventario</a>
+            {% endif %}
+        </div>
+        {% if user %}
+            <ul class="nav navbar-nav">
+                <li class="{% if type is equalto "ente" %}active{% endif %}"><a href="/ente_list">Enti</a></li>
+                <li class="{% if type is equalto "serv" %}active{% endif %}"><a href="/serv_list">Servizi</a></li>
+                <li class="{% if type is equalto "imp" %}active{% endif %}"><a href="/imp_list">Impiegati</a></li>
+                <li class="{% if type is equalto "disp" %}active{% endif %}"><a href="/disp_list">Dispositivi</a></li>
+                <li class="{% if type is equalto "net" %}active{% endif %}"><a href="/net_list">Reti</a></li>
+            <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Utenti</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <p class="navbar-text">
+                    {{user}}
+                </p>
+                <a href="/login" class="btn btn-danger navbar-btn btn-right">Logout</a>
+            </ul>
       {% endif %}
     </div>
-    {% if user %}
-      <ul class="nav navbar-nav">
-        <li class="{% if type is equalto "ente" %}active{% endif %}"><a href="/ente_list">Enti</a></li>
-        <li class="{% if type is equalto "serv" %}active{% endif %}"><a href="/serv_list">Servizi</a></li>
-        <li class="{% if type is equalto "imp" %}active{% endif %}"><a href="/imp_list">Impiegati</a></li>
-        <li class="{% if type is equalto "disp" %}active{% endif %}"><a href="/disp_list">Dispositivi</a></li>
-        <li class="{% if type is equalto "net" %}active{% endif %}"><a href="/net_list">Reti</a></li>
-      <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Utenti</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <p class="navbar-text">
-          {{user}}
-        </p>
-        <a href="/login" class="btn btn-danger navbar-btn btn-right">Logout</a>
-      </ul>
-    {% endif %}
-  </div>
 </nav>
