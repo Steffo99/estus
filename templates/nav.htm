@@ -14,11 +14,11 @@
                 <li class="{% if type is equalto "imp" %}active{% endif %}"><a href="/imp_list">Impiegati</a></li>
                 <li class="{% if type is equalto "disp" %}active{% endif %}"><a href="/disp_list">Dispositivi</a></li>
                 <li class="{% if type is equalto "net" %}active{% endif %}"><a href="/net_list">Reti</a></li>
-            <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Utenti</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Amministrazione</a></li>
                 <li class="navbar-text">
-                    {{user}}
+                    Sei connesso come <b>{{user}}</b>
                 </li>
                 <a href="/login" class="btn btn-danger navbar-btn btn-right">Logout</a>
             </ul>

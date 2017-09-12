@@ -1,0 +1,15 @@
+{% extends "base.htm" %}
+{% block title %}Credits{% endblock %}
+{% block content %}
+    <h1>
+        Secondo me è colpa dello stagista...
+    </h1>
+    <div class="panel panel-info">
+        <div class="panel-heading">Informazioni sul sito</div>
+        <div class="panel-body">
+            Questo sito è stato scritto da Stefano Pigozzi e da Balugani Lorenzo durante lo stage di 4° e di 5° nel 2017<br>
+            Questo sito utilizza python, flask, sqlalchemy e jinja2.
+        </div>
+    </div>
+    <img width="100%" alt="Inventario Unione Terre di Castelli" src="{{ url_for('static', filename='UTdClogo.png') }}">
+{% endblock %}

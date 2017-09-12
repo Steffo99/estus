@@ -473,7 +473,6 @@ def page_disp_add():
             nuovologin = Accesso(int(user), nuovodisp.did)
             db.session.add(nuovologin)
         db.session.commit()
-        # TODO: se un dispositivo non ha utenti si incasina parecchio
         return redirect(url_for('page_disp_list'))
 
 
@@ -525,8 +524,13 @@ def page_disp_show(did):
         return redirect(url_for('page_login'))
     if request.method == 'GET':
         disp = Dispositivo.query.filter_by(did=did).first_or_404()
-        return render_template("dispositivo/show.htm", disp=disp, accessi=accessi, type="disp",
-                               user=session["username"])
+        accessi = Accesso.query.filter_by(did=did).all()
+        impiegati = Impiegato.query.all()
+        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
+                   "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        reti = Rete.query.all()
+        return render_template("dispositivo/show.htm", dispositivo=disp, accessi=accessi, impiegati=impiegati,
+                               type="disp", user=session["username"], opzioni=opzioni, reti=reti)
     else:
         if request.form["inv_ced"]:
             try:
@@ -538,15 +542,15 @@ def page_disp_show(did):
                 int(request.form["inv_ente"])
             except ValueError:
                 return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
-        disp = Dispositivo.query.filter_by(did=did).first_or_404()
+        disp = Dispositivo.query.get_or_404(did)
+        accessi = Accesso.query.filter_by(did=did).all()
         disp.tipo = request.form['tipo']
         disp.marca = request.form['marca']
         disp.modello = request.form['modello']
         disp.inv_ced = request.form['inv_ced']
         disp.inv_ente = request.form['inv_ente']
         disp.fornitore = request.form['fornitore']
-        disp.rete = request.form['rete']
-        db.session.commit()
+        disp.nid = int(request.form['rete'])
         # Trova tutti gli utenti, edizione sporco hack in html
         users = list()
         while True:
@@ -556,11 +560,12 @@ def page_disp_show(did):
                 users.append(request.form[userstring])
             else:
                 break
+        for accesso in accessi:
+            db.session.delete(accesso)
         for user in users:
-            nuovologin = Accesso(int(user), nuovodisp.did)
+            nuovologin = Accesso(int(user), disp.did)
             db.session.add(nuovologin)
         db.session.commit()
-        # TODO: se un dispositivo non ha utenti si incasina parecchio
         return redirect(url_for('page_disp_list'))
 
 
@@ -656,13 +661,13 @@ def page_user_add():
         return redirect(url_for('page_user_list'))
 
 
-@app.route('/smedcs', methods=['GET'])
-def page_smedcs():
+@app.route('/smecds', methods=['GET'])
+def page_smecds():
     """Pagina che visualizza i credits del sito"""
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        return render_template("smedcs.htm", type="main", user=session["username"])
+        return render_template("smecds.htm", type="main", user=session["username"])
 
 
 if __name__ == "__main__":

@@ -10,12 +10,14 @@
         {% include 'nav.htm' %}
         <div class="container">
             {% block content %}{% endblock %}
-        <br><br>
-         <a href="/smedcs"> <div align="right">
+        </div>
+        <div class="container">
             <div class="well well-sm">
-                   <img alt="joke" src="{{ url_for('static', filename='joke.png') }}">
+                <div align="right">
+                    <img class="goldfish" src="{{goldfish}}">
+                    <a href="/smecds"><img alt="Secondo me è colpa dello stagista..." src="{{ url_for('static', filename='joke.png') }}"></a>
+                </div>
             </div>
-         </a>
         </div>
     </body>
 </html>
