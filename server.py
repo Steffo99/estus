@@ -248,7 +248,7 @@ def page_ente_del(eid):
     accetta richieste GET per cancellare l'ente specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    ente = Ente.query.get(eid)
+    ente = Ente.query.get_or_404(eid)
     servizi = Servizio.query.filter_by(eid=ente.eid).all()
     for serv in servizi:
         impiegati = Impiegato.query.filter_by(sid=serv.sid).all()
@@ -274,10 +274,10 @@ def page_ente_show(eid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == "GET":
-        ente = Ente.query.get(eid)
+        ente = Ente.query.get_or_404(eid)
         return render_template("ente/show.htm", ente=ente, user=session["username"])
     else:
-        ente = Ente.query.get(eid)
+        ente = Ente.query.get_or_404(eid)
         ente.nomeente = request.form["nomeente"]
         ente.nomebreveente = request.form["nomebreveente"]
         db.session.commit()
@@ -308,7 +308,7 @@ def page_serv_del(sid):
     accetta richieste GET per cancellare il servizio specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    serv = Servizio.query.get(sid)
+    serv = Servizio.query.get_or_404(sid)
     impiegati = Impiegato.query.filter_by(sid=serv.sid).all()
     for imp in impiegati:
         db.session.delete(imp)
@@ -340,11 +340,11 @@ def page_serv_show(sid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == "GET":
-        serv = Servizio.query.get(sid)
+        serv = Servizio.query.get_or_404(sid)
         enti = Ente.query.all()
         return render_template("servizio/show.htm", serv=serv, enti=enti, user=session["username"])
     else:
-        serv = Servizio.query.get(sid)
+        serv = Servizio.query.get_or_404(sid)
         serv.eid = request.form["eid"]
         serv.nomeservizio = request.form["nomeservizio"]
         serv.locazione = request.form["locazione"]
@@ -375,7 +375,7 @@ def page_imp_add():
 def page_imp_del(iid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    imp = Impiegato.query.get(iid)
+    imp = Impiegato.query.get_or_404(iid)
     db.session.delete(imp)
     db.session.commit()
     return redirect(url_for('page_imp_list'))
@@ -406,11 +406,11 @@ def page_imp_show(iid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == "GET":
-        imp = Impiegato.query.get(iid)
+        imp = Impiegato.query.get_or_404(iid)
         servizi = Servizio.query.all()
         return render_template("impiegato/show.htm", imp=imp, servizi=servizi, user=session["username"])
     else:
-        imp = Impiegato.query.get(iid)
+        imp = Impiegato.query.get_or_404(iid)
         imp.sid = request.form["sid"]
         imp.nomeimpiegato = request.form["nomeimpiegato"]
         imp.username = request.form["username"]
@@ -424,7 +424,7 @@ def page_imp_details(iid):
     """Pagina dei dettagli di un impiegato"""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    impiegato = Impiegato.query.filter_by(iid=iid).first()
+    impiegato = Impiegato.query.filter_by(iid=iid).first_or_404()
     return render_template("impiegato/details.htm", imp=impiegato, type="imp", user=session["username"])
 
 
@@ -473,7 +473,7 @@ def page_disp_del(did):
     accetta richieste GET per cancellare il dispositivo specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    disp = Dispositivo.query.get(did)
+    disp = Dispositivo.query.get_or_404(did)
     db.session.delete(disp)
     db.session.commit()
     return redirect(url_for('page_disp_list'))
@@ -531,7 +531,7 @@ def page_net_del(nid):
     accetta richieste GET per cancellare la rete specificata."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    rete = Rete.query.get(nid)
+    rete = Rete.query.get_or_404(nid)
     db.session.delete(rete)
     db.session.commit()
     return redirect(url_for('page_net_list'))
@@ -549,7 +549,7 @@ def page_net_list():
 def page_net_details(nid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    net = Rete.query.filter_by(nid=nid).first()
+    net = Rete.query.filter_by(nid=nid).first_or_404()
     dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
     subnet = subnet_to_string(net.subnet)
     return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, type="net",
@@ -572,7 +572,7 @@ def page_user_del(uid):
     accetta richieste GET per cancellare l'utente specificato."""
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    utente = User.query.get(uid)
+    utente = User.query.get_or_404(uid)
     db.session.delete(utente)
     db.session.commit()
     return redirect(url_for('page_user_list'))
