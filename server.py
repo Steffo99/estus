@@ -17,7 +17,7 @@ class User(db.Model):
     __tablename__ = "website_users"
 
     uid = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
+    username = db.Column(db.String, unique=True)
     passwd = db.Column(db.LargeBinary)
 
     def __init__(self, username, passwd):
@@ -33,8 +33,8 @@ class Ente(db.Model):
     __tablename__ = "enti"
 
     eid = db.Column(db.Integer, primary_key=True)
-    nomeente = db.Column(db.String(64))
-    nomebreveente = db.Column(db.String(16))
+    nomeente = db.Column(db.String)
+    nomebreveente = db.Column(db.String)
     servizi = db.relationship("Servizio", backref='ente', lazy='dynamic')
 
     def __init__(self, nomeente, nomebreveente):
@@ -51,8 +51,8 @@ class Servizio(db.Model):
 
     sid = db.Column(db.Integer, primary_key=True)
     eid = db.Column(db.Integer, db.ForeignKey('enti.eid'))
-    nomeservizio = db.Column(db.String(128))
-    locazione = db.Column(db.String(128))
+    nomeservizio = db.Column(db.String)
+    locazione = db.Column(db.String)
     impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
 
     def __init__(self, eid, nomeservizio, locazione):
@@ -69,9 +69,9 @@ class Impiegato(db.Model):
 
     iid = db.Column(db.Integer, primary_key=True)
     sid = db.Column(db.Integer, db.ForeignKey('servizi.sid'))
-    nomeimpiegato = db.Column(db.String(128))
-    username = db.Column(db.String(32), unique=True)
-    passwd = db.Column(db.String(32))
+    nomeimpiegato = db.Column(db.String)
+    username = db.Column(db.String, unique=True)
+    passwd = db.Column(db.String)
     dispositivi = db.relationship("Accesso", backref='impiegato', lazy='dynamic')
 
     def __init__(self, sid, nomeimpiegato, username, passwd):
@@ -89,15 +89,15 @@ class Dispositivo(db.Model):
 
     did = db.Column(db.Integer, primary_key=True)
     accessi = db.relationship("Accesso", backref='dispositivo', lazy='dynamic')
-    tipo = db.Column(db.String(32))
-    marca = db.Column(db.String(64))
-    modello = db.Column(db.String(32))
-    inv_ced = db.Column(db.String(8))
-    inv_ente = db.Column(db.String(8))
-    fornitore = db.Column(db.String(64))
+    tipo = db.Column(db.String)
+    marca = db.Column(db.String)
+    modello = db.Column(db.String)
+    inv_ced = db.Column(db.String)
+    inv_ente = db.Column(db.String)
+    fornitore = db.Column(db.String)
+    seriale = db.Column(db.String)
     nid = db.Column(db.Integer, db.ForeignKey('reti.nid'))
     rete = db.relationship("Rete", backref='dispositivi')
-    seriale = db.Column(db.String(30))
 
     def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale):
         self.tipo = tipo
@@ -131,11 +131,11 @@ class Rete(db.Model):
     __tablename__ = "reti"
 
     nid = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(64))
-    network_ip = db.Column(db.String(64), unique=True, nullable=False)
+    nome = db.Column(db.String)
+    network_ip = db.Column(db.String, unique=True, nullable=False)
     subnet = db.Column(db.Integer, nullable=False)
-    primary_dns = db.Column(db.String(64))
-    secondary_dns = db.Column(db.String(64))
+    primary_dns = db.Column(db.String)
+    secondary_dns = db.Column(db.String)
 
     def __init__(self, nome, network_ip, subnet, primary_dns, secondary_dns):
         self.nome = nome
