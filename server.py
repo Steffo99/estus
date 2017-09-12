@@ -610,6 +610,15 @@ def page_user_add():
         return redirect(url_for('page_user_list'))
 
 
+@app.route('/smedcs', methods=['GET'])
+def page_smedcs():
+    """Pagina che visualizza i credits del sito"""
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        return render_template("smedcs.htm", type="main", user=session["username"])
+
+
 if __name__ == "__main__":
     # Se non esiste il database, crealo e inizializzalo!
     if not os.path.isfile("data.db"):
