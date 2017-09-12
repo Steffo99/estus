@@ -1,7 +1,6 @@
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
-import os
 
 app = Flask(__name__)
 app.secret_key = "pepsecret"
@@ -120,8 +119,8 @@ class Network(db.Model):
     ip = db.Column(db.String(20))
 
     def __init__(self, nome, ip):
-        self.nome=nome
-        self.ip=ip
+        self.nome = nome
+        self.ip = ip
 
     def __repr__(self):
         return "<Rete {},{}>".format(self.nid, self.nome)
@@ -136,6 +135,7 @@ class FakeAccesso:
     def __getitem__(self, key):
         if key == 0:
             return self.dispositivo
+
 
 # Funzioni del sito
 def login(username, password):
@@ -175,6 +175,7 @@ def page_login():
 def page_dashboard():
     enti = Ente.query.all()
     conteggioservizi = dict()
+    goldfish = url_for("static", filename="goldfish.png")
     for ente in enti:
         conteggioservizi[ente.nomeente] = Servizio.query.join(Ente).filter_by(eid=ente.eid).count()
     conteggioutenti = dict()
@@ -182,7 +183,7 @@ def page_dashboard():
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
     css = url_for("static", filename="style.css")
     return render_template("dashboard.htm", css=css, type="main", user=session["username"],
-                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi)
+                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish)
 
 
 @app.route('/ente_add', methods=['GET', 'POST'])
@@ -378,11 +379,12 @@ def page_disp_add():
         reti = Network.query.all()
         impiegati = Impiegato.query.all()
         css = url_for("static", filename="style.css")
-        return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, reti=reti, type="dev",
-                               user=session["username"], serial=serial)
+        return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, reti=reti,
+                               type="dev", user=session["username"], serial=serial)
     else:
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'], request.form['rete'], request.form['seriale'])
+                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'],
+                                request.form['rete'], request.form['seriale'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -436,7 +438,8 @@ def page_details_host(did):
     disp = Dispositivo.query.filter_by(did=did).first_or_404()
     accessi = Accesso.query.filter_by(did=did).all()
     css = url_for("static", filename="style.css")
-    return render_template("dispositivo/details.htm", css=css, disp=disp, accessi=accessi, type="disp", user=session["username"])
+    return render_template("dispositivo/details.htm", css=css, disp=disp, accessi=accessi, type="disp",
+                           user=session["username"])
 
 
 @app.route('/imp_details/<int:iid>')
@@ -485,17 +488,18 @@ def page_net_list():
 def page_details_net(nid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
-    dispositivi=Dispositivo.query.join(Network).filter_by(nid=nid).all()
+    dispositivi = Dispositivo.query.join(Network).filter_by(nid=nid).all()
     rete = Network.query.filter_by(nid=nid).first()
     css = url_for("static", filename="style.css")
-    return render_template("net/details.htm", css=css, net=rete, dispositivi=dispositivi, type="net", user=session["username"])
+    return render_template("net/details.htm", css=css, net=rete, dispositivi=dispositivi, type="net",
+                           user=session["username"])
 
 
 if __name__ == "__main__":
-    #db.create_all()
-    #p = b"admin"
-    #cenere = bcrypt.hashpw(p, bcrypt.gensalt())
-    #nuovouser = User('admin', cenere)
-    #db.session.add(nuovouser)
-    #db.session.commit()
+    # db.create_all()
+    # p = b"admin"
+    # cenere = bcrypt.hashpw(p, bcrypt.gensalt())
+    # nuovouser = User('admin', cenere)
+    # db.session.add(nuovouser)
+    # db.session.commit()
     app.run(debug=True)
