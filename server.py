@@ -519,6 +519,52 @@ def page_disp_details(did):
                            user=session["username"])
 
 
+@app.route('/disp_show/<int:did>', methods=['GET', 'POST'])
+def page_disp_show(did):
+    if 'username' not in session:
+        return redirect(url_for('page_login'))
+    if request.method == 'GET':
+        disp = Dispositivo.query.filter_by(did=did).first_or_404()
+        return render_template("dispositivo/show.htm", disp=disp, accessi=accessi, type="disp",
+                               user=session["username"])
+    else:
+        if request.form["inv_ced"]:
+            try:
+                int(request.form["inv_ced"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario CED deve contenere un numero.")
+        if request.form["inv_ente"]:
+            try:
+                int(request.form["inv_ente"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
+        disp = Dispositivo.query.filter_by(did=did).first_or_404()
+        disp.tipo = request.form['tipo']
+        disp.marca = request.form['marca']
+        disp.modello = request.form['modello']
+        disp.inv_ced = request.form['inv_ced']
+        disp.inv_ente = request.form['inv_ente']
+        disp.fornitore = request.form['fornitore']
+        disp.rete = request.form['rete']
+        db.session.commit()
+        # Trova tutti gli utenti, edizione sporco hack in html
+        users = list()
+        while True:
+            # Trova tutti gli utenti esistenti
+            userstring = 'utente{}'.format(len(users))
+            if userstring in request.form:
+                users.append(request.form[userstring])
+            else:
+                break
+        for user in users:
+            nuovologin = Accesso(int(user), nuovodisp.did)
+            db.session.add(nuovologin)
+        db.session.commit()
+        # TODO: se un dispositivo non ha utenti si incasina parecchio
+        return redirect(url_for('page_disp_list'))
+
+
+
 @app.route('/net_add', methods=['GET', 'POST'])
 def page_net_add():
     """Pagina di creazione nuova rete:
