@@ -188,9 +188,8 @@ def page_home():
 @app.route('/login', methods=['GET', 'POST'])
 def page_login():
     if request.method == 'GET':
-        css = url_for("static", filename="style.css")
         goldfish = url_for("static", filename="goldfish.png")
-        return render_template("login.htm", css=css, goldfish=goldfish)
+        return render_template("login.htm", goldfish=goldfish)
     else:
         if login(request.form['username'], request.form['password']):
             session['username'] = request.form['username']
@@ -210,8 +209,7 @@ def page_dashboard():
     conteggioutenti = dict()
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
-    css = url_for("static", filename="style.css")
-    return render_template("dashboard.htm", css=css, type="main", user=session["username"],
+    return render_template("dashboard.htm", type="main", user=session["username"],
                            conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish, terredicastello=terredicastello)
 
 
@@ -220,8 +218,7 @@ def page_ente_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        css = url_for("static", filename="style.css")
-        return render_template("ente/add.htm", css=css, type="ente", user=session["username"])
+        return render_template("ente/add.htm", type="ente", user=session["username"])
     else:
         nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
@@ -250,8 +247,7 @@ def page_ente_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     enti = Ente.query.all()
-    css = url_for("static", filename="style.css")
-    return render_template("ente/list.htm", css=css, enti=enti, type="ente", user=session["username"])
+    return render_template("ente/list.htm", enti=enti, type="ente", user=session["username"])
 
 
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
@@ -260,8 +256,7 @@ def page_ente_show(eid):
         return redirect(url_for('page_login'))
     if request.method == "GET":
         ente = Ente.query.get(eid)
-        css = url_for("static", filename="style.css")
-        return render_template("ente/show.htm", css=css, ente=ente, user=session["username"])
+        return render_template("ente/show.htm", ente=ente, user=session["username"])
     else:
         ente = Ente.query.get(eid)
         ente.nomeente = request.form["nomeente"]
@@ -276,8 +271,7 @@ def page_serv_add():
         return redirect(url_for('page_login'))
     if request.method == 'GET':
         enti = Ente.query.all()
-        css = url_for("static", filename="style.css")
-        return render_template("servizio/add.htm", css=css, enti=enti, type="serv", user=session["username"])
+        return render_template("servizio/add.htm", enti=enti, type="serv", user=session["username"])
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)
@@ -303,8 +297,7 @@ def page_serv_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     serv = Servizio.query.join(Ente).all()
-    css = url_for("static", filename="style.css")
-    return render_template("servizio/list.htm", css=css, serv=serv, type="serv", user=session["username"])
+    return render_template("servizio/list.htm", serv=serv, type="serv", user=session["username"])
 
 
 @app.route('/serv_list/<int:eid>')
@@ -312,8 +305,7 @@ def page_serv_list_plus(eid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
-    css = url_for("static", filename="style.css")
-    return render_template("servizio/list.htm", css=css, serv=serv, type="serv", user=session["username"])
+    return render_template("servizio/list.htm", serv=serv, type="serv", user=session["username"])
 
 
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
@@ -323,8 +315,7 @@ def page_serv_show(sid):
     if request.method == "GET":
         serv = Servizio.query.get(sid)
         enti = Ente.query.all()
-        css = url_for("static", filename="style.css")
-        return render_template("servizio/show.htm", css=css, serv=serv, enti=enti, user=session["username"])
+        return render_template("servizio/show.htm", serv=serv, enti=enti, user=session["username"])
     else:
         serv = Servizio.query.get(sid)
         serv.eid = request.form["eid"]
@@ -340,8 +331,7 @@ def page_imp_add():
         return redirect(url_for('page_login'))
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).all()
-        css = url_for("static", filename="style.css")
-        return render_template("impiegato/add.htm", css=css, servizi=servizi, type="imp", user=session["username"])
+        return render_template("impiegato/add.htm", servizi=servizi, type="imp", user=session["username"])
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
                              request.form['passwd'],)
@@ -365,8 +355,7 @@ def page_imp_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     impiegati = Impiegato.query.join(Servizio).join(Ente).all()
-    css = url_for("static", filename="style.css")
-    return render_template("impiegato/list.htm", css=css, impiegati=impiegati, type="imp", user=session["username"])
+    return render_template("impiegato/list.htm", impiegati=impiegati, type="imp", user=session["username"])
 
 
 @app.route('/imp_list/<int:sid>')
@@ -374,8 +363,7 @@ def page_imp_list_plus(sid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
-    css = url_for("static", filename="style.css")
-    return render_template("impiegato/list.htm", css=css, impiegati=impiegati, user=session["username"])
+    return render_template("impiegato/list.htm", impiegati=impiegati, user=session["username"])
 
 
 @app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
@@ -385,8 +373,7 @@ def page_imp_show(iid):
     if request.method == "GET":
         imp = Impiegato.query.get(iid)
         servizi = Servizio.query.all()
-        css = url_for("static", filename="style.css")
-        return render_template("impiegato/show.htm", css=css, imp=imp, servizi=servizi, user=session["username"])
+        return render_template("impiegato/show.htm", imp=imp, servizi=servizi, user=session["username"])
     else:
         imp = Impiegato.query.get(iid)
         imp.sid = request.form["sid"]
@@ -407,8 +394,7 @@ def page_disp_add():
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         reti = Rete.query.all()
         impiegati = Impiegato.query.all()
-        css = url_for("static", filename="style.css")
-        return render_template("dispositivo/add.htm", css=css, impiegati=impiegati, opzioni=opzioni, reti=reti,
+        return render_template("dispositivo/add.htm", impiegati=impiegati, opzioni=opzioni, reti=reti,
                                type="dev", user=session["username"], serial=serial)
     else:
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
@@ -456,8 +442,7 @@ def page_disp_list():
             accessi.append([FakeAccesso(dispositivo)])
         else:
             accessi.append(accesso)
-    css = url_for("static", filename="style.css")
-    return render_template("dispositivo/list.htm", css=css, accessi=accessi, type="disp", user=session["username"])
+    return render_template("dispositivo/list.htm", accessi=accessi, type="disp", user=session["username"])
 
 
 @app.route('/disp_details/<int:did>')
@@ -466,8 +451,7 @@ def page_details_host(did):
         return redirect(url_for('page_login'))
     disp = Dispositivo.query.filter_by(did=did).first_or_404()
     accessi = Accesso.query.filter_by(did=did).all()
-    css = url_for("static", filename="style.css")
-    return render_template("dispositivo/details.htm", css=css, disp=disp, accessi=accessi, type="disp",
+    return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, type="disp",
                            user=session["username"])
 
 
@@ -476,8 +460,7 @@ def page_details_imp(iid):
     if 'username' not in session:
         return redirect(url_for('page_login'))
     impiegato = Impiegato.query.filter_by(iid=iid).first()
-    css = url_for("static", filename="style.css")
-    return render_template("impiegato/details.htm", css=css, imp=impiegato, type="imp", user=session["username"])
+    return render_template("impiegato/details.htm", imp=impiegato, type="imp", user=session["username"])
 
 
 @app.route('/net_add', methods=['GET', 'POST'])
@@ -485,8 +468,7 @@ def page_net_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        css = url_for("static", filename="style.css")
-        return render_template("net/add.htm", css=css, type="net", user=session["username"])
+        return render_template("net/add.htm", type="net", user=session["username"])
     else:
         nuovonet = Rete(nome=request.form["nome"], network_ip=request.form["network_ip"], subnet=request.form["subnet"],
                         primary_dns=request.form["primary_dns"], secondary_dns=request.form["secondary_dns"])
@@ -510,8 +492,7 @@ def page_net_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     reti = Rete.query.all()
-    css = url_for("static", filename="style.css")
-    return render_template("net/list.htm", css=css, reti=reti, type="net", user=session["username"])
+    return render_template("net/list.htm", reti=reti, type="net", user=session["username"])
 
 
 @app.route('/net_details/<int:nid>')
@@ -521,8 +502,7 @@ def page_net_details(nid):
     net = Rete.query.filter_by(nid=nid).first()
     dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
     subnet = subnet_to_string(net.subnet)
-    css = url_for("static", filename="style.css")
-    return render_template("net/details.htm", css=css, net=net, subnet=subnet, dispositivi=dispositivi, type="net",
+    return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, type="net",
                            user=session["username"])
 
 
@@ -531,8 +511,7 @@ def page_user_list():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     utenti = User.query.all()
-    css = url_for("static", filename="style.css")
-    return render_template("user/list.htm", css=css, utenti=utenti, type="user", user=session["username"])
+    return render_template("user/list.htm", utenti=utenti, type="user", user=session["username"])
 
 
 @app.route('/user_del/<int:uid>')
@@ -550,8 +529,7 @@ def page_user_add():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     if request.method == 'GET':
-        css = url_for("static", filename="style.css")
-        return render_template("user/add.htm", css=css, type="user", user=session["username"])
+        return render_template("user/add.htm", type="user", user=session["username"])
     else:
         p = bytes(request.form["passwd"], encoding="utf-8")
         cenere = bcrypt.hashpw(p, bcrypt.gensalt())
