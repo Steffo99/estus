@@ -1,7 +1,7 @@
 import os
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import IntegrityError
 import bcrypt
 
 app = Flask(__name__)
@@ -612,7 +612,7 @@ if __name__ == "__main__":
                              secondary_dns="0.0.0.0")
             db.session.add(retenulla)
             db.session.commit()
-        except OperationalError:
+        except IntegrityError:
             # Se queste operazioni sono già state compiute in precedenza, annullale
             db.session.rollback()
     # Esegui il sito in modalità debug
