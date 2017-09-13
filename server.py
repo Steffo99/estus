@@ -190,8 +190,7 @@ def page_home():
     if 'username' not in session:
         return redirect(url_for('page_login'))
     else:
-        session.pop('username')
-        return redirect(url_for('page_login'))
+        return redirect(url_for('page_dashboard'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -208,6 +207,15 @@ def page_login():
             return redirect(url_for('page_dashboard'))
         else:
             return render_template('error.htm', error="Username o password non validi.")
+
+
+@app.route('/logout')
+def page_logout():
+    """Pagina di logout:
+    slogga l'utente se visitata"""
+    if 'username' in session:
+        session.pop('username')
+    return redirect(url_for('page_login'))
 
 
 @app.route('/dashboard')
