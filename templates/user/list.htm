@@ -1,8 +1,12 @@
 {% extends "base.htm" %}
+{% block title %}Elenco utenti inventario • estus{% endblock %}
 {% block content %}
     <h1>
         Utenti dell'inventario esistenti
     </h1>
+    <div class="alert alert-info">
+        <b>Siete al sicuro!</b> Tutte le password degli utenti di questo inventario vengono hashate e saltate con bcrypt!
+    </div>
     <a class="btn btn-success" href="/user_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
     <table class="table table-hover">
         <thead>
@@ -15,7 +19,7 @@
             {% for utente in utenti %}
                 <td>{{ utente.username }}</td>
                 <td>{% if utenti|length >= 2 %}<a href="/user_del/{{ utente.uid }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+            {% endfor %}
         </tr>
-        {% endfor %}
     </table>
 {% endblock %}

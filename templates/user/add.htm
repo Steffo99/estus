@@ -1,8 +1,12 @@
 {% extends "base.htm" %}
+{% block title %}Aggiungi utente inventario • estus{% endblock %}
 {% block content %}
     <h1>
-        Aggiunta nuovo utente dell'inventario
+        Aggiungi nuovo utente dell'inventario
     </h1>
+    <div class="alert alert-warning">
+        <b>Attenzione!</b> Tutti gli utenti che verranno aggiunti qui avranno accesso in lettura e scrittura su tutto l'inventario!
+    </div>
     <form class="form-inline" action="/user_add" method="post">
         <input class="form-control" type="text" placeholder="Nome utente" name="username">
         <input class="form-control" type="password" placeholder="Password" name="passwd">
