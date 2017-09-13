@@ -1,0 +1,13 @@
+{% extends 'base.htm' %}
+{% block title %}Errore server • estus{% endblock %}
+{% block content %}
+    <div class="alert alert-danger" role="alert">
+        <b>500 Internal Server Error:</b> Qualcosa non ha funzionato nel server, e il debug non è attivo.
+    </div>
+    <div>
+        Ecco una piccola descrizione dell'errore...
+    </div>
+    <code>
+        {{ e }}
+    </code>
+{% endblock %}

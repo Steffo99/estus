@@ -673,6 +673,21 @@ def page_smecds():
         return render_template("smecds.htm", type="main", user=session["username"])
 
 
+@app.errorhandler(403)
+def page_403(_):
+    return render_template('403.htm')
+
+
+@app.errorhandler(404)
+def page_404(_):
+    return render_template('404.htm')
+
+
+@app.errorhandler(500)
+def page_500(e):
+    return render_template('500.htm', e=e)
+
+
 if __name__ == "__main__":
     # Se non esiste il database, crealo e inizializzalo!
     if not os.path.isfile("data.db"):
