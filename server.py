@@ -582,6 +582,11 @@ def page_net_add():
     if request.method == 'GET':
         return render_template("net/add.htm", type="net", user=session["username"])
     else:
+        try:
+            int(request.form["subnet"])
+        except ValueError:
+            return render_template("error.htm", error="Il campo Subnet deve contenere il numero di bit della subnet. "
+                                                      "(8, 16, 24...)")
         nuovonet = Rete(nome=request.form["nome"], network_ip=request.form["network_ip"], subnet=request.form["subnet"],
                         primary_dns=request.form["primary_dns"], secondary_dns=request.form["secondary_dns"])
         db.session.add(nuovonet)
@@ -624,6 +629,25 @@ def page_net_details(nid):
     subnet = subnet_to_string(net.subnet)
     return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, type="net",
                            user=session["username"])
+
+
+@app.route('/net_show/<int:nid>', methods=['GET', 'POST'])
+def page_net_show(nid):
+    if 'username' not in session:
+        return abort(403)
+    if request.method == 'GET':
+        net = Rete.query.filter_by(nid=nid).first_or_404()
+        return render_template("net/show.htm", net=net, type="net", user=session["username"])
+    else:
+        net = Rete.query.filter_by(nid=nid).first_or_404()
+        net.nome = request.form['nome']
+        net.network_ip = request.form['network_ip']
+        net.subnet = request.form['subnet']
+        net.primary_dns = request.form['primary_dns']
+        net.secondary_dns = request.form['secondary_dns']
+        db.session.commit()
+        return redirect(url_for('page_net_list'))
+
 
 
 @app.route('/user_list')
