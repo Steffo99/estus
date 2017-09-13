@@ -598,6 +598,10 @@ def page_net_del(nid):
     if Rete.query.count() <= 1:
         return render_template("error.htm", error="Non puoi cancellare l'ultima rete rimasta!")
     rete = Rete.query.get_or_404(nid)
+    defaultrete = Rete.query.filter_by(network_ip="0.0.0.0").first()
+    dispositivi = Dispositivo.query.filter_by(nid=rete.nid).all()
+    for dispositivo in dispositivi:
+        dispositivo.nid = defaultrete.nid
     db.session.delete(rete)
     db.session.commit()
     return redirect(url_for('page_net_list'))
