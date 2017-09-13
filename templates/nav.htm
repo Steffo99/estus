@@ -16,7 +16,8 @@
                 <li class="{% if type is equalto "net" %}active{% endif %}"><a href="/net_list">Reti</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Amministrazione</a></li>
+                <li class="{% if type is equalto "user" %}active{% endif %}"><a href="/user_list">Utenti</a></li>
+                <li class="{% if type is equalto "query" %}active{% endif %}"><a href="/query">Query</a></li>
                 <li class="navbar-text">
                     Sei connesso come <b>{{user}}</b>
                 </li>

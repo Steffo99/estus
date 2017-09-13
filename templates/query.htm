@@ -1,0 +1,52 @@
+{% extends 'base.htm' %}
+{% block title %}Query • estus{% endblock %}
+{% block content %}
+    <div class="alert alert-warning">
+        <b>Attenzione!</b> In questa pagina non è presente alcuna misura per prevenire SQL Injection. Eseguite le query a vostro rischio e pericolo!
+    </div>
+    <form action="/query" method="post">
+        <div class="input-group">
+            <span class="input-group-addon">SELECT</span>
+            <input type="text" class="form-control" placeholder="Scrivi qui la tua query!" name="query" {% if query %}value="{{ query }}{% endif %}">
+            <span class="input-group-addon">;</span>
+        </div>
+    </form>
+    {% if result %}
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                Risultati della query
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            {% for row in result.keys() %}
+                                <th>
+                                    {{ row }}
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in result %}
+                            <tr>
+                                {% for column in row %}
+                                    <td>{{ column }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% elif error %}
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                Errore nell'esecuzione della query
+            </div>
+            <div class="panel-body">
+                {{ error }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

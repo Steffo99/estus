@@ -671,6 +671,25 @@ def page_user_add():
         return redirect(url_for('page_user_list'))
 
 
+@app.route('/query', methods=['GET', 'POST'])
+def page_query():
+    """Pagina delle query manuali:
+    in GET visualizza la pagina per fare una query,
+    mentre in POST visualizza i risultati."""
+    if 'username' not in session:
+        return abort(403)
+    if request.method == 'GET':
+        return render_template("query.htm", user=session["username"], type="query")
+    else:
+        try:
+            result = db.engine.execute("SELECT" + request.form["query"] + ";")
+        except Exception as e:
+            return render_template("query.htm", query=request.form["query"], error=repr(e), user=session["username"],
+                                   type="query")
+        return render_template("query.htm", query=request.form["query"], result=result, user=session["username"],
+                               type="query")
+
+
 @app.route('/smecds', methods=['GET'])
 def page_smecds():
     """Pagina che visualizza i credits del sito"""
@@ -682,17 +701,17 @@ def page_smecds():
 
 @app.errorhandler(403)
 def page_403(_):
-    return render_template('403.htm')
+    return render_template('403.htm', user=session["username"])
 
 
 @app.errorhandler(404)
 def page_404(_):
-    return render_template('404.htm')
+    return render_template('404.htm', user=session["username"])
 
 
 @app.errorhandler(500)
 def page_500(e):
-    return render_template('500.htm', e=e)
+    return render_template('500.htm', e=e, user=session["username"])
 
 
 if __name__ == "__main__":
