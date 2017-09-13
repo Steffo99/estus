@@ -1,14 +1,15 @@
 {% extends "base.htm" %}
-{% block title %}Credits{% endblock %}
+{% block title %}Smecds • estus{% endblock %}
 {% block content %}
     <h1>
         Secondo me è colpa dello stagista...
     </h1>
-    <div class="panel panel-info">
+    <div class="panel panel-default">
         <div class="panel-heading">Informazioni sul sito</div>
         <div class="panel-body">
-            Questo sito è stato scritto da Stefano Pigozzi e da Balugani Lorenzo durante lo stage di 4° e di 5° nel 2017<br>
-            Questo sito utilizza python, flask, sqlalchemy e jinja2.
+            Questo sito è stato scritto da <a href="mailto:ste.pigozzi@gmail.com">Stefano Pigozzi</a> e da <a href="mailto:lorenzo.balugani@gmail.com">Lorenzo Balugani</a> durante lo stage di 4° e di 5° nel 2017.<br>
+            Questo sito utilizza <a href="https://www.python.org/">Python 3.6</a>, <a href="http://flask.pocoo.org/">Flask</a> e <a href="https://www.sqlalchemy.org/">SQLAlchemy</a>.<br>
+            Il <a href="https://github.com/Steffo99/estus/tree/master">codice sorgente</a> è disponibile su GitHub, rilasciato sotto MIT License.<br>
         </div>
     </div>
     <img width="100%" alt="Inventario Unione Terre di Castelli" src="{{ url_for('static', filename='UTdClogo.png') }}">
