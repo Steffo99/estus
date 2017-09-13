@@ -641,6 +641,8 @@ def page_user_del(uid):
     if User.query.count() <= 1:
         return render_template("error.htm", error="Non puoi cancellare l'ultimo utente rimasto!")
     utente = User.query.get_or_404(uid)
+    if utente.username == session["username"]:
+        return render_template("error.htm", error="Non puoi cancellare l'utente con cui sei loggato!")
     db.session.delete(utente)
     db.session.commit()
     return redirect(url_for('page_user_list'))

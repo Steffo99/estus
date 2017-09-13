@@ -18,7 +18,7 @@
         <tr>
             {% for utente in utenti %}
                 <td>{{ utente.username }}</td>
-                <td>{% if utenti|length >= 2 %}<a href="/user_del/{{ utente.uid }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                <td>{% if utenti|length >= 2 and utente.username != user %}<a href="/user_del/{{ utente.uid }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
             {% endfor %}
         </tr>
     </table>
