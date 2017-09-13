@@ -6,20 +6,25 @@
 {% endblock %}
 {% block content %}
     <div class="alert alert-warning">
-        <b>Attenzione!</b> In questa pagina non è presente alcuna misura per prevenire SQL Injection. Eseguite le query a vostro <a href="https://xkcd.com/327/">rischio e pericolo</a>!
+        <b>Attenzione!</b> In questa pagina non è presente alcuna misura per prevenire SQL injection. Eseguite le query a vostro <a href="https://xkcd.com/327/">rischio e pericolo</a>!
     </div>
     <form action="/query" method="post">
-        <div class="input-group">
-            <span class="input-group-addon">SELECT</span>
-            <input type="text" class="form-control" placeholder="Scrivi qui la tua query!" name="query" {% if query %}value="{{ query }}{% endif %}">
-            <span class="input-group-addon">;</span>
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">SELECT</span>
+                <input type="text" class="form-control" placeholder="* FROM enti" name="query" {% if query %}value="{{ query }}{% endif %}">
+                <span class="input-group-addon">;</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <p>
+                <input class="btn btn-primary" type="submit">
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#database-structure">
+                    Visualizza struttura database (SQLite)
+                </button>
+            </p>
         </div>
     </form>
-    <p>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#database-structure">
-            Visualizza struttura database (SQLite)
-        </button>
-    </p>
     <div id="database-structure" class="collapse">
         <img src="{{ url_for('static', filename='dbtree.png') }}">
     </div>
