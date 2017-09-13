@@ -3,6 +3,7 @@ from flask import Flask, session, url_for, redirect, request, render_template, a
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 import bcrypt
+import random
 
 app = Flask(__name__)
 app.secret_key = "pepsecret"
@@ -166,6 +167,15 @@ class FakeAccesso:
     def __getitem__(self, key):
         if key == 0:
             return self.dispositivo
+
+
+class Pesce:
+    """Un pesce? In un inventario."""
+    def __init__(self, name, avgsize=1.0, variation=0.1):
+        self.name = name
+        self.size = random.normalvariate(avgsize, variation)
+        self.color = random.getrandbits(24)
+        self.speed = random.normalvariate(1, 0.1)
 
 
 # Funzioni del sito
@@ -649,7 +659,6 @@ def page_net_show(nid):
         return redirect(url_for('page_net_list'))
 
 
-
 @app.route('/user_list')
 def page_user_list():
     """Pagina di elenco degli utenti che possono connettersi al sito.
@@ -715,13 +724,47 @@ def page_query():
                                pagetype="query")
 
 
-@app.route('/smecds', methods=['GET'])
+@app.route('/smecds')
 def page_smecds():
     """Pagina che visualizza i credits del sito"""
     if 'username' not in session:
         return abort(403)
-    if request.method == 'GET':
-        return render_template("smecds.htm", pagetype="main", user=session["username"])
+    return render_template("smecds.htm", pagetype="main", user=session["username"])
+
+
+@app.route('/pheesh')
+def page_pheesh():
+    """Acquario del sito.
+    I pesci sono generati dinamicamente basandosi sui dati presenti nel database."""
+    enti = Ente.query.all()
+    servizi = Servizio.query.all()
+    impiegati = Impiegato.query.all()
+    dispositivi = Dispositivo.query.all()
+    reti = Rete.query.all()
+    utenti = User.query.all()
+    pesci = []
+    for obj in enti:
+        random.seed(hash(obj))
+        pesci.append(Pesce(obj.nomeente, 3, 0.9))
+    for obj in servizi:
+        random.seed(hash(obj))
+        pesci.append(Pesce(obj.nomeservizio, 2, 0.5))
+    for obj in reti:
+        random.seed(hash(obj))
+        pesci.append(Pesce(obj.nome, 1.5, 0.4))
+    for obj in impiegati:
+        random.seed(hash(obj))
+        pesci.append(Pesce(obj.nomeimpiegato, 1, 0.3))
+    for obj in dispositivi:
+        random.seed(hash(obj))
+        if obj.seriale is not None:
+            pesci.append(Pesce(obj.seriale, 0.8, 0.2))
+        else:
+            pesci.append(Pesce(f"Dispositivo {obj.did}", 0.8, 0.2))
+    for obj in utenti:
+        random.seed(hash(obj))
+        pesci.append(Pesce(obj.username, 1.5, 0.1))
+    return repr(pesci)
 
 
 @app.errorhandler(403)
