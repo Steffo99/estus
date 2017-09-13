@@ -1,5 +1,9 @@
 {% extends 'base.htm' %}
 {% block title %}Query • estus{% endblock %}
+{% block extrahead %}
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+{% endblock %}
 {% block content %}
     <div class="alert alert-warning">
         <b>Attenzione!</b> In questa pagina non è presente alcuna misura per prevenire SQL Injection. Eseguite le query a vostro <a href="https://xkcd.com/327/">rischio e pericolo</a>!
@@ -11,6 +15,14 @@
             <span class="input-group-addon">;</span>
         </div>
     </form>
+    <p>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#database-structure">
+            Visualizza struttura database (SQLite)
+        </button>
+    </p>
+    <div id="database-structure" class="collapse">
+        <img src="{{ url_for('static', filename='dbtree.png') }}">
+    </div>
     {% if result %}
         <div class="panel panel-success">
             <div class="panel-heading">
