@@ -429,15 +429,6 @@ def page_imp_show(iid):
         return redirect(url_for('page_imp_list'))
 
 
-@app.route('/imp_details/<int:iid>')
-def page_imp_details(iid):
-    """Pagina dei dettagli di un impiegato"""
-    if 'username' not in session:
-        return abort(403)
-    impiegato = Impiegato.query.filter_by(iid=iid).first_or_404()
-    return render_template("impiegato/details.htm", imp=impiegato, type="imp", user=session["username"])
-
-
 @app.route('/disp_add', methods=['GET', 'POST'])
 def page_disp_add():
     """Pagina di creazione nuovo dispositivo:
