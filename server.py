@@ -207,7 +207,7 @@ def page_login():
             session['username'] = request.form['username']
             return redirect(url_for('page_dashboard'))
         else:
-            abort(403)
+            return render_template('error.htm', error="Username o password non validi.")
 
 
 @app.route('/dashboard')
@@ -572,7 +572,6 @@ def page_disp_show(did):
         return redirect(url_for('page_disp_list'))
 
 
-
 @app.route('/net_add', methods=['GET', 'POST'])
 def page_net_add():
     """Pagina di creazione nuova rete:
@@ -596,7 +595,7 @@ def page_net_del(nid):
     """Pagina di cancellazione rete:
     accetta richieste GET per cancellare la rete specificata."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     rete = Rete.query.get_or_404(nid)
     db.session.delete(rete)
     db.session.commit()
