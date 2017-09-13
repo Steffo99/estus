@@ -188,7 +188,7 @@ def page_home():
     se non sei loggato reindirizza alla pagina del login,
     se sei loggato effettua il logout e dopo reindirizza al login"""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     else:
         return redirect(url_for('page_dashboard'))
 
@@ -242,7 +242,7 @@ def page_ente_add():
     accetta GET per visualizzare la pagina
     e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         return render_template("ente/add.htm", type="ente", user=session["username"])
     else:
@@ -257,7 +257,7 @@ def page_ente_del(eid):
     """Pagina di cancellazione ente:
     accetta richieste GET per cancellare l'ente specificato."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     ente = Ente.query.get_or_404(eid)
     servizi = Servizio.query.filter_by(eid=ente.eid).all()
     for serv in servizi:
@@ -274,7 +274,7 @@ def page_ente_del(eid):
 def page_ente_list():
     """Pagina di elenco degli enti disponibili sul sito."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     enti = Ente.query.all()
     return render_template("ente/list.htm", enti=enti, type="ente", user=session["username"])
 
@@ -282,7 +282,7 @@ def page_ente_list():
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
 def page_ente_show(eid):
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == "GET":
         ente = Ente.query.get_or_404(eid)
         return render_template("ente/show.htm", ente=ente, user=session["username"])
@@ -301,7 +301,7 @@ def page_serv_add():
     accetta GET per visualizzare la pagina
     e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         enti = Ente.query.all()
         return render_template("servizio/add.htm", enti=enti, type="serv", user=session["username"])
@@ -317,7 +317,7 @@ def page_serv_del(sid):
     """Pagina di cancellazione servizio:
     accetta richieste GET per cancellare il servizio specificato."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     serv = Servizio.query.get_or_404(sid)
     impiegati = Impiegato.query.filter_by(sid=serv.sid).all()
     for imp in impiegati:
@@ -331,7 +331,7 @@ def page_serv_del(sid):
 def page_serv_list():
     """Pagina di elenco dei servizi registrati sul sito."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     serv = Servizio.query.join(Ente).all()
     return render_template("servizio/list.htm", serv=serv, type="serv", user=session["username"])
 
@@ -340,7 +340,7 @@ def page_serv_list():
 def page_serv_list_plus(eid):
     """Pagina di elenco dei servizi registrati sul sito, filtrati per ente."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
     return render_template("servizio/list.htm", serv=serv, type="serv", user=session["username"])
 
@@ -348,7 +348,7 @@ def page_serv_list_plus(eid):
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
 def page_serv_show(sid):
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == "GET":
         serv = Servizio.query.get_or_404(sid)
         enti = Ente.query.all()
@@ -369,7 +369,7 @@ def page_imp_add():
     accetta GET per visualizzare la pagina
     e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).all()
         return render_template("impiegato/add.htm", servizi=servizi, type="imp", user=session["username"])
@@ -384,7 +384,7 @@ def page_imp_add():
 @app.route('/imp_del/<int:iid>')
 def page_imp_del(iid):
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     imp = Impiegato.query.get_or_404(iid)
     db.session.delete(imp)
     db.session.commit()
@@ -395,7 +395,7 @@ def page_imp_del(iid):
 def page_imp_list():
     """Pagina di elenco degli impiegati registrati nell'inventario."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     impiegati = Impiegato.query.join(Servizio).join(Ente).all()
     return render_template("impiegato/list.htm", impiegati=impiegati, type="imp", user=session["username"])
 
@@ -404,7 +404,7 @@ def page_imp_list():
 def page_imp_list_plus(sid):
     """Pagina di elenco degli impiegati registrati nell'inventario, filtrati per servizio."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
     return render_template("impiegato/list.htm", impiegati=impiegati, user=session["username"])
 
@@ -414,7 +414,7 @@ def page_imp_show(iid):
     """Pagina di cancellazione impiegato:
     accetta richieste GET per cancellare l'impiegato specificato."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == "GET":
         imp = Impiegato.query.get_or_404(iid)
         servizi = Servizio.query.all()
@@ -433,7 +433,7 @@ def page_imp_show(iid):
 def page_imp_details(iid):
     """Pagina dei dettagli di un impiegato"""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     impiegato = Impiegato.query.filter_by(iid=iid).first_or_404()
     return render_template("impiegato/details.htm", imp=impiegato, type="imp", user=session["username"])
 
@@ -445,7 +445,7 @@ def page_disp_add():
     accetta GET per visualizzare la pagina
     e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         serial = request.args.get("scanned_barcode")
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
@@ -491,7 +491,7 @@ def page_disp_del(did):
     """Pagina di cancellazione dispositivo:
     accetta richieste GET per cancellare il dispositivo specificato."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     disp = Dispositivo.query.filter_by(did=did).join(Accesso).first_or_404()
     for accesso in disp.accessi:
         db.session.delete(accesso)
@@ -504,7 +504,7 @@ def page_disp_del(did):
 def page_disp_list():
     """Pagina di elenco dei dispositivi registrati nell'inventario."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     accessi = list()
     dispositivi = Dispositivo.query.all()
     for dispositivo in dispositivi:
@@ -521,7 +521,7 @@ def page_disp_list():
 def page_disp_details(did):
     """Pagina di dettagli di un dispositivo, contenente anche gli utenti che vi hanno accesso."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     disp = Dispositivo.query.filter_by(did=did).first_or_404()
     accessi = Accesso.query.filter_by(did=did).all()
     return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, type="disp",
@@ -531,7 +531,7 @@ def page_disp_details(did):
 @app.route('/disp_show/<int:did>', methods=['GET', 'POST'])
 def page_disp_show(did):
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         disp = Dispositivo.query.filter_by(did=did).first_or_404()
         accessi = Accesso.query.filter_by(did=did).all()
@@ -587,7 +587,7 @@ def page_net_add():
     accetta GET per visualizzare la pagina
     e POST con form data per l'aggiunta effettiva."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         return render_template("net/add.htm", type="net", user=session["username"])
     else:
@@ -613,7 +613,7 @@ def page_net_del(nid):
 @app.route('/net_list')
 def page_net_list():
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     reti = Rete.query.all()
     return render_template("net/list.htm", reti=reti, type="net", user=session["username"])
 
@@ -621,7 +621,7 @@ def page_net_list():
 @app.route('/net_details/<int:nid>')
 def page_net_details(nid):
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     net = Rete.query.filter_by(nid=nid).first_or_404()
     dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
     subnet = subnet_to_string(net.subnet)
@@ -634,7 +634,7 @@ def page_user_list():
     """Pagina di elenco degli utenti che possono connettersi al sito.
     Le password sono hashate."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     utenti = User.query.all()
     return render_template("user/list.htm", utenti=utenti, type="user", user=session["username"])
 
@@ -644,7 +644,7 @@ def page_user_del(uid):
     """Pagina di cancellazione impiegato:
     accetta richieste GET per cancellare l'utente specificato."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     utente = User.query.get_or_404(uid)
     db.session.delete(utente)
     db.session.commit()
@@ -659,7 +659,7 @@ def page_user_add():
     e POST con form data per l'aggiunta effettiva.
     Le password vengono hashate con bcrypt."""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         return render_template("user/add.htm", type="user", user=session["username"])
     else:
@@ -675,7 +675,7 @@ def page_user_add():
 def page_smecds():
     """Pagina che visualizza i credits del sito"""
     if 'username' not in session:
-        return redirect(url_for('page_login'))
+        return abort(403)
     if request.method == 'GET':
         return render_template("smecds.htm", type="main", user=session["username"])
 
