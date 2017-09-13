@@ -5,9 +5,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 {% endblock %}
 {% block content %}
-    <div class="alert alert-warning">
-        <b>Attenzione!</b> In questa pagina non è presente alcuna misura per prevenire SQL injection. Eseguite le query a vostro <a href="https://xkcd.com/327/">rischio e pericolo</a>!
-    </div>
     <form action="/query" method="post">
         <div class="form-group">
             <div class="input-group">
@@ -48,7 +45,15 @@
                         {% for row in result %}
                             <tr>
                                 {% for column in row %}
-                                    <td>{{ column }}</td>
+                                    <td>
+                                        {% if column is string %}
+                                            <code class="string">{{ column }}</code>
+                                        {% elif column is number %}
+                                            <code class="number">{{ column }}</code>
+                                        {% else %}
+                                            <code class="bytes">{{ column }}</code>
+                                        {% endif %}
+                                    </td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}

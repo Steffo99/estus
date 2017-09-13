@@ -26,6 +26,24 @@
     padding-right: 10px;
 }
 
+.string
+{
+    background-color: #c8ffc8;
+    color: #006600;
+}
+
+.number
+{
+    background-color: #c8c8ff;
+    color: #000066;
+}
+
+.bytes
+{
+    background-color: #ffc8c8;
+    color: #660000;
+}
+
 .container-lower
 {
     margin-top: 10px;
