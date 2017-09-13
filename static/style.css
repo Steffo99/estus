@@ -26,6 +26,11 @@
     padding-right: 10px;
 }
 
+.container-lower
+{
+    margin-top: 10px;
+}
+
 body
 {
   padding-top: 70px; /*Per la navbar*/

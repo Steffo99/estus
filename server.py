@@ -99,10 +99,11 @@ class Dispositivo(db.Model):
     inv_ente = db.Column(db.String)
     fornitore = db.Column(db.String)
     seriale = db.Column(db.String)
+    ip = db.Column(db.String)
     nid = db.Column(db.Integer, db.ForeignKey('reti.nid'))
     rete = db.relationship("Rete", backref='dispositivi')
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale):
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -111,6 +112,7 @@ class Dispositivo(db.Model):
         self.fornitore = fornitore
         self.nid = nid
         self.seriale = seriale
+        self.ip=ip
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -457,7 +459,7 @@ def page_disp_add():
                 return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
                                 request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'],
-                                request.form['rete'], request.form['seriale'])
+                                request.form['rete'], request.form['seriale'], request.form['ip'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -551,6 +553,7 @@ def page_disp_show(did):
         disp.inv_ente = request.form['inv_ente']
         disp.fornitore = request.form['fornitore']
         disp.nid = int(request.form['rete'])
+        disp.ip = request.form['ip']
         # Trova tutti gli utenti, edizione sporco hack in html
         users = list()
         while True:
