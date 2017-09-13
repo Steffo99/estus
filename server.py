@@ -231,7 +231,7 @@ def page_dashboard():
     conteggioutenti = dict()
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
-    return render_template("dashboard.htm", type="main", user=session["username"],
+    return render_template("dashboard.htm", pagetype="main", user=session["username"],
                            conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish)
 
 
@@ -244,7 +244,7 @@ def page_ente_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("ente/add.htm", type="ente", user=session["username"])
+        return render_template("ente/add.htm", pagetype="ente", user=session["username"])
     else:
         nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
@@ -276,7 +276,7 @@ def page_ente_list():
     if 'username' not in session:
         return abort(403)
     enti = Ente.query.all()
-    return render_template("ente/list.htm", enti=enti, type="ente", user=session["username"])
+    return render_template("ente/list.htm", enti=enti, pagetype="ente", user=session["username"])
 
 
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
@@ -304,7 +304,7 @@ def page_serv_add():
         return abort(403)
     if request.method == 'GET':
         enti = Ente.query.all()
-        return render_template("servizio/add.htm", enti=enti, type="serv", user=session["username"])
+        return render_template("servizio/add.htm", enti=enti, pagetype="serv", user=session["username"])
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)
@@ -333,7 +333,7 @@ def page_serv_list():
     if 'username' not in session:
         return abort(403)
     serv = Servizio.query.join(Ente).all()
-    return render_template("servizio/list.htm", serv=serv, type="serv", user=session["username"])
+    return render_template("servizio/list.htm", serv=serv, pagetype="serv", user=session["username"])
 
 
 @app.route('/serv_list/<int:eid>')
@@ -342,7 +342,7 @@ def page_serv_list_plus(eid):
     if 'username' not in session:
         return abort(403)
     serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
-    return render_template("servizio/list.htm", serv=serv, type="serv", user=session["username"])
+    return render_template("servizio/list.htm", serv=serv, pagetype="serv", user=session["username"])
 
 
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
@@ -372,7 +372,7 @@ def page_imp_add():
         return abort(403)
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).all()
-        return render_template("impiegato/add.htm", servizi=servizi, type="imp", user=session["username"])
+        return render_template("impiegato/add.htm", servizi=servizi, pagetype="imp", user=session["username"])
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
                              request.form['passwd'],)
@@ -397,7 +397,7 @@ def page_imp_list():
     if 'username' not in session:
         return abort(403)
     impiegati = Impiegato.query.join(Servizio).join(Ente).all()
-    return render_template("impiegato/list.htm", impiegati=impiegati, type="imp", user=session["username"])
+    return render_template("impiegato/list.htm", impiegati=impiegati, pagetype="imp", user=session["username"])
 
 
 @app.route('/imp_list/<int:sid>')
@@ -444,7 +444,7 @@ def page_disp_add():
         reti = Rete.query.all()
         impiegati = Impiegato.query.all()
         return render_template("dispositivo/add.htm", impiegati=impiegati, opzioni=opzioni, reti=reti,
-                               type="dev", user=session["username"], serial=serial)
+                               pagetype="dev", user=session["username"], serial=serial)
     else:
         if request.form["inv_ced"]:
             try:
@@ -505,7 +505,7 @@ def page_disp_list():
             accessi.append([FakeAccesso(dispositivo)])
         else:
             accessi.append(accesso)
-    return render_template("dispositivo/list.htm", accessi=accessi, type="disp", user=session["username"])
+    return render_template("dispositivo/list.htm", accessi=accessi, pagetype="disp", user=session["username"])
 
 
 @app.route('/disp_details/<int:did>')
@@ -515,7 +515,7 @@ def page_disp_details(did):
         return abort(403)
     disp = Dispositivo.query.filter_by(did=did).first_or_404()
     accessi = Accesso.query.filter_by(did=did).all()
-    return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, type="disp",
+    return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, pagetype="disp",
                            user=session["username"])
 
 
@@ -531,7 +531,7 @@ def page_disp_show(did):
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         reti = Rete.query.all()
         return render_template("dispositivo/show.htm", dispositivo=disp, accessi=accessi, impiegati=impiegati,
-                               type="disp", user=session["username"], opzioni=opzioni, reti=reti)
+                               pagetype="disp", user=session["username"], opzioni=opzioni, reti=reti)
     else:
         if request.form["inv_ced"]:
             try:
@@ -580,7 +580,7 @@ def page_net_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("net/add.htm", type="net", user=session["username"])
+        return render_template("net/add.htm", pagetype="net", user=session["username"])
     else:
         try:
             int(request.form["subnet"])
@@ -617,7 +617,7 @@ def page_net_list():
     if 'username' not in session:
         return abort(403)
     reti = Rete.query.all()
-    return render_template("net/list.htm", reti=reti, type="net", user=session["username"])
+    return render_template("net/list.htm", reti=reti, pagetype="net", user=session["username"])
 
 
 @app.route('/net_details/<int:nid>')
@@ -627,7 +627,7 @@ def page_net_details(nid):
     net = Rete.query.filter_by(nid=nid).first_or_404()
     dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
     subnet = subnet_to_string(net.subnet)
-    return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, type="net",
+    return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, pagetype="net",
                            user=session["username"])
 
 
@@ -637,7 +637,7 @@ def page_net_show(nid):
         return abort(403)
     if request.method == 'GET':
         net = Rete.query.filter_by(nid=nid).first_or_404()
-        return render_template("net/show.htm", net=net, type="net", user=session["username"])
+        return render_template("net/show.htm", net=net, pagetype="net", user=session["username"])
     else:
         net = Rete.query.filter_by(nid=nid).first_or_404()
         net.nome = request.form['nome']
@@ -657,7 +657,7 @@ def page_user_list():
     if 'username' not in session:
         return abort(403)
     utenti = User.query.all()
-    return render_template("user/list.htm", utenti=utenti, type="user", user=session["username"])
+    return render_template("user/list.htm", utenti=utenti, pagetype="user", user=session["username"])
 
 
 @app.route('/user_del/<int:uid>')
@@ -686,7 +686,7 @@ def page_user_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("user/add.htm", type="user", user=session["username"])
+        return render_template("user/add.htm", pagetype="user", user=session["username"])
     else:
         p = bytes(request.form["passwd"], encoding="utf-8")
         cenere = bcrypt.hashpw(p, bcrypt.gensalt())
@@ -704,15 +704,15 @@ def page_query():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("query.htm", user=session["username"], type="query")
+        return render_template("query.htm", user=session["username"], pagetype="query")
     else:
         try:
             result = db.engine.execute("SELECT" + request.form["query"] + ";")
         except Exception as e:
             return render_template("query.htm", query=request.form["query"], error=repr(e), user=session["username"],
-                                   type="query")
+                                   pagetype="query")
         return render_template("query.htm", query=request.form["query"], result=result, user=session["username"],
-                               type="query")
+                               pagetype="query")
 
 
 @app.route('/smecds', methods=['GET'])
@@ -721,7 +721,7 @@ def page_smecds():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("smecds.htm", type="main", user=session["username"])
+        return render_template("smecds.htm", pagetype="main", user=session["username"])
 
 
 @app.errorhandler(403)
