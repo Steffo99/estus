@@ -595,6 +595,8 @@ def page_net_del(nid):
     accetta richieste GET per cancellare la rete specificata."""
     if 'username' not in session:
         return abort(403)
+    if Rete.query.count() <= 1:
+        return render_template("error.htm", error="Non puoi cancellare l'ultima rete rimasta!")
     rete = Rete.query.get_or_404(nid)
     db.session.delete(rete)
     db.session.commit()
@@ -636,6 +638,8 @@ def page_user_del(uid):
     accetta richieste GET per cancellare l'utente specificato."""
     if 'username' not in session:
         return abort(403)
+    if User.query.count() <= 1:
+        return render_template("error.htm", error="Non puoi cancellare l'ultimo utente rimasto!")
     utente = User.query.get_or_404(uid)
     db.session.delete(utente)
     db.session.commit()
