@@ -12,13 +12,17 @@
         <div class="container">
             {% block content %}{% endblock %}
         </div>
-        <div class="container container-lower">
-            <div class="well well-sm">
-                <div align="right">
-                    <img class="goldfish" src="{{ url_for('static', filename='goldfish.png') }}">
-                    <a href="/smecds"><img alt="Secondo me è colpa dello stagista..." src="{{ url_for('static', filename='joke.png') }}"></a>
+        {% if footer is not defined %}
+            <div class="container container-lower">
+                <div class="well well-sm">
+                    <div align="right">
+                        {% if user %}
+                            <div class="goldfish"><a href="/pheesh">{% include 'pheesh.svg' %}</a></div>
+                        {% endif %}
+                        <div class="goldfish"><a href="/smecds"><img alt="Secondo me è colpa dello stagista..." src="{{ url_for('static', filename='joke.png') }}"></a></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </body>
 </html>

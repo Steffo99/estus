@@ -21,9 +21,20 @@
 
 .goldfish
 {
-    max-height: 31px;
+    height: 31px;
     padding-left: 10px;
     padding-right: 10px;
+    display: inline-block;
+    vertical-align: top !important;
+}
+
+.goldfish svg
+{
+    max-height: 31px;
+}
+
+.fish {
+    fill: currentColor;
 }
 
 .string

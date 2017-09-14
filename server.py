@@ -113,7 +113,7 @@ class Dispositivo(db.Model):
         self.fornitore = fornitore
         self.nid = nid
         self.seriale = seriale
-        self.ip=ip
+        self.ip = ip
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -170,12 +170,16 @@ class FakeAccesso:
 
 
 class Pesce:
-    """Un pesce? In un inventario."""
-    def __init__(self, name, avgsize=1.0, variation=0.1):
+    """Un pesce? In un inventario!?"""
+    def __init__(self, name, avgsize=1.0, variation=0.1, link="#"):
         self.name = name
-        self.size = random.normalvariate(avgsize, variation)
-        self.color = random.getrandbits(24)
-        self.speed = random.normalvariate(1, 0.1)
+        self.size = random.gauss(avgsize, variation)
+        self.color = "{:02x}".format(random.randrange(0, 16777216))
+        self.position = (random.randrange(0, 1423), random.randrange(52, 600))
+        self.link = link
+
+    def __repr__(self):
+        return f"<Pesce {self.name}, dimensioni {self.size}, colore #{self.color.hex()}>"
 
 
 # Funzioni del sito
@@ -744,27 +748,27 @@ def page_pheesh():
     utenti = User.query.all()
     pesci = []
     for obj in enti:
-        random.seed(hash(obj))
-        pesci.append(Pesce(obj.nomeente, 3, 0.9))
+        random.seed(hash(obj.nomeente))
+        pesci.append(Pesce(obj.nomeente, 3, 0.9, f"/ente_list"))
     for obj in servizi:
-        random.seed(hash(obj))
-        pesci.append(Pesce(obj.nomeservizio, 2, 0.5))
+        random.seed(hash(obj.nomeservizio))
+        pesci.append(Pesce(obj.nomeservizio, 2, 0.5, f"/serv_list"))
     for obj in reti:
-        random.seed(hash(obj))
-        pesci.append(Pesce(obj.nome, 1.5, 0.4))
+        random.seed(hash(obj.nome))
+        pesci.append(Pesce(obj.nome, 1.5, 0.4, f"/net_details/{obj.nid}"))
     for obj in impiegati:
-        random.seed(hash(obj))
-        pesci.append(Pesce(obj.nomeimpiegato, 1, 0.3))
+        random.seed(hash(obj.nomeimpiegato))
+        pesci.append(Pesce(obj.nomeimpiegato, 1, 0.3, f"/imp_list"))
     for obj in dispositivi:
-        random.seed(hash(obj))
+        random.seed(hash(obj.seriale))
         if obj.seriale is not None:
-            pesci.append(Pesce(obj.seriale, 0.8, 0.2))
+            pesci.append(Pesce(obj.seriale, 0.8, 0.2, f"/disp_details/{obj.did}"))
         else:
-            pesci.append(Pesce(f"Dispositivo {obj.did}", 0.8, 0.2))
+            pesci.append(Pesce(f"Dispositivo {obj.did}", 0.8, 0.2, f"/disp_details/{obj.did}"))
     for obj in utenti:
-        random.seed(hash(obj))
-        pesci.append(Pesce(obj.username, 1.5, 0.1))
-    return repr(pesci)
+        random.seed(hash(obj.username))
+        pesci.append(Pesce(obj.username, 1.5, 0.1, f"/user_list"))
+    return render_template("pheesh.htm", user=session["username"], pheesh=pesci, footer=False)
 
 
 @app.errorhandler(403)
