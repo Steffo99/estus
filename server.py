@@ -756,14 +756,16 @@ def page_pheesh():
         pesci.append(Pesce(obj.nomeservizio, 2, 0.5, f"/serv_list"))
     for obj in reti:
         random.seed(hash(obj.nome))
-        pesci.append(Pesce(obj.nome, 1.5, 0.4, f"/net_details/{obj.nid}"))
+        pesci.append(Pesce(f"Rete {obj.nome}", 1.5, 0.4, f"/net_details/{obj.nid}"))
     for obj in impiegati:
         random.seed(hash(obj.nomeimpiegato))
         pesci.append(Pesce(obj.nomeimpiegato, 1, 0.3, f"/imp_list"))
     for obj in dispositivi:
-        random.seed(hash(obj.seriale))
-        if obj.seriale is not None:
-            pesci.append(Pesce(obj.seriale, 0.8, 0.2, f"/disp_details/{obj.did}"))
+        random.seed(hash(obj.did))
+        if obj.marca is not None and obj.modello is not None:
+            pesci.append(Pesce(f"{obj.marca} {obj.modello}", 0.8, 0.2, f"/disp_details/{obj.did}"))
+        elif obj.seriale is not None:
+            pesci.append(Pesce(f"Dispositivo {obj.seriale}", 0.8, 0.2, f"/disp_details/{obj.did}"))
         else:
             pesci.append(Pesce(f"Dispositivo {obj.did}", 0.8, 0.2, f"/disp_details/{obj.did}"))
     for obj in utenti:
