@@ -1,0 +1,20 @@
+{% extends 'base.htm' %}
+{% block title %}Non autorizzato • estus{% endblock %}
+{% block extrahead %}
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.history.back();
+            }, 4000)
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="alert alert-danger" role="alert">
+        <b>400 Bad Request:</b> Hai mandato al server una richiesta senza tutti i campi richiesti.<br>
+        Il problema non è un campo rimasto vuoto, ma un campo che per qualche motivo è completamente assente.
+    </div>
+    <div>
+        Sarai reindirizzato alla pagina precedente entro 4 secondi (se hai abilitato il javascript).
+    </div>
+{% endblock %}

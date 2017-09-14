@@ -19,8 +19,8 @@ class User(db.Model):
     __tablename__ = "website_users"
 
     uid = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String, unique=True)
-    passwd = db.Column(db.LargeBinary)
+    username = db.Column(db.String, unique=True, nullable=False)
+    passwd = db.Column(db.LargeBinary, nullable=False)
 
     def __init__(self, username, passwd):
         self.username = username
@@ -73,7 +73,7 @@ class Impiegato(db.Model):
     iid = db.Column(db.Integer, primary_key=True)
     sid = db.Column(db.Integer, db.ForeignKey('servizi.sid'))
     nomeimpiegato = db.Column(db.String)
-    username = db.Column(db.String, unique=True)
+    username = db.Column(db.String)
     passwd = db.Column(db.String)
     dispositivi = db.relationship("Accesso", backref='impiegato', lazy='dynamic', cascade="delete")
 
@@ -218,6 +218,7 @@ def page_login():
     else:
         if login(request.form['username'], request.form['password']):
             session['username'] = request.form['username']
+            session.permanent = request.form['remember']
             return redirect(url_for('page_dashboard'))
         else:
             return render_template('error.htm', error="Username o password non validi.")
@@ -769,6 +770,11 @@ def page_pheesh():
         random.seed(hash(obj.username))
         pesci.append(Pesce(obj.username, 1.5, 0.1, f"/user_list"))
     return render_template("pheesh.htm", user=session.get("username"), pheesh=pesci, footer=False)
+
+
+@app.errorhandler(400)
+def page_400(_):
+    return render_template('400.htm', user=session.get("username"))
 
 
 @app.errorhandler(403)
