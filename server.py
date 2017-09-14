@@ -762,9 +762,9 @@ def page_pheesh():
         pesci.append(Pesce(obj.nomeimpiegato, 1, 0.3, f"/imp_list"))
     for obj in dispositivi:
         random.seed(hash(obj.did))
-        if obj.marca is not None and obj.modello is not None:
+        if obj.marca != "" and obj.modello != "":
             pesci.append(Pesce(f"{obj.marca} {obj.modello}", 0.8, 0.2, f"/disp_details/{obj.did}"))
-        elif obj.seriale is not None:
+        elif obj.seriale != "":
             pesci.append(Pesce(f"Dispositivo {obj.seriale}", 0.8, 0.2, f"/disp_details/{obj.did}"))
         else:
             pesci.append(Pesce(f"Dispositivo {obj.did}", 0.8, 0.2, f"/disp_details/{obj.did}"))
