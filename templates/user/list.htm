@@ -14,12 +14,11 @@
             <th>Nome utente</th>
             <th>Elimina</th>
         </tr>
-        </thead>
-        <tr>
-            {% for utente in utenti %}
+        {% for utente in utenti %}
+            <tr>
                 <td>{{ utente.username }}</td>
                 <td>{% if utenti|length >= 2 and utente.username != user %}<a href="/user_del/{{ utente.uid }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
-            {% endfor %}
-        </tr>
+            </tr>
+        {% endfor %}
     </table>
 {% endblock %}
