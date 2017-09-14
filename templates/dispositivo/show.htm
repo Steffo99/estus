@@ -28,6 +28,7 @@
         window.onload = function () {
             {% for accesso in accessi %}
                 adduser();
+                $("#utente{{ loop.counter }} option").prop("selected", false);
                 $("#utente{{ loop.counter }} option[value={{ accesso.iid }}]").prop("selected", true);
             {% endfor %}
         }
