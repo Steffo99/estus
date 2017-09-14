@@ -731,8 +731,6 @@ def page_query():
 @app.route('/smecds')
 def page_smecds():
     """Pagina che visualizza i credits del sito"""
-    if 'username' not in session:
-        return abort(403)
     return render_template("smecds.htm", pagetype="main", user=session.get("username"))
 
 
@@ -740,6 +738,8 @@ def page_smecds():
 def page_pheesh():
     """Acquario del sito.
     I pesci sono generati dinamicamente basandosi sui dati presenti nel database."""
+    if 'username' not in session:
+        return abort(403)
     enti = Ente.query.all()
     servizi = Servizio.query.all()
     impiegati = Impiegato.query.all()
