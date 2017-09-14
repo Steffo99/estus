@@ -218,7 +218,7 @@ def page_login():
     else:
         if login(request.form['username'], request.form['password']):
             session['username'] = request.form['username']
-            session.permanent = request.form['remember']
+            session.permanent = request.form.get('remember')
             return redirect(url_for('page_dashboard'))
         else:
             return render_template('error.htm', error="Username o password non validi.")
