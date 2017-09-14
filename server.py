@@ -803,5 +803,4 @@ if __name__ == "__main__":
         except IntegrityError:
             # Se queste operazioni sono già state compiute in precedenza, annullale
             db.session.rollback()
-    # Esegui il sito in modalità debug
-    app.run(debug=True)
+    app.run()
