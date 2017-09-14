@@ -37,7 +37,7 @@ class Ente(db.Model):
     eid = db.Column(db.Integer, primary_key=True)
     nomeente = db.Column(db.String)
     nomebreveente = db.Column(db.String)
-    servizi = db.relationship("Servizio", backref='ente', lazy='dynamic')
+    servizi = db.relationship("Servizio", backref='ente', lazy='dynamic', cascade="delete")
 
     def __init__(self, nomeente, nomebreveente):
         self.nomeente = nomeente
@@ -55,7 +55,7 @@ class Servizio(db.Model):
     eid = db.Column(db.Integer, db.ForeignKey('enti.eid'))
     nomeservizio = db.Column(db.String)
     locazione = db.Column(db.String)
-    impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic')
+    impiegati = db.relationship("Impiegato", backref='servizio', lazy='dynamic', cascade="delete")
 
     def __init__(self, eid, nomeservizio, locazione):
         self.eid = eid
@@ -75,7 +75,7 @@ class Impiegato(db.Model):
     nomeimpiegato = db.Column(db.String)
     username = db.Column(db.String, unique=True)
     passwd = db.Column(db.String)
-    dispositivi = db.relationship("Accesso", backref='impiegato', lazy='dynamic')
+    dispositivi = db.relationship("Accesso", backref='impiegato', lazy='dynamic', cascade="delete")
 
     def __init__(self, sid, nomeimpiegato, username, passwd):
         self.sid = sid
@@ -92,7 +92,7 @@ class Dispositivo(db.Model):
     __tablename__ = "dispositivi"
 
     did = db.Column(db.Integer, primary_key=True)
-    accessi = db.relationship("Accesso", backref='dispositivo', lazy='dynamic')
+    accessi = db.relationship("Accesso", backref='dispositivo', lazy='dynamic', cascade="delete")
     tipo = db.Column(db.String)
     marca = db.Column(db.String)
     modello = db.Column(db.String)

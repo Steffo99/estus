@@ -4,9 +4,15 @@
     <h1>
         Reti esistenti
     </h1>
-    <div class="alert alert-info">
-        La rete con IP 0.0.0.0 sarà usata come rete di default durante l'eliminazione di altre reti con dispositivi assegnati. Cancellarla potrebbe avere effetti indesiderati.
-    </div>
+        {% for rete in reti if rete.network_ip == "0.0.0.0" %}
+            <div class="alert alert-info">
+                La rete con IP 0.0.0.0 sarà usata come rete di default durante l'eliminazione di altre reti con dispositivi assegnati. Cancellarla potrebbe avere effetti indesiderati.
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+                Non è presente nessuna rete con IP 0.0.0.0! Non sarà possibile eliminare altre reti finchè non sarà ricreata.
+            </div>
+        {% endfor %}
     <a class="btn btn-success" href="/net_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
     <table class="table table-hover">
         <thead>
