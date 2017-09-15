@@ -11,6 +11,7 @@ Il nuovo inventario per il CED dell'[Unione Terre di Castelli](http://www.terred
 - Clonare il repository su un computer con installato Apache 2 utilizzando `git clone git@github.com:Steffo99/estus.git`.
 - Eseguire `python3.6 server.py` per generare il database iniziale, poi terminarlo con Ctrl-C.
 - Installare `mod_wsgi` per Python 3.6, aggiungendo [queste righe](https://stackoverflow.com/questions/44914961/install-mod-wsgi-on-ubuntu-with-python-3-6-apache-2-4-and-django-1-11) alla configurazione di Apache 2.
+- Impostare la variabile di ambiente `flask_secret_key` a una qualsiasi stringa (serve per criptare i cookies della sessione)
 - Seguire la guida [Deploying a Flask App](http://flask.pocoo.org/docs/0.12/deploying/mod_wsgi).
 
 Il login predefinito è `stagista` con password `smecds`, ma è possibile creare altri utenti nella pagina `/user_add` e anche eliminare l'utente predefinito dopo avere fatto il login con un utente diverso.

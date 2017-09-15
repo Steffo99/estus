@@ -6,10 +6,10 @@ import bcrypt
 import random
 
 app = Flask(__name__)
-app.secret_key = "pepsecret"
+app.secret_key = os.environ["flask_secret_key"]
 
 # SQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
