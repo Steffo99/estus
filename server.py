@@ -547,7 +547,7 @@ def page_disp_show(did):
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         reti = Rete.query.order_by(Rete.nome).all()
-        return render_template("dispositivo/show.htm", dispositivo=disp, accessi=accessi, impiegati=impiegati,
+        return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi, impiegati=impiegati,
                                pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti)
     else:
         disp = Dispositivo.query.get_or_404(did)
@@ -585,6 +585,53 @@ def page_disp_show(did):
             db.session.delete(accesso)
         for user in users:
             nuovologin = Accesso(int(user), disp.did)
+            db.session.add(nuovologin)
+        db.session.commit()
+        return redirect(url_for('page_disp_list'))
+
+
+@app.route('/disp_clone/<int:did>', methods=['GET', 'POST'])
+def page_disp_clone(did):
+    if 'username' not in session:
+        return abort(403)
+    if request.method == 'GET':
+        disp = Dispositivo.query.get_or_404(did)
+        accessi = Accesso.query.filter_by(did=did).all()
+        impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
+        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
+                   "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        reti = Rete.query.order_by(Rete.nome).all()
+        return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi, impiegati=impiegati,
+                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti)
+    else:
+        if request.form["inv_ced"]:
+            try:
+                int(request.form["inv_ced"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario CED deve contenere un numero.")
+        if request.form["inv_ente"]:
+            try:
+                int(request.form["inv_ente"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
+        nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
+                                int(request.form['inv_ced']) if request.form['inv_ced'] else None,
+                                int(request.form['inv_ente']) if request.form['inv_ente'] else None,
+                                request.form['fornitore'], request.form['rete'], request.form['seriale'],
+                                request.form['ip'])
+        db.session.add(nuovodisp)
+        db.session.commit()
+        # Trova tutti gli utenti, edizione sporco hack in html
+        users = list()
+        while True:
+            # Trova tutti gli utenti esistenti
+            userstring = 'utente{}'.format(len(users))
+            if userstring in request.form:
+                users.append(request.form[userstring])
+            else:
+                break
+        for user in users:
+            nuovologin = Accesso(int(user), nuovodisp.did)
             db.session.add(nuovologin)
         db.session.commit()
         return redirect(url_for('page_disp_list'))

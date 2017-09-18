@@ -6,6 +6,7 @@ Il nuovo inventario per il CED dell'[Unione Terre di Castelli](http://www.terred
 - Aggiunta nuovi dispositivi tramite codice a barre
 - Semplificati o rimossi molti dei campi inutilizzati del vecchio inventario
 - Innovativa e sperimentale modalità di visualizzazione dati dell'inventario: la **IttioVision** :fish:!
+- Clona dispositivi per non dover rimettere gli stessi dati duecentomila volte
 
 ## Installazione
 - Clonare il repository su un computer con installato Apache 2 utilizzando `git clone git@github.com:Steffo99/estus.git`.

@@ -27,7 +27,12 @@
                 <td>{{ d[0].dispositivo.modello }}</td>
                 <td>{{ d[0].dispositivo.fornitore }}</td>
                 <td>{{ d[0].dispositivo.seriale }}</td>
-                <td><a href="/disp_details/{{ d[0].did }}"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/disp_show/{{ d[0].did }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/disp_del/{{ d[0].did }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td>
+                    <a href="/disp_details/{{ d[0].did }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
+                    <a href="/disp_show/{{ d[0].did }}" title="Modifica"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="/disp_clone/{{ d[0].did }}" title="Clona"><span class="glyphicon glyphicon-duplicate"></span></a>
+                    <a href="/disp_del/{{ d[0].did }}" title="Elimina"><span class="glyphicon glyphicon-remove"></span></a>
+                </td>
             </tr>
         {% endfor %}
     </table>

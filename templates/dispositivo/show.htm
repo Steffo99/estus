@@ -36,9 +36,13 @@
 {% endblock %}
 {% block content %}
     <h1>
-        Modifica dispositivo
+        {% if action == "show" %}
+            Modifica dispositivo
+        {% elif action == "clone" %}
+            Clona dispositivo
+        {% endif %}
     </h1>
-    <form class="form-horizontal" action="/disp_show/{{ dispositivo.did }}" method="post">
+    <form class="form-horizontal" action="/disp_{{ action }}/{{ dispositivo.did }}" method="post">
         <div class="form-group">
             <label class="col-xs-2" for="">Tipo dispositivo</label>
             <div class="col-xs-10">
