@@ -392,7 +392,7 @@ def page_imp_add():
         return abort(403)
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio).all()
-        return render_template("impiegato/add.htm", servizi=servizi, pagetype="imp", user=session.get("username"))
+        return render_template("impiegato/show.htm", action="add", servizi=servizi, pagetype="imp", user=session.get("username"))
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
                              request.form['passwd'],)
@@ -438,7 +438,7 @@ def page_imp_show(iid):
     if request.method == "GET":
         imp = Impiegato.query.get_or_404(iid)
         servizi = Servizio.query.all()
-        return render_template("impiegato/show.htm", imp=imp, servizi=servizi, user=session.get("username"))
+        return render_template("impiegato/show.htm", action="show", imp=imp, servizi=servizi, user=session.get("username"))
     else:
         imp = Impiegato.query.get_or_404(iid)
         imp.sid = request.form["sid"]
