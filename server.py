@@ -84,7 +84,7 @@ class Impiegato(db.Model):
         self.passwd = passwd
 
     def __repr__(self):
-        return "<Impiegato {}>".format(self.nome)
+        return "<Impiegato {}>".format(self.nomeimpiegato)
 
 
 class Dispositivo(db.Model):
@@ -447,6 +447,15 @@ def page_imp_show(iid):
         imp.passwd = request.form["passwd"]
         db.session.commit()
         return redirect(url_for('page_imp_list'))
+
+
+@app.route('/imp_details/<int:iid>')
+def page_imp_details(iid):
+    if 'username' not in session:
+        return abort(403)
+    imp = Impiegato.query.filter_by(iid=iid).join(Servizio).join(Ente).first_or_404()
+    accessi = Accesso.query.filter_by(iid=imp.iid).join(Dispositivo).all()
+    return render_template("impiegato/details.htm", accessi=accessi, impiegato=imp, user=session.get("username"))
 
 
 @app.route('/disp_add', methods=['GET', 'POST'])
