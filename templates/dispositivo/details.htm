@@ -13,78 +13,94 @@
                 {{ disp.tipo }}
             </div>
         </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Marca
-            </h4>
-            <div class="list-group-item-text">
-                {{ disp.marca }}
-            </div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Modello
-            </h4>
-            <div class="list-group-item-text">
-                {{ disp.modello }}
-            </div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Modello
-            </h4>
-            <div class="list-group-item-text">
-                {{ disp.fornitore }}
-            </div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Utenti
-            </h4>
-            <div class="list-group-item-text">
-                {% for accesso in accessi %}
-                    <a href="/imp_details/{{ accesso.iid }}">{{ accesso.impiegato.nomeimpiegato }}</a><br>
-                {% endfor %}
-            </div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Codice Inventario CED
-            </h4>
-            <div class="list-group-item-text">
-                <code>{{ disp.inv_ced }}</code>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Codice Inventario Ente
-            </h4>
-            <div class="list-group-item-text">
-                <code>{{ disp.inv_ente }}</code>
-            </div>
-        </li>
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Codice Seriale
-            </h4>
-            <div class="list-group-item-text">
-                <code>{{ disp.seriale }}</code>
-            </div>
-        </li>
+        {% if disp.marca %}
             <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Marca
+                </h4>
+                <div class="list-group-item-text">
+                    {{ disp.marca }}
+                </div>
+            </li>
+        {% endif %}
+        {% if disp.modello %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Modello
+                </h4>
+                <div class="list-group-item-text">
+                    {{ disp.modello }}
+                </div>
+            </li>
+        {% endif %}
+        {% if disp.fornitore %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Fornitore
+                </h4>
+                <div class="list-group-item-text">
+                    {{ disp.fornitore }}
+                </div>
+            </li>
+        {% endif %}
+        {% if accessi %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Utenti
+                </h4>
+                <div class="list-group-item-text">
+                    {% for accesso in accessi %}
+                        <a href="/imp_details/{{ accesso.iid }}">{{ accesso.impiegato.nomeimpiegato }}</a><br>
+                    {% endfor %}
+                </div>
+            </li>
+        {% endif %}
+        {% if disp.inv_ced %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Codice Inventario CED
+                </h4>
+                <div class="list-group-item-text">
+                    <code>{{ disp.inv_ced }}</code>
+                </div>
+            </li>
+        {% endif %}
+        {% if disp.inv_ente %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Codice Inventario Ente
+                </h4>
+                <div class="list-group-item-text">
+                    <code>{{ disp.inv_ente }}</code>
+                </div>
+            </li>
+        {% endif %}
+        {% if disp.seriale %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Codice Seriale
+                </h4>
+                <div class="list-group-item-text">
+                    <code>{{ disp.seriale }}</code>
+                </div>
+            </li>
+        {% endif %}
+        {% if disp.ip %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Indirizzo IP
+                </h4>
+                <div class="list-group-item-text">
+                    <code>{{ disp.ip }}</code>
+                </div>
+            </li>
+        {% endif %}
+        <li class="list-group-item">
             <h4 class="list-group-item-heading">
                 Network
             </h4>
             <div class="list-group-item-text">
                 <a href="/net_details/{{ disp.rete.nid }}"><code>{{ disp.rete.nome }} - {{ disp.rete.network_ip }}/{{ disp.rete.subnet }}</code></a>
-            </div>
-        </li>
-            <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Indirizzo IP
-            </h4>
-            <div class="list-group-item-text">
-                <code>{{ disp.ip }}</code>
             </div>
         </li>
     </ul>
