@@ -324,7 +324,7 @@ def page_serv_add():
         return abort(403)
     if request.method == 'GET':
         enti = Ente.query.order_by(Ente.nomeente).all()
-        return render_template("servizio/add.htm", enti=enti, pagetype="serv", user=session.get("username"))
+        return render_template("servizio/show.htm", action="add", enti=enti, pagetype="serv", user=session.get("username"))
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)
@@ -372,7 +372,7 @@ def page_serv_show(sid):
     if request.method == "GET":
         serv = Servizio.query.get_or_404(sid)
         enti = Ente.query.all()
-        return render_template("servizio/show.htm", serv=serv, enti=enti, user=session.get("username"))
+        return render_template("servizio/show.htm", action="show", serv=serv, enti=enti, user=session.get("username"))
     else:
         serv = Servizio.query.get_or_404(sid)
         serv.eid = request.form["eid"]
