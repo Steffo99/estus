@@ -6,27 +6,35 @@
             <h2>
                 Servizi per ente
             </h2>
-            <ul class="list-group">
-                {% for ente in conteggioservizi %}
-                    <li class="list-group-item">
-                        {{ ente }}
-                        <span class="badge">{{ conteggioservizi[ente] }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
+            {% if conteggioservizi %}
+                <ul class="list-group">
+                    {% for ente in conteggioservizi %}
+                        <li class="list-group-item">
+                            {{ ente }}
+                            <span class="badge">{{ conteggioservizi[ente] }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                Non c'è nessun ente registrato nell'inventario...
+            {% endif %}
         </div>
         <div class="col-sm-6">
             <h2>
                 Utenti per ente
             </h2>
-            <ul class="list-group">
-                {% for ente in conteggioutenti %}
-                    <li class="list-group-item">
-                        {{ ente }}
-                        <span class="badge">{{ conteggioutenti[ente] }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
+            {% if conteggioenti %}
+                <ul class="list-group">
+                    {% for ente in conteggioutenti %}
+                        <li class="list-group-item">
+                            {{ ente }}
+                            <span class="badge">{{ conteggioutenti[ente] }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                Non c'è nessun ente registrato nell'inventario...
+            {% endif %}
         </div>
     </div>
 {% endblock %}
