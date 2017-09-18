@@ -197,7 +197,7 @@ def login(username, password):
 def subnet_to_string(integer):
     """Converte una subnet mask in numero in una stringa"""
     still_int = (0xFFFFFFFF << (32 - integer)) & 0xFFFFFFFF
-    return f"{still_int >> 24}.{(still_int >> 16) & 0xFF}.{(still_int >> 8)}.{still_int & 0xFF}"
+    return f"{still_int >> 24}.{(still_int >> 16) & 0xFF}.{(still_int >> 8 & 0xFF)}.{still_int & 0xFF}"
 
 
 # Sito
