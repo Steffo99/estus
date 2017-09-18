@@ -466,7 +466,7 @@ def page_disp_add():
                    "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
-        return render_template("dispositivo/add.htm", impiegati=impiegati, opzioni=opzioni, reti=reti,
+        return render_template("dispositivo/show.htm", action="add", impiegati=impiegati, opzioni=opzioni, reti=reti,
                                pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemi)
     else:
         if request.form["inv_ced"]:
