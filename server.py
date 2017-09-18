@@ -796,7 +796,7 @@ def page_500(e):
 
 if __name__ == "__main__":
     # Se non esiste il database, crealo e inizializzalo!
-    if not os.path.isfile("data.db"):
+    if not os.path.isfile("db.sqlite"):
         db.create_all()
         try:
             # L'utente predefinito è "stagista" "smecds".
