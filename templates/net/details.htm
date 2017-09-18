@@ -35,7 +35,7 @@
             </h4>
             <div class="list-group-item-text">
                 {% for dispositivo in dispositivi %}
-                    <a href="/disp_details/{{ dispositivo.did }}">{{ dispositivo.tipo }} {{ dispositivo.marca }} {{ dispositivo.modello }} {% if dispositivo.inv_ced %}({{ dispositivo.inv_ced }}){% endif %}</a><br>
+                    <a href="/disp_details/{{ dispositivo.did }}">{{ dispositivo }}</a><br>
                 {% endfor %}
             </div>
         </li>

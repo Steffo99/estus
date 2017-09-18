@@ -26,6 +26,9 @@ class User(db.Model):
         self.username = username
         self.passwd = passwd
 
+    def __str__(self):
+        return self.username
+
     def __repr__(self):
         return "<User {}>".format(self.username, self.passwd)
 
@@ -42,6 +45,9 @@ class Ente(db.Model):
     def __init__(self, nomeente, nomebreveente):
         self.nomeente = nomeente
         self.nomebreveente = nomebreveente
+
+    def __str__(self):
+        return self.nomeente
 
     def __repr__(self):
         return "<Ente {}>".format(self.nomebreveente)
@@ -61,6 +67,9 @@ class Servizio(db.Model):
         self.eid = eid
         self.nomeservizio = nomeservizio
         self.locazione = locazione
+
+    def __str__(self):
+        return self.nomeservizio
 
     def __repr__(self):
         return "<Servizio {}>".format(self.nomeservizio)
@@ -82,6 +91,9 @@ class Impiegato(db.Model):
         self.nomeimpiegato = nomeimpiegato
         self.username = username
         self.passwd = passwd
+
+    def __str__(self):
+        return self.nomeimpiegato
 
     def __repr__(self):
         return "<Impiegato {}>".format(self.nomeimpiegato)
@@ -106,7 +118,6 @@ class Dispositivo(db.Model):
     hostname = db.Column(db.String, unique=True)
     so = db.Column(db.String)
 
-
     def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname, so):
         self.tipo = tipo
         self.marca = marca
@@ -119,6 +130,16 @@ class Dispositivo(db.Model):
         self.ip = ip
         self.hostname = hostname
         self.so = so
+
+    def __str__(self):
+        if self.marca != "" and self.modello != "":
+            return f"{self.marca} {self.modello}"
+        elif self.hostname != "":
+            return f"Dispositivo {self.hostname}"
+        elif self.seriale != "":
+            return f"Dispositivo {self.seriale}"
+        else:
+            return f"Dispositivo {self.did}"
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -157,6 +178,9 @@ class Rete(db.Model):
         self.primary_dns = primary_dns
         self.secondary_dns = secondary_dns
 
+    def __str__(self):
+        return f"Rete {self.nome}"
+
     def __repr__(self):
         return "<Rete {},{}>".format(self.nid, self.nome)
 
@@ -176,8 +200,8 @@ class FakeAccesso:
 
 class Pesce:
     """Un pesce? In un inventario!?"""
-    def __init__(self, name, avgsize=1.0, variation=0.1, link="#"):
-        self.name = name
+    def __init__(self, origin_obj, avgsize=1.0, variation=0.1, link="#"):
+        self.name = str(origin_obj)
         self.size = random.gauss(avgsize, variation)
         self.color = "{:02x}".format(random.randrange(0, 16777216))
         self.position = (random.randrange(0, 1423), random.randrange(52, 600))
@@ -826,27 +850,27 @@ def page_pheesh():
     pesci = []
     for obj in enti:
         random.seed(hash(obj.nomeente))
-        pesci.append(Pesce(obj.nomeente, 3, 0.9, f"/ente_list"))
+        pesci.append(Pesce(obj, 3, 0.9, f"/ente_list"))
     for obj in servizi:
         random.seed(hash(obj.nomeservizio))
-        pesci.append(Pesce(obj.nomeservizio, 2, 0.5, f"/serv_list"))
+        pesci.append(Pesce(obj, 2, 0.5, f"/serv_list"))
     for obj in reti:
         random.seed(hash(obj.nome))
-        pesci.append(Pesce(f"Rete {obj.nome}", 1.5, 0.4, f"/net_details/{obj.nid}"))
+        pesci.append(Pesce(obj, 1.5, 0.4, f"/net_details/{obj.nid}"))
     for obj in impiegati:
         random.seed(hash(obj.nomeimpiegato))
-        pesci.append(Pesce(obj.nomeimpiegato, 1, 0.3, f"/imp_list"))
+        pesci.append(Pesce(obj, 1, 0.3, f"/imp_list"))
     for obj in dispositivi:
         random.seed(hash(obj.did))
         if obj.marca != "" and obj.modello != "":
-            pesci.append(Pesce(f"{obj.marca} {obj.modello}", 0.8, 0.2, f"/disp_details/{obj.did}"))
+            pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
         elif obj.seriale != "":
-            pesci.append(Pesce(f"Dispositivo {obj.seriale}", 0.8, 0.2, f"/disp_details/{obj.did}"))
+            pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
         else:
-            pesci.append(Pesce(f"Dispositivo {obj.did}", 0.8, 0.2, f"/disp_details/{obj.did}"))
+            pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
     for obj in utenti:
         random.seed(hash(obj.username))
-        pesci.append(Pesce(obj.username, 1.5, 0.1, f"/user_list"))
+        pesci.append(Pesce(obj, 1.5, 0.1, f"/user_list"))
     return render_template("pheesh.htm", user=session.get("username"), pheesh=pesci, footer=False)
 
 

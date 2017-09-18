@@ -43,7 +43,7 @@
             </h4>
             <div class="list-group-item-text">
                 {% for accesso in accessi %}
-                    <a href="/disp_details/{{ accesso.dispositivo.did }}">{{ accesso.dispositivo.tipo }}</a>
+                    <a href="/disp_details/{{ accesso.dispositivo.did }}">{{ accesso.dispositivo }}</a><br>
                 {% endfor %}
             </div>
     </li>
