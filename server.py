@@ -103,8 +103,9 @@ class Dispositivo(db.Model):
     ip = db.Column(db.String)
     nid = db.Column(db.Integer, db.ForeignKey('reti.nid'))
     rete = db.relationship("Rete", backref='dispositivi')
+    hostname = db.Column(db.String, unique=True)
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip):
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -114,6 +115,7 @@ class Dispositivo(db.Model):
         self.nid = nid
         self.seriale = seriale
         self.ip = ip
+        self.hostname = hostname
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -475,7 +477,7 @@ def page_disp_add():
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['fornitore'], request.form['rete'], request.form['seriale'],
-                                request.form['ip'])
+                                request.form['ip'], request.form['hostname'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -572,6 +574,7 @@ def page_disp_show(did):
         disp.fornitore = request.form['fornitore']
         disp.nid = int(request.form['rete'])
         disp.ip = request.form['ip']
+        disp.hostname = request.form['hostname']
         # Trova tutti gli utenti, edizione sporco hack in html
         users = list()
         while True:
@@ -618,7 +621,7 @@ def page_disp_clone(did):
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['fornitore'], request.form['rete'], request.form['seriale'],
-                                request.form['ip'])
+                                request.form['ip'], request.form['hostname'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html

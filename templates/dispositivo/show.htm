@@ -25,6 +25,18 @@
             }
         }
 
+        function calchostname() {
+            var comune = prompt("Inserisci le due lettere corrispondenti al comune in cui verrà collocato il dispositivo. (Es: VG)";
+            var anno = prompt("Inserisci le ultime due cifre dell'anno di acquisto di questo dispositivo. (Es: 17)");
+            var inv = $("#form-ced").val();
+            if(inv === "")
+            {
+                inv = prompt("Inserisci il numero dell'inventario del dispositivo. (Es: 0351)")
+            }
+            var proprietario = prompt("Inserisci la lettera corrispondente al proprietario del dispositivo. (Es: U)");
+            $("#form-hostname").val(comune + anno + inv + proprietario);
+        }
+
         window.onload = function () {
             {% for accesso in accessi %}
                 adduser();
@@ -109,15 +121,24 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-2" for="form-control"></label>
+            <label class="col-xs-2" for="form-ip">IP</label>
             <div class="col-xs-10">
-                <input class="form-control btn btn-primary" type="submit">
+                <input id="form-ip" class="form-control" type="text" placeholder="Indirizzo IP" name="ip" value="{{ dispositivo.ip }}">
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-2" for="form-ip">Fornitore</label>
+            <label class="col-xs-2" for="form-ip">Hostname</label>
+            <div class="col-xs-8">
+                <input id="form-hostname" class="form-control" type="text" placeholder="Hostname" name="hostname">
+            </div>
+            <div class="col-xs-2">
+                <button class="form-control btn btn-info" onclick="calchostname()" type="button">Genera</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2" for="form-control"></label>
             <div class="col-xs-10">
-                <input id="form-ip" class="form-control" type="text" placeholder="Indirizzo IP" name="ip" value="{{ dispositivo.ip }}">
+                <input class="form-control btn btn-primary" type="submit">
             </div>
         </div>
     </form>
