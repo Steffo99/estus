@@ -264,7 +264,7 @@ def page_ente_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("ente/add.htm", pagetype="ente", user=session.get("username"))
+        return render_template("ente/show.htm", action="add", pagetype="ente", user=session.get("username"))
     else:
         nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
@@ -305,7 +305,7 @@ def page_ente_show(eid):
         return abort(403)
     if request.method == "GET":
         ente = Ente.query.get_or_404(eid)
-        return render_template("ente/show.htm", ente=ente, user=session.get("username"))
+        return render_template("ente/show.htm", action="show", ente=ente, user=session.get("username"))
     else:
         ente = Ente.query.get_or_404(eid)
         ente.nomeente = request.form["nomeente"]
