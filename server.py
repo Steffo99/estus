@@ -96,8 +96,8 @@ class Dispositivo(db.Model):
     tipo = db.Column(db.String)
     marca = db.Column(db.String)
     modello = db.Column(db.String)
-    inv_ced = db.Column(db.String)
-    inv_ente = db.Column(db.String)
+    inv_ced = db.Column(db.Integer, unique=True)
+    inv_ente = db.Column(db.Integer, unique=True)
     fornitore = db.Column(db.String)
     seriale = db.Column(db.String)
     ip = db.Column(db.String)
@@ -290,7 +290,7 @@ def page_ente_list():
     """Pagina di elenco degli enti disponibili sul sito."""
     if 'username' not in session:
         return abort(403)
-    enti = Ente.query.all()
+    enti = Ente.query.order_by(Ente.nomeente).all()
     return render_template("ente/list.htm", enti=enti, pagetype="ente", user=session.get("username"))
 
 
@@ -318,7 +318,7 @@ def page_serv_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        enti = Ente.query.all()
+        enti = Ente.query.order_by(Ente.nomeente).all()
         return render_template("servizio/add.htm", enti=enti, pagetype="serv", user=session.get("username"))
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
@@ -347,7 +347,7 @@ def page_serv_list():
     """Pagina di elenco dei servizi registrati sul sito."""
     if 'username' not in session:
         return abort(403)
-    serv = Servizio.query.join(Ente).all()
+    serv = Servizio.query.join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio).all()
     return render_template("servizio/list.htm", serv=serv, pagetype="serv", user=session.get("username"))
 
 
@@ -356,7 +356,7 @@ def page_serv_list_plus(eid):
     """Pagina di elenco dei servizi registrati sul sito, filtrati per ente."""
     if 'username' not in session:
         return abort(403)
-    serv = Servizio.query.join(Ente).filter_by(eid=eid).all()
+    serv = Servizio.query.join(Ente).filter_by(eid=eid).order_by(Servizio.nomeservizio).all()
     return render_template("servizio/list.htm", serv=serv, pagetype="serv", user=session.get("username"))
 
 
@@ -386,7 +386,7 @@ def page_imp_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        servizi = Servizio.query.join(Ente).all()
+        servizi = Servizio.query.join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio).all()
         return render_template("impiegato/add.htm", servizi=servizi, pagetype="imp", user=session.get("username"))
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
@@ -398,6 +398,8 @@ def page_imp_add():
 
 @app.route('/imp_del/<int:iid>')
 def page_imp_del(iid):
+    """Pagina di cancellazione impiegato:
+    accetta richieste GET per cancellare l'impiegato specificato."""
     if 'username' not in session:
         return abort(403)
     imp = Impiegato.query.get_or_404(iid)
@@ -411,7 +413,7 @@ def page_imp_list():
     """Pagina di elenco degli impiegati registrati nell'inventario."""
     if 'username' not in session:
         return abort(403)
-    impiegati = Impiegato.query.join(Servizio).join(Ente).all()
+    impiegati = Impiegato.query.join(Servizio).join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio, Impiegato.nomeimpiegato).all()
     return render_template("impiegato/list.htm", impiegati=impiegati, pagetype="imp", user=session.get("username"))
 
 
@@ -420,14 +422,12 @@ def page_imp_list_plus(sid):
     """Pagina di elenco degli impiegati registrati nell'inventario, filtrati per servizio."""
     if 'username' not in session:
         return abort(403)
-    impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).all()
+    impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).order_by(Impiegato.nomeimpiegato).all()
     return render_template("impiegato/list.htm", impiegati=impiegati, user=session.get("username"))
 
 
 @app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
 def page_imp_show(iid):
-    """Pagina di cancellazione impiegato:
-    accetta richieste GET per cancellare l'impiegato specificato."""
     if 'username' not in session:
         return abort(403)
     if request.method == "GET":
@@ -456,8 +456,8 @@ def page_disp_add():
         serial = request.args.get("scanned_barcode")
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        reti = Rete.query.all()
-        impiegati = Impiegato.query.all()
+        reti = Rete.query.order_by(Rete.nome).all()
+        impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         return render_template("dispositivo/add.htm", impiegati=impiegati, opzioni=opzioni, reti=reti,
                                pagetype="dev", user=session.get("username"), serial=serial)
     else:
@@ -498,7 +498,7 @@ def page_disp_del(did):
     accetta richieste GET per cancellare il dispositivo specificato."""
     if 'username' not in session:
         return abort(403)
-    disp = Dispositivo.query.filter_by(did=did).join(Accesso).first_or_404()
+    disp = Dispositivo.query.get_or_404(did)
     for accesso in disp.accessi:
         db.session.delete(accesso)
     db.session.delete(disp)
@@ -512,7 +512,7 @@ def page_disp_list():
     if 'username' not in session:
         return abort(403)
     accessi = list()
-    dispositivi = Dispositivo.query.all()
+    dispositivi = Dispositivo.query.order_by(Dispositivo.inv_ced).all()
     for dispositivo in dispositivi:
         accesso = Accesso.query.join(Dispositivo).filter_by(did=dispositivo.did).join(Impiegato).all()
         if not accesso:
@@ -528,7 +528,7 @@ def page_disp_details(did):
     """Pagina di dettagli di un dispositivo, contenente anche gli utenti che vi hanno accesso."""
     if 'username' not in session:
         return abort(403)
-    disp = Dispositivo.query.filter_by(did=did).first_or_404()
+    disp = Dispositivo.query.get_or_404(did)
     accessi = Accesso.query.filter_by(did=did).all()
     return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, pagetype="disp",
                            user=session.get("username"))
@@ -539,12 +539,12 @@ def page_disp_show(did):
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        disp = Dispositivo.query.filter_by(did=did).first_or_404()
+        disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
-        impiegati = Impiegato.query.all()
+        impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        reti = Rete.query.all()
+        reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", dispositivo=disp, accessi=accessi, impiegati=impiegati,
                                pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti)
     else:
@@ -563,8 +563,8 @@ def page_disp_show(did):
         disp.tipo = request.form['tipo']
         disp.marca = request.form['marca']
         disp.modello = request.form['modello']
-        disp.inv_ced = request.form['inv_ced']
-        disp.inv_ente = request.form['inv_ente']
+        disp.inv_ced = int(request.form['inv_ced']) if request.form["inv_ced"] else None
+        disp.inv_ente = int(request.form['inv_ente']) if request.form["inv_ced"] else None
         disp.fornitore = request.form['fornitore']
         disp.nid = int(request.form['rete'])
         disp.ip = request.form['ip']
@@ -631,7 +631,7 @@ def page_net_del(nid):
 def page_net_list():
     if 'username' not in session:
         return abort(403)
-    reti = Rete.query.all()
+    reti = Rete.query.order_by(Rete.nome).all()
     return render_template("net/list.htm", reti=reti, pagetype="net", user=session.get("username"))
 
 
@@ -639,7 +639,7 @@ def page_net_list():
 def page_net_details(nid):
     if 'username' not in session:
         return abort(403)
-    net = Rete.query.filter_by(nid=nid).first_or_404()
+    net = Rete.query.get_or_404(nid)
     dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
     subnet = subnet_to_string(net.subnet)
     return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, pagetype="net",
@@ -670,7 +670,7 @@ def page_user_list():
     Le password sono hashate."""
     if 'username' not in session:
         return abort(403)
-    utenti = User.query.all()
+    utenti = User.query.order_by(User.username).all()
     return render_template("user/list.htm", utenti=utenti, pagetype="user", user=session.get("username"))
 
 

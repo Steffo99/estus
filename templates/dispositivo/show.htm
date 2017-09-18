@@ -44,7 +44,7 @@
             <div class="col-xs-10">
                 <select id="form-tipo" class="form-control" name="tipo">
                     {% for opzione in opzioni %}
-                        <option value="{{ opzione }}" {% if opzione == dispositivo.tipo %}selected{% endif %}">{{ opzione }}</option>
+                        <option value="{{ opzione }}" {% if opzione == dispositivo.tipo %}selected{% endif %}>{{ opzione }}</option>
                     {% endfor %}
                 </select>
             </div>
