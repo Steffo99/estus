@@ -662,7 +662,7 @@ def page_net_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("net/add.htm", pagetype="net", user=session.get("username"))
+        return render_template("net/show.htm", action="add", pagetype="net", user=session.get("username"))
     else:
         try:
             int(request.form["subnet"])
@@ -719,7 +719,7 @@ def page_net_show(nid):
         return abort(403)
     if request.method == 'GET':
         net = Rete.query.filter_by(nid=nid).first_or_404()
-        return render_template("net/show.htm", net=net, pagetype="net", user=session.get("username"))
+        return render_template("net/show.htm", action="show", net=net, pagetype="net", user=session.get("username"))
     else:
         net = Rete.query.filter_by(nid=nid).first_or_404()
         net.nome = request.form['nome']
