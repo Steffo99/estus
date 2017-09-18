@@ -472,8 +472,10 @@ def page_disp_add():
             except ValueError:
                 return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                int(request.form['inv_ced']), int(request.form['inv_ente']), request.form['fornitore'],
-                                request.form['rete'], request.form['seriale'], request.form['ip'])
+                                int(request.form['inv_ced']) if request.form['inv_ced'] else None,
+                                int(request.form['inv_ente']) if request.form['inv_ente'] else None,
+                                request.form['fornitore'], request.form['rete'], request.form['seriale'],
+                                request.form['ip'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
