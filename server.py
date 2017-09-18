@@ -96,8 +96,8 @@ class Dispositivo(db.Model):
     tipo = db.Column(db.String)
     marca = db.Column(db.String)
     modello = db.Column(db.String)
-    inv_ced = db.Column(db.Integer)
-    inv_ente = db.Column(db.Integer)
+    inv_ced = db.Column(db.Integer, unique=True)
+    inv_ente = db.Column(db.Integer, unique=True)
     fornitore = db.Column(db.String)
     seriale = db.Column(db.String)
     ip = db.Column(db.String)
@@ -550,23 +550,25 @@ def page_disp_show(did):
         return render_template("dispositivo/show.htm", dispositivo=disp, accessi=accessi, impiegati=impiegati,
                                pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti)
     else:
-        if request.form["inv_ced"]:
-            try:
-                int(request.form["inv_ced"])
-            except ValueError:
-                return render_template("error.htm", error="Il campo Inventario CED deve contenere un numero.")
-        if request.form["inv_ente"]:
-            try:
-                int(request.form["inv_ente"])
-            except ValueError:
-                return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
+        if request.form["inv_ced"]:
+            try:
+                disp.inv_ced = int(request.form["inv_ced"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario CED deve contenere un numero.")
+        else:
+            disp.inv_ced = None
+        if request.form["inv_ente"]:
+            try:
+                disp.inv_ente = int(request.form["inv_ente"])
+            except ValueError:
+                return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
+        else:
+            disp.inv_ente = None
         disp.tipo = request.form['tipo']
         disp.marca = request.form['marca']
         disp.modello = request.form['modello']
-        disp.inv_ced = int(request.form['inv_ced']) if request.form["inv_ced"] else None
-        disp.inv_ente = int(request.form['inv_ente']) if request.form["inv_ced"] else None
         disp.fornitore = request.form['fornitore']
         disp.nid = int(request.form['rete'])
         disp.ip = request.form['ip']

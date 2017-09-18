@@ -73,13 +73,13 @@
         <div class="form-group">
             <label class="col-xs-2" for="form-ced">Inventario CED</label>
             <div class="col-xs-10">
-                <input id="form-ced" class="form-control" type="text" placeholder="Inventario CED" name="inv_ced" value="{{ dispositivo.inv_ced }}">
+                <input id="form-ced" class="form-control" type="text" placeholder="Inventario CED" name="inv_ced" {% if dispositivo.inv_ced %}value="{{ dispositivo.inv_ced }}"{% endif %}>
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-2" for="form-ente">Inventario ente</label>
             <div class="col-xs-10">
-                <input id="form-ente" class="form-control" type="text" placeholder="Inventario ente" name="inv_ente" value="{{ dispositivo.inv_ente }}">
+                <input id="form-ente" class="form-control" type="text" placeholder="Inventario ente" name="inv_ente" {% if dispositivo.inv_ente %}value="{{ dispositivo.inv_ente }}"{% endif %}>
             </div>
         </div>
         <div class="form-group">
