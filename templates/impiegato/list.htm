@@ -13,8 +13,7 @@
             <th>Nome impiegato</th>
             <th>Nome utente</th>
             <th>Password</th>
-            <th>Modifica</th>
-            <th>Elimina</th>
+            <th>Azioni</th>
         </tr>
         </thead>
         {% for imp in impiegati %}
@@ -24,8 +23,7 @@
                 <td>{{ imp.nomeimpiegato }}</td>
                 <td><code>{{ imp.username }}</code></td>
                 <td><code>{{ imp.passwd }}</code></td>
-                <td><a href="/imp_show/{{ imp.iid }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                <td><a href="/imp_del/{{ imp.iid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="/imp_show/{{ imp.iid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/imp_del/{{ imp.iid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
     </table>

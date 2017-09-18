@@ -10,9 +10,7 @@
         <tr>
             <th>Nome ente</th>
             <th>Nome breve</th>
-            <th>Ispeziona</th>
-            <th>Modifica</th>
-            <th>Elimina</th>
+            <th>Azioni</th>
         </tr>
         </thead>
         <tbody>
@@ -20,9 +18,7 @@
             <tr>
                 <td>{{ ente.nomeente }}</td>
                 <td>{{ ente.nomebreveente }}</td>
-                <td><a href="/serv_list/{{ ente.eid }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
-                <td><a href="/ente_show/{{ ente.eid }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                <td><a href="/ente_del/{{ ente.eid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="/serv_list/{{ ente.eid }}"><span class="glyphicon glyphicon-list-alt"></span></a> <a href="/ente_show/{{ ente.eid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/ente_del/{{ ente.eid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
         </tbody>

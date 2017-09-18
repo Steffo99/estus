@@ -1,30 +1,26 @@
 {% extends "base.htm" %}
 {% block title %}Elenco servizi • estus{% endblock %}
 {% block content %}
-      <h1>
-         Servizi esistenti
-      </h1>
+    <h1>
+        Servizi esistenti
+    </h1>
     <a class="btn btn-success" href="/serv_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
-      <table class="table table-hover">
+    <table class="table table-hover">
         <thead>
-          <tr>
-            <th>Nome ente</th>
-            <th>Nome servizio</th>
-            <th>Locazione</th>
-            <th>Ispeziona</th>
-            <th>Modifica</th>
-            <th>Elimina</th>
-          </tr>
+            <tr>
+                <th>Nome ente</th>
+                <th>Nome servizio</th>
+                <th>Locazione</th>
+                <th>Azioni</th>
+            </tr>
         </thead>
         {% for servizio in serv %}
-          <tr>
-            <td>{{ servizio.ente.nomeente }}</td>
-            <td>{{ servizio.nomeservizio }}</td>
-            <td>{{ servizio.locazione }}</td>
-            <td><a href="/imp_list/{{ servizio.sid }}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
-            <td><a href="/serv_show/{{ servizio.sid }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-            <td><a href="/serv_del/{{ servizio.sid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
-          </tr>
+            <tr>
+                <td>{{ servizio.ente.nomeente }}</td>
+                <td>{{ servizio.nomeservizio }}</td>
+                <td>{{ servizio.locazione }}</td>
+                <td><a href="/imp_list/{{ servizio.sid }}"><span class="glyphicon glyphicon-list-alt"></span></a> <a href="/serv_show/{{ servizio.sid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/serv_del/{{ servizio.sid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+            </tr>
         {% endfor %}
-      </table>
+    </table>
 {% endblock %}
