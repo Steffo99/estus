@@ -66,6 +66,16 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-xs-2" for="">Sistema Operativo</label>
+            <div class="col-xs-10">
+                <select id="form-so" class="form-control" name="so">
+                    {% for sistema in sistemi %}
+                        <option value="{{ sistema }}" {% if sistema == dispositivo.so %}selected{% endif %}>{{ sistema }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-xs-2" for="form-utente">Utenti</label>
             <div class="col-xs-10" id="users-column">
                 <p>

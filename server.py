@@ -104,8 +104,10 @@ class Dispositivo(db.Model):
     nid = db.Column(db.Integer, db.ForeignKey('reti.nid'))
     rete = db.relationship("Rete", backref='dispositivi')
     hostname = db.Column(db.String, unique=True)
+    so = db.Column(db.String)
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname):
+
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname, so):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -116,6 +118,7 @@ class Dispositivo(db.Model):
         self.seriale = seriale
         self.ip = ip
         self.hostname = hostname
+        self.so = so
 
     def __repr__(self):
         return "<Dispositivo {}>".format(self.inv_ced)
@@ -458,10 +461,13 @@ def page_disp_add():
         serial = request.args.get("scanned_barcode")
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        sistemi = [" ", "CentOS", "Fedora", "Open SUSE", "Red Hat", "Ubuntu", "Windows 10 x64", "Windows 2000",
+                   "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
+                   "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         return render_template("dispositivo/add.htm", impiegati=impiegati, opzioni=opzioni, reti=reti,
-                               pagetype="dev", user=session.get("username"), serial=serial)
+                               pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemi)
     else:
         if request.form["inv_ced"]:
             try:
@@ -477,7 +483,7 @@ def page_disp_add():
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['fornitore'], request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'])
+                                request.form['ip'], request.form['hostname'], request.form['so'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -548,9 +554,12 @@ def page_disp_show(did):
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        sistemi = [" ", "CentOS", "Fedora", "Open SUSE", "Red Hat", "Ubuntu", "Windows 10 x64", "Windows 2000",
+                   "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
+                   "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi, impiegati=impiegati,
-                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti)
+                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti, sistemi=sistemi)
     else:
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
@@ -575,6 +584,7 @@ def page_disp_show(did):
         disp.nid = int(request.form['rete'])
         disp.ip = request.form['ip']
         disp.hostname = request.form['hostname']
+        disp.so = request.form['so']
         # Trova tutti gli utenti, edizione sporco hack in html
         users = list()
         while True:
@@ -603,9 +613,12 @@ def page_disp_clone(did):
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        sistemi = [" ", "CentOS", "Fedora", "Open SUSE", "Red Hat", "Ubuntu", "Windows 10 x64", "Windows 2000",
+                   "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
+                   "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi, impiegati=impiegati,
-                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti)
+                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti, sistemi=sistemi)
     else:
         if request.form["inv_ced"]:
             try:
@@ -621,7 +634,7 @@ def page_disp_clone(did):
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['fornitore'], request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'])
+                                request.form['ip'], request.form['hostname'], request.form['so'])
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html

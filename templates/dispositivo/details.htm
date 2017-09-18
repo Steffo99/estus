@@ -33,6 +33,16 @@
                 </div>
             </li>
         {% endif %}
+        {% if disp.so != " " %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Sistema Operativo
+                </h4>
+                <div class="list-group-item-text">
+                    {{ disp.so }}
+                </div>
+            </li>
+        {% endif %}
         {% if disp.fornitore %}
             <li class="list-group-item">
                 <h4 class="list-group-item-heading">
