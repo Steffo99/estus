@@ -472,7 +472,7 @@ def page_disp_add():
             except ValueError:
                 return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                request.form['inv_ced'], request.form['inv_ente'], request.form['fornitore'],
+                                int(request.form['inv_ced']), int(request.form['inv_ente']), request.form['fornitore'],
                                 request.form['rete'], request.form['seriale'], request.form['ip'])
         db.session.add(nuovodisp)
         db.session.commit()
