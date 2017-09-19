@@ -348,7 +348,8 @@ def page_serv_add():
         return abort(403)
     if request.method == 'GET':
         enti = Ente.query.order_by(Ente.nomeente).all()
-        return render_template("servizio/show.htm", action="add", enti=enti, pagetype="serv", user=session.get("username"))
+        return render_template("servizio/show.htm", action="add", enti=enti, pagetype="serv",
+                               user=session.get("username"))
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)
@@ -416,7 +417,8 @@ def page_imp_add():
         return abort(403)
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio).all()
-        return render_template("impiegato/show.htm", action="add", servizi=servizi, pagetype="imp", user=session.get("username"))
+        return render_template("impiegato/show.htm", action="add", servizi=servizi, pagetype="imp",
+                               user=session.get("username"))
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
                              request.form['passwd'],)
@@ -442,7 +444,8 @@ def page_imp_list():
     """Pagina di elenco degli impiegati registrati nell'inventario."""
     if 'username' not in session:
         return abort(403)
-    impiegati = Impiegato.query.join(Servizio).join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio, Impiegato.nomeimpiegato).all()
+    impiegati = Impiegato.query.join(Servizio).join(Ente)\
+        .order_by(Ente.nomeente, Servizio.nomeservizio, Impiegato.nomeimpiegato).all()
     return render_template("impiegato/list.htm", impiegati=impiegati, pagetype="imp", user=session.get("username"))
 
 
@@ -462,7 +465,8 @@ def page_imp_show(iid):
     if request.method == "GET":
         imp = Impiegato.query.get_or_404(iid)
         servizi = Servizio.query.all()
-        return render_template("impiegato/show.htm", action="show", imp=imp, servizi=servizi, user=session.get("username"))
+        return render_template("impiegato/show.htm", action="show", imp=imp, servizi=servizi,
+                               user=session.get("username"))
     else:
         imp = Impiegato.query.get_or_404(iid)
         imp.sid = request.form["sid"]
@@ -591,8 +595,9 @@ def page_disp_show(did):
                    "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
                    "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
-        return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi, impiegati=impiegati,
-                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti, sistemi=sistemi)
+        return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi,
+                               impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
+                               reti=reti, sistemi=sistemi)
     else:
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
@@ -650,8 +655,9 @@ def page_disp_clone(did):
                    "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
                    "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
-        return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi, impiegati=impiegati,
-                               pagetype="disp", user=session.get("username"), opzioni=opzioni, reti=reti, sistemi=sistemi)
+        return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi,
+                               impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
+                               reti=reti, sistemi=sistemi)
     else:
         if request.form["inv_ced"]:
             try:
@@ -823,8 +829,8 @@ def page_query():
         try:
             result = db.engine.execute("SELECT" + request.form["query"] + ";")
         except Exception as e:
-            return render_template("query.htm", query=request.form["query"], error=repr(e), user=session.get("username"),
-                                   pagetype="query")
+            return render_template("query.htm", query=request.form["query"], error=repr(e),
+                                   user=session.get("username"), pagetype="query")
         return render_template("query.htm", query=request.form["query"], result=result, user=session.get("username"),
                                pagetype="query")
 
