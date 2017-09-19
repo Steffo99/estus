@@ -39,7 +39,7 @@
                     Ordine
                 </h4>
                 <div class="list-group-item-text">
-                    <a href="/order_details/{{ disp.ordine.oid }}">{{ disp.ordine.numero_ordine }}</a>
+                    <a href="/order_details/{{ disp.ordine.oid }}">{{ disp.ordine }}</a>
                 </div>
             </li>
         {% endif %}
@@ -81,7 +81,7 @@
                     Codice Inventario CED
                 </h4>
                 <div class="list-group-item-text">
-                    <code>{{ disp.inv_ced }}</code>
+                    {{ disp.inv_ced }}
                 </div>
             </li>
         {% endif %}

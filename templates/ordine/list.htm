@@ -10,6 +10,7 @@
         <tr>
             <th>Data dell'ordine</th>
             <th>Numero dell'ordine</th>
+            <th>Stato garanzia</th>
             <th>Azioni</th>
         </tr>
         </thead>
@@ -18,6 +19,18 @@
                 <tr>
                     <td>{% if order.data %}{{ order.data }}{% endif %}</td>
                     <td>{% if order.numero_ordine %}{{ order.numero_ordine }}{% endif %}</td>
+                    <td>
+                        {% if order.garanzia %}
+                            {% if order.garanzia > soon %}
+                                <span class="label label-success">Valida</span>
+                            {% elif order.garanzia > today %}
+                                <span class="label label-warning">In scadenza</span>
+                            {% else %}
+                                <span class="label label-danger">Scaduta</span>
+                            {% endif %}
+                            {{ order.garanzia }}
+                        {% endif %}
+                    </td>
                     <td><a href="/order_details/{{ order.oid }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/order_show/{{ order.oid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/order_del/{{ order.oid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
                 </tr>
             {% endfor %}

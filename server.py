@@ -851,8 +851,9 @@ def page_order_list():
     """Pagina di elenco degli ordini registrati nel database."""
     if 'username' not in session:
         return abort(403)
-    ordini = Ordine.query.order_by(Ordine.data).all()
-    return render_template("ordine/list.htm", orders=ordini, pagetype="order", user=session.get("username"))
+    ordini = Ordine.query.order_by(Ordine.data.desc()).all()
+    return render_template("ordine/list.htm", orders=ordini, pagetype="order", user=session.get("username"),
+                           today=datetime.date.today(), soon=datetime.date.today() + datetime.timedelta(7))
 
 
 @app.route('/order_add', methods=['GET', 'POST'])
@@ -905,14 +906,28 @@ def page_order_show(oid):
         return redirect(url_for("page_order_list"))
 
 
+@app.route('/order_del/<int:oid>')
+def page_order_del(oid):
+    if 'username' not in session:
+        return abort(403)
+    ordine = Ordine.query.get_or_404(oid)
+    dispositivi = Dispositivo.query.filter_by(oid=oid).all()
+    for dispositivo in dispositivi:
+        dispositivo.oid = None
+    db.session.delete(ordine)
+    db.session.commit()
+    return redirect(url_for('page_order_list'))
+
+
 @app.route('/order_details/<int:oid>')
 def page_order_details(oid):
     if 'username' not in session:
         return abort(403)
     ordine = Ordine.query.get_or_404(oid)
     dispositivi = Dispositivo.query.join(Ordine).filter_by(oid=oid).all()
-    return render_template("ordine/details.htm", dispositivi=dispositivi, pagetype="order",
-                           user=session.get("username"), ordine=ordine)
+    return render_template("ordine/details.htm", dispositivi=dispositivi, pagetype="order", today=datetime.date.today(),
+                           user=session.get("username"), ordine=ordine,
+                           soon=datetime.date.today() + datetime.timedelta(7))
 
 
 @app.route('/query', methods=['GET', 'POST'])
@@ -952,6 +967,7 @@ def page_pheesh():
     dispositivi = Dispositivo.query.all()
     reti = Rete.query.all()
     utenti = User.query.all()
+    ordini = Ordine.query.all()
     pesci = []
     for obj in enti:
         random.seed(hash(obj.nomeente))
@@ -964,18 +980,16 @@ def page_pheesh():
         pesci.append(Pesce(obj, 1.5, 0.4, f"/net_details/{obj.nid}"))
     for obj in impiegati:
         random.seed(hash(obj.nomeimpiegato))
-        pesci.append(Pesce(obj, 1, 0.3, f"/imp_list"))
+        pesci.append(Pesce(obj, 1, 0.3, f"/imp_details/{obj.iid}"))
     for obj in dispositivi:
         random.seed(hash(obj.did))
-        if obj.marca != "" and obj.modello != "":
-            pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
-        elif obj.seriale != "":
-            pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
-        else:
-            pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
+        pesci.append(Pesce(obj, 0.8, 0.2, f"/disp_details/{obj.did}"))
     for obj in utenti:
         random.seed(hash(obj.username))
         pesci.append(Pesce(obj, 1.5, 0.1, f"/user_list"))
+    for obj in ordini:
+        random.seed(hash(obj.numero_ordine))
+        pesci.append(Pesce(obj, 1.2, 0.4, f"/order_details/{obj.oid}"))
     return render_template("pheesh.htm", user=session.get("username"), pheesh=pesci, footer=False)
 
 
