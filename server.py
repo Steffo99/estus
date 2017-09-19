@@ -905,6 +905,16 @@ def page_order_show(oid):
         return redirect(url_for("page_order_list"))
 
 
+@app.route('/order_details/<int:oid>')
+def page_order_details(oid):
+    if 'username' not in session:
+        return abort(403)
+    ordine = Ordine.query.get_or_404(oid)
+    dispositivi = Dispositivo.query.join(Ordine).filter_by(oid=oid).all()
+    return render_template("ordine/details.htm", dispositivi=dispositivi, pagetype="order",
+                           user=session.get("username"), ordine=ordine)
+
+
 @app.route('/query', methods=['GET', 'POST'])
 def page_query():
     """Pagina delle query manuali:
