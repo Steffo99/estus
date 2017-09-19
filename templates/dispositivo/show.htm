@@ -27,18 +27,17 @@
 
         function calchostname() {
             var comune = prompt("Inserisci le due lettere corrispondenti al comune in cui verrà collocato il dispositivo. (Es: VG)");
+            if(comune === null) return;
             var anno = $("#form-ordine").find(":selected").text().substring(2,4);
-            if(anno === "")
-            {
-                anno = prompt("Inserisci l'anno d'acquisto del dispositivo. (Es: 17)")
-            }
+            if(anno === "") anno = prompt("Inserisci l'anno d'acquisto del dispositivo. (Es: 17)");
+            if(anno === null) return;
             var servizio = prompt("Inserisci le tre lettere corrispondenti al servizio di destinazione del dispositivo. (Es. SCU)");
+            if(servizio === null) return;
             var inv = $("#form-ced").val();
-            if(inv === "")
-            {
-                inv = prompt("Inserisci il numero dell'inventario del dispositivo. (Es: 0351)");
-            }
+            if(inv === "") inv = prompt("Inserisci il numero dell'inventario del dispositivo. (Es: 0351)");
+            if(inv === null) return;
             var proprietario = prompt("Inserisci la lettera corrispondente al proprietario del dispositivo. (Es: U)");
+            if(proprietario === null) return;
             $("#form-hostname").val(comune + anno + servizio + inv.padStart(4, "0") + proprietario);
         }
 
