@@ -546,7 +546,8 @@ def page_disp_add():
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None, request.form['so'],
+                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None,
+                                request.form['so'],
                                 int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
         db.session.commit()
@@ -698,7 +699,8 @@ def page_disp_clone(did):
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None, request.form['so'],
+                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None,
+                                request.form['so'],
                                 int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
         db.session.commit()
