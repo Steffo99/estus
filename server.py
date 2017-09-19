@@ -14,6 +14,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+sistemioperativi = [" ", "CentOS", "Fedora", "OpenSUSE", "Red Hat", "Ubuntu", "Debian", "Windows Server 2003",
+                    "Windows Server 2007", "Windows Server 2010", "Windows Server 2012", "Windows Server 2016",
+                    "Windows 98", "Windows ME", "Windows 2000", "Windows XP", "Windows Vista", "Windows 7", "Windows 8",
+                    "Windows 8.1", "Windows 10", "Altro"]
+
+
 class User(db.Model):
     """Utente per il login sul sito dell'inventario."""
     __tablename__ = "website_users"
@@ -498,13 +504,10 @@ def page_disp_add():
         serial = request.args.get("scanned_barcode")
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        sistemi = [" ", "CentOS", "Fedora", "Open SUSE", "Red Hat", "Ubuntu", "Windows 10 x64", "Windows 2000",
-                   "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
-                   "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         return render_template("dispositivo/show.htm", action="add", impiegati=impiegati, opzioni=opzioni, reti=reti,
-                               pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemi)
+                               pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemioperativi)
     else:
         if request.form["inv_ced"]:
             try:
@@ -591,13 +594,10 @@ def page_disp_show(did):
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        sistemi = [" ", "CentOS", "Fedora", "Open SUSE", "Red Hat", "Ubuntu", "Windows 10 x64", "Windows 2000",
-                   "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
-                   "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi,
                                impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
-                               reti=reti, sistemi=sistemi)
+                               reti=reti, sistemi=sistemioperativi)
     else:
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
@@ -651,13 +651,10 @@ def page_disp_clone(did):
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
-        sistemi = [" ", "CentOS", "Fedora", "Open SUSE", "Red Hat", "Ubuntu", "Windows 10 x64", "Windows 2000",
-                   "Windows 2003 server", "Windows 2007 server", "Windows 7", "Windows 8", "Windows 8.1", "Windows 98",
-                   "Windows NT", "Windows Vista", "Windows XP", "Debian", "Altro"]
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi,
                                impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
-                               reti=reti, sistemi=sistemi)
+                               reti=reti, sistemi=sistemioperativi)
     else:
         if request.form["inv_ced"]:
             try:

@@ -31,7 +31,7 @@
             var inv = $("#form-ced").val();
             if(inv === "")
             {
-                inv = prompt("Inserisci il numero dell'inventario del dispositivo. (Es: 0351)")
+                inv = prompt("Inserisci il numero dell'inventario del dispositivo. (Es: 0351)");
             }
             var proprietario = prompt("Inserisci la lettera corrispondente al proprietario del dispositivo. (Es: U)");
             $("#form-hostname").val(comune + anno + inv + proprietario);
@@ -44,7 +44,7 @@
                     $("#utente{{ loop.index }} option").prop("selected", false);
                     $("#utente{{ loop.index }} option[value={{ accesso.iid }}]").prop("selected", true);
                 {% endfor %}
-            }
+            };
         {% endif %}
     </script>
 {% endblock %}
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-2" for="form-so">Sistema Operativo</label>
+            <label class="col-xs-2" for="form-so">Sistema operativo</label>
             <div class="col-xs-10">
                 <select id="form-so" class="form-control" name="so">
                     {% for sistema in sistemi %}
