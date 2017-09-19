@@ -10,6 +10,7 @@
         <tr>
             <th>Data dell'ordine</th>
             <th>Numero dell'ordine</th>
+            <th>Fornitore</th>
             <th>Stato garanzia</th>
             <th>Azioni</th>
         </tr>
@@ -19,6 +20,7 @@
                 <tr>
                     <td>{% if order.data %}{{ order.data }}{% endif %}</td>
                     <td>{% if order.numero_ordine %}{{ order.numero_ordine }}{% endif %}</td>
+                    <td>{% if order.fornitore %}{{ order.fornitore }}{% endif %}</td>
                     <td>
                         {% if order.garanzia %}
                             {% if order.garanzia > soon %}

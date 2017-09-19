@@ -15,6 +15,7 @@
         <input class="form-control" type="date" placeholder="yyyy-mm-dd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" name="data" {% if order %}value="{{ order.data }}"{% endif %}>
         <input class="form-control" type="text" placeholder="Numero ordine" name="numero_ordine" {% if order %}value="{{ order.numero_ordine }}"{% endif %}>
         <input class="form-control" type="date" placeholder="yyyy-mm-dd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" name="garanzia" {% if order %}value="{{ order.garanzia }}"{% endif %}>
+        <input class="form-control" type="text" placeholder="Fornitore" name="fornitore" {% if order %} value="{{ order.fornitore }}" {% endif %}>
         <input class="btn btn-primary" type="submit">
     </form>
 {% endblock %}

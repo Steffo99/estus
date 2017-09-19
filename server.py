@@ -117,7 +117,6 @@ class Dispositivo(db.Model):
     modello = db.Column(db.String)
     inv_ced = db.Column(db.Integer, unique=True)
     inv_ente = db.Column(db.Integer, unique=True)
-    fornitore = db.Column(db.String)
     seriale = db.Column(db.String)
     ip = db.Column(db.String)
     nid = db.Column(db.Integer, db.ForeignKey('reti.nid'))
@@ -126,13 +125,12 @@ class Dispositivo(db.Model):
     so = db.Column(db.String)
     oid = db.Column(db.Integer, db.ForeignKey('ordini.oid'))
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname, so, oid):
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, nid, seriale, ip, hostname, so, oid):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
         self.inv_ced = inv_ced
         self.inv_ente = inv_ente
-        self.fornitore = fornitore
         self.nid = nid
         self.seriale = seriale
         self.ip = ip
@@ -203,6 +201,7 @@ class Ordine(db.Model):
     numero_ordine = db.Column(db.String)
     garanzia = db.Column(db.Date)
     dispositivo = db.relationship("Dispositivo", backref='ordine', lazy='dynamic', cascade="delete")
+    fornitore = db.Column(db.String)
 
     def __str__(self):
         if self.numero_ordine is not None:
@@ -546,7 +545,7 @@ def page_disp_add():
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
-                                request.form['fornitore'], request.form['rete'], request.form['seriale'],
+                                request.form['rete'], request.form['seriale'],
                                 request.form['ip'], request.form['hostname'] if request.form['hostname'] else None, request.form['so'],
                                 int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
@@ -646,7 +645,6 @@ def page_disp_show(did):
         disp.tipo = request.form['tipo']
         disp.marca = request.form['marca']
         disp.modello = request.form['modello']
-        disp.fornitore = request.form['fornitore']
         disp.nid = int(request.form['rete'])
         disp.ip = request.form['ip']
         disp.hostname = request.form['hostname'] if request.form['hostname'] else None
@@ -699,7 +697,7 @@ def page_disp_clone(did):
         nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
-                                request.form['fornitore'], request.form['rete'], request.form['seriale'],
+                                request.form['rete'], request.form['seriale'],
                                 request.form['ip'], request.form['hostname'] if request.form['hostname'] else None, request.form['so'],
                                 int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
@@ -874,7 +872,8 @@ def page_order_add():
             garanzia = datetime.date(int(yyyy), int(mm), int(dd))
         else:
             garanzia = None
-        nuovoordine = Ordine(data=data, numero_ordine=request.form["numero_ordine"], garanzia=garanzia)
+        nuovoordine = Ordine(data=data, numero_ordine=request.form["numero_ordine"], garanzia=garanzia,
+                             fornitore=request.form['fornitore'])
         db.session.add(nuovoordine)
         db.session.commit()
         return redirect(url_for("page_order_list"))
@@ -902,6 +901,7 @@ def page_order_show(oid):
         else:
             order.garanzia = None
         order.numero_ordine = request.form["numero_ordine"]
+        order.fornitore = request.form['fornitore']
         db.session.commit()
         return redirect(url_for("page_order_list"))
 

@@ -129,12 +129,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-2" for="form-fornitore">Fornitore</label>
-            <div class="col-xs-10">
-                <input id="form-fornitore" class="form-control" type="text" placeholder="Fornitore" name="fornitore" {% if dispositivo %}value="{{ dispositivo.fornitore }}"{% endif %}>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-xs-2" for="form-seriale">Numero Seriale</label>
             <div class="col-xs-10">
                 <input id="form-seriale" class="form-control" type="text" placeholder="Seriale" name="seriale" {% if dispositivo %}value="{{ dispositivo.seriale }}"{% endif %} value="{{ request.args.get('scanned_barcode') }}">

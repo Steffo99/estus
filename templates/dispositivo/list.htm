@@ -13,7 +13,6 @@
             <th>Inventario CED</th>
             <th>Marca</th>
             <th>Modello</th>
-            <th>Fornitore</th>
             <th>Seriale</th>
             <th>Azioni</th>
         </tr>
@@ -25,7 +24,6 @@
                 <td>{% if d[0].dispositivo.inv_ced %}{{ d[0].dispositivo.inv_ced }}{% endif %}</td>
                 <td>{{ d[0].dispositivo.marca }}</td>
                 <td>{{ d[0].dispositivo.modello }}</td>
-                <td>{{ d[0].dispositivo.fornitore }}</td>
                 <td>{{ d[0].dispositivo.seriale }}</td>
                 <td>
                     <a href="/disp_details/{{ d[0].did }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
