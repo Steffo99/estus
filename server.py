@@ -125,19 +125,6 @@ class Dispositivo(db.Model):
     so = db.Column(db.String)
     oid = db.Column(db.Integer, db.ForeignKey('ordini.oid'))
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, nid, seriale, ip, hostname, so, oid):
-        self.tipo = tipo
-        self.marca = marca
-        self.modello = modello
-        self.inv_ced = inv_ced
-        self.inv_ente = inv_ente
-        self.nid = nid
-        self.seriale = seriale
-        self.ip = ip
-        self.hostname = hostname
-        self.so = so
-        self.oid = oid
-
     def __str__(self):
         if self.marca != "" and self.modello != "":
             return f"{self.marca} {self.modello}"
@@ -542,13 +529,17 @@ def page_disp_add():
                 int(request.form["inv_ente"])
             except ValueError:
                 return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
-        nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                int(request.form['inv_ced']) if request.form['inv_ced'] else None,
-                                int(request.form['inv_ente']) if request.form['inv_ente'] else None,
-                                request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None,
-                                request.form['so'],
-                                int(request.form['ordine']) if request.form['ordine'] else None)
+        nuovodisp = Dispositivo(tipo=request.form['tipo'],
+                                marca=request.form['marca'],
+                                modello=request.form['modello'],
+                                inv_ced=int(request.form['inv_ced']) if request.form['inv_ced'] else None,
+                                inv_ente=int(request.form['inv_ente']) if request.form['inv_ente'] else None,
+                                nid=request.form['rete'],
+                                seriale=request.form['seriale'] if request.form['seriale'] else None,
+                                ip=request.form['ip'],
+                                hostname=request.form['hostname'] if request.form['hostname'] else None,
+                                so=request.form['so'],
+                                oid=int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -695,13 +686,17 @@ def page_disp_clone(did):
                 int(request.form["inv_ente"])
             except ValueError:
                 return render_template("error.htm", error="Il campo Inventario ente deve contenere un numero.")
-        nuovodisp = Dispositivo(request.form['tipo'], request.form['marca'], request.form['modello'],
-                                int(request.form['inv_ced']) if request.form['inv_ced'] else None,
-                                int(request.form['inv_ente']) if request.form['inv_ente'] else None,
-                                request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None,
-                                request.form['so'],
-                                int(request.form['ordine']) if request.form['ordine'] else None)
+        nuovodisp = Dispositivo(tipo=request.form['tipo'],
+                                marca=request.form['marca'],
+                                modello=request.form['modello'],
+                                inv_ced=int(request.form['inv_ced']) if request.form['inv_ced'] else None,
+                                inv_ente=int(request.form['inv_ente']) if request.form['inv_ente'] else None,
+                                nid=request.form['rete'],
+                                seriale=request.form['seriale'] if request.form['seriale'] else None,
+                                ip=request.form['ip'],
+                                hostname=request.form['hostname'] if request.form['hostname'] else None,
+                                so=request.form['so'],
+                                oid=int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
