@@ -604,6 +604,8 @@ def page_disp_details(did):
     if 'username' not in session:
         return abort(403)
     disp = Dispositivo.query.get_or_404(did)
+    if disp.oid is not None:
+        disp = Dispositivo.query.filter_by(did=did).join(Ordine).first()
     accessi = Accesso.query.filter_by(did=did).all()
     return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, pagetype="disp",
                            user=session.get("username"))
