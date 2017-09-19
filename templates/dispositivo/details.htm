@@ -81,7 +81,7 @@
                     Codice Inventario Ente
                 </h4>
                 <div class="list-group-item-text">
-                    <code>{{ disp.inv_ente }}</code>
+                    {{ disp.inv_ente }}
                 </div>
             </li>
         {% endif %}
@@ -91,7 +91,7 @@
                     Codice Seriale
                 </h4>
                 <div class="list-group-item-text">
-                    <code>{{ disp.seriale }}</code>
+                    {{ disp.seriale }}
                 </div>
             </li>
         {% endif %}
@@ -120,7 +120,7 @@
                 Network
             </h4>
             <div class="list-group-item-text">
-                <a href="/net_details/{{ disp.rete.nid }}"><code>{{ disp.rete.nome }} - {{ disp.rete.network_ip }}/{{ disp.rete.subnet }}</code></a>
+                <a href="/net_details/{{ disp.rete.nid }}">{{ disp.rete.nome }} - {{ disp.rete.network_ip }}/{{ disp.rete.subnet }}</a>
             </div>
         </li>
     </ul>
