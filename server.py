@@ -1,3 +1,4 @@
+import datetime
 import os
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
@@ -189,6 +190,23 @@ class Rete(db.Model):
 
     def __repr__(self):
         return "<Rete {},{}>".format(self.nid, self.nome)
+
+
+class Ordine(db.Model):
+    """Ordine di uno o più dispositivi"""
+    __tablename__ = "ordini"
+
+    oid = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.Date)
+    numero_ordine = db.Column(db.String)
+
+    def __str__(self):
+        if self.numero_ordine is not None:
+            return f"Ordine {self.numero_ordine}"
+        return f"Ordine #{self.oid}"
+
+    def __repr__(self):
+        return f"<Ordine {self.oid}>"
 
 
 class FakeAccesso:
@@ -784,10 +802,12 @@ def page_user_del(uid):
     if 'username' not in session:
         return abort(403)
     if User.query.count() <= 1:
-        return render_template("error.htm", error="Non puoi cancellare l'ultimo utente rimasto!")
+        return render_template("error.htm", error="Non puoi cancellare l'ultimo utente rimasto!",
+                               user=session.get("username"))
     utente = User.query.get_or_404(uid)
     if utente.username == session["username"]:
-        return render_template("error.htm", error="Non puoi cancellare l'utente con cui sei loggato!")
+        return render_template("error.htm", error="Non puoi cancellare l'utente con cui sei loggato!",
+                               user=session.get("username"))
     db.session.delete(utente)
     db.session.commit()
     return redirect(url_for('page_user_list'))
@@ -811,6 +831,55 @@ def page_user_add():
         db.session.add(nuovo)
         db.session.commit()
         return redirect(url_for('page_user_list'))
+
+
+@app.route('/order_list')
+def page_order_list():
+    """Pagina di elenco degli ordini registrati nel database."""
+    if 'username' not in session:
+        return abort(403)
+    ordini = Ordine.query.order_by(Ordine.data).all()
+    return render_template("ordine/list.htm", orders=ordini, pagetype="order", user=session.get("username"))
+
+
+@app.route('/order_add', methods=['GET', 'POST'])
+def page_order_add():
+    """Pagina di creazione nuovo ordine"""
+    if 'username' not in session:
+        return abort(403)
+    if request.method == 'GET':
+        return render_template("ordine/show.htm", action="add", pagetype="order", user=session.get("username"))
+    else:
+        if request.form["data"] != "":
+            yyyy, mm, dd = request.form["data"].split("-", 2)
+            data = datetime.date(int(yyyy), int(mm), int(dd))
+        else:
+            data = None
+        nuovoordine = Ordine(data=data, numero_ordine=request.form["numero_ordine"])
+        db.session.add(nuovoordine)
+        db.session.commit()
+        return redirect(url_for("page_order_list"))
+
+
+@app.route('/order_show/<int:oid>', methods=['GET', 'POST'])
+def page_order_show(oid):
+    """Pagina di modifica ordine"""
+    if 'username' not in session:
+        return abort(403)
+    if request.method == 'GET':
+        order = Ordine.query.get_or_404(oid)
+        return render_template("ordine/show.htm", order=order, action="show", pagetype="order",
+                               user=session.get("username"))
+    else:
+        order = Ordine.query.get_or_404(oid)
+        if request.form["data"] != "":
+            yyyy, mm, dd = request.form["data"].split("-", 2)
+            order.data = datetime.date(int(yyyy), int(mm), int(dd))
+        else:
+            order.data = None
+        order.numero_ordine = request.form["numero_ordine"]
+        db.session.commit()
+        return redirect(url_for("page_order_list"))
 
 
 @app.route('/query', methods=['GET', 'POST'])

@@ -1,0 +1,26 @@
+{% extends "base.htm" %}
+{% block title %}Elenco ordini • estus{% endblock %}
+{% block content %}
+    <h1>
+        Ordini esistenti
+    </h1>
+    <a class="btn btn-success" href="/order_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Data dell'ordine</th>
+            <th>Numero dell'ordine</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{% if order.data %}{{ order.data }}{% endif %}</td>
+                    <td>{% if order.numero_ordine %}{{ order.numero_ordine }}{% endif %}</td>
+                    <td><a href="/order_details/{{ order.oid }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/order_show/{{ order.oid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/order_del/{{ order.oid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

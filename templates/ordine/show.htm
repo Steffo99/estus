@@ -1,0 +1,19 @@
+{% extends "base.htm" %}
+{% block title %}Modifica ordine • estus{% endblock %}
+{% block content %}
+    <h1>
+        {% if action == "add" %}
+            Crea ordine
+        {% elif action == "show" %}
+            Modifica ordine
+        {% endif %}
+    </h1>
+    <div class="alert alert-warning">
+        Il campo data non è ancora <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1366188">correttamente supportato da Firefox</a> e altri Browser. Se il calendario non viene fuori, inserite le date nel formato AAAA-MM-GG.
+    </div>
+    <form class="form-inline" {% if order %}action="/order_show/{{ order.oid }}"{% endif %} method="post">
+        <input class="form-control" type="date" placeholder="yyyy-mm-dd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" name="data" {% if order %}value="{{ order.data }}"{% endif %}>
+        <input class="form-control" type="text" placeholder="Numero ordine" name="numero_ordine" {% if order %}value="{{ order.numero_ordine }}"{% endif %}>
+        <input class="btn btn-primary" type="submit">
+    </form>
+{% endblock %}
