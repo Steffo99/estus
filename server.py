@@ -124,8 +124,9 @@ class Dispositivo(db.Model):
     rete = db.relationship("Rete", backref='dispositivi')
     hostname = db.Column(db.String, unique=True)
     so = db.Column(db.String)
+    oid = db.Column(db.Integer, db.ForeignKey('ordini.oid'))
 
-    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname, so):
+    def __init__(self, tipo, marca, modello, inv_ced, inv_ente, fornitore, nid, seriale, ip, hostname, so, oid):
         self.tipo = tipo
         self.marca = marca
         self.modello = modello
@@ -137,6 +138,7 @@ class Dispositivo(db.Model):
         self.ip = ip
         self.hostname = hostname
         self.so = so
+        self.oid = oid
 
     def __str__(self):
         if self.marca != "" and self.modello != "":
@@ -199,6 +201,8 @@ class Ordine(db.Model):
     oid = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.Date)
     numero_ordine = db.Column(db.String)
+    garanzia = db.Column(db.Date)
+    dispositivo = db.relationship("Dispositivo", backref='ordine', lazy='dynamic', cascade="delete")
 
     def __str__(self):
         if self.numero_ordine is not None:
@@ -524,8 +528,10 @@ def page_disp_add():
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         reti = Rete.query.order_by(Rete.nome).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
+        ordini = Ordine.query.order_by(Ordine.data).all()
         return render_template("dispositivo/show.htm", action="add", impiegati=impiegati, opzioni=opzioni, reti=reti,
-                               pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemioperativi)
+                               pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemioperativi,
+                               ordini=ordini)
     else:
         if request.form["inv_ced"]:
             try:
@@ -541,7 +547,8 @@ def page_disp_add():
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['fornitore'], request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'], request.form['so'])
+                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None, request.form['so'],
+                                int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -610,12 +617,13 @@ def page_disp_show(did):
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
+        ordini = Ordine.query.order_by(Ordine.data).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi,
                                impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
-                               reti=reti, sistemi=sistemioperativi)
+                               reti=reti, sistemi=sistemioperativi, ordini=ordini)
     else:
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
@@ -639,8 +647,9 @@ def page_disp_show(did):
         disp.fornitore = request.form['fornitore']
         disp.nid = int(request.form['rete'])
         disp.ip = request.form['ip']
-        disp.hostname = request.form['hostname']
+        disp.hostname = request.form['hostname'] if request.form['hostname'] else None
         disp.so = request.form['so']
+        disp.oid = int(request.form['ordine']) if request.form['ordine'] else None
         # Trova tutti gli utenti, edizione sporco hack in html
         users = list()
         while True:
@@ -669,10 +678,11 @@ def page_disp_clone(did):
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        ordini = Ordine.query.order_by(Ordine.data).all()
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi,
                                impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
-                               reti=reti, sistemi=sistemioperativi)
+                               reti=reti, sistemi=sistemioperativi, ordini=ordini)
     else:
         if request.form["inv_ced"]:
             try:
@@ -688,7 +698,8 @@ def page_disp_clone(did):
                                 int(request.form['inv_ced']) if request.form['inv_ced'] else None,
                                 int(request.form['inv_ente']) if request.form['inv_ente'] else None,
                                 request.form['fornitore'], request.form['rete'], request.form['seriale'],
-                                request.form['ip'], request.form['hostname'], request.form['so'])
+                                request.form['ip'], request.form['hostname'] if request.form['hostname'] else None, request.form['so'],
+                                int(request.form['ordine']) if request.form['ordine'] else None)
         db.session.add(nuovodisp)
         db.session.commit()
         # Trova tutti gli utenti, edizione sporco hack in html
@@ -855,7 +866,12 @@ def page_order_add():
             data = datetime.date(int(yyyy), int(mm), int(dd))
         else:
             data = None
-        nuovoordine = Ordine(data=data, numero_ordine=request.form["numero_ordine"])
+        if request.form["garanzia"] != "":
+            yyyy, mm, dd = request.form["garanzia"].split("-", 2)
+            garanzia = datetime.date(int(yyyy), int(mm), int(dd))
+        else:
+            garanzia = None
+        nuovoordine = Ordine(data=data, numero_ordine=request.form["numero_ordine"], garanzia=garanzia)
         db.session.add(nuovoordine)
         db.session.commit()
         return redirect(url_for("page_order_list"))
@@ -877,6 +893,11 @@ def page_order_show(oid):
             order.data = datetime.date(int(yyyy), int(mm), int(dd))
         else:
             order.data = None
+        if request.form["garanzia"] != "":
+            yyyy, mm, dd = request.form["garanzia"].split("-", 2)
+            order.garanzia = datetime.date(int(yyyy), int(mm), int(dd))
+        else:
+            order.garanzia = None
         order.numero_ordine = request.form["numero_ordine"]
         db.session.commit()
         return redirect(url_for("page_order_list"))
