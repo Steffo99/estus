@@ -21,8 +21,8 @@
                 <td>{{ imp.servizio.ente.nomeente }}</td>
                 <td>{{ imp.servizio.nomeservizio }}
                 <td>{{ imp.nomeimpiegato }}</td>
-                <td><code>{{ imp.username }}</code></td>
-                <td><code>{{ imp.passwd }}</code></td>
+                <td>{% if imp.username %}<code>{{ imp.username }}</code>{% endif %}</td>
+                <td>{% if imp.passwd %}<code>{{ imp.passwd }}</code>{% endif %}</td>
                 <td><a href="/imp_details/{{ imp.iid }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/imp_show/{{ imp.iid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/imp_del/{{ imp.iid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
