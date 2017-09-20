@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-sistemioperativi = [" ", "CentOS", "Fedora", "OpenSUSE", "Red Hat", "Ubuntu", "Debian", "Windows Server 2003",
+sistemioperativi = ["CentOS", "Fedora", "OpenSUSE", "Red Hat", "Ubuntu", "Debian", "Windows Server 2003",
                     "Windows Server 2007", "Windows Server 2010", "Windows Server 2012", "Windows Server 2016",
                     "Windows 98", "Windows ME", "Windows 2000", "Windows XP", "Windows Vista", "Windows 7", "Windows 8",
                     "Windows 8.1", "Windows 10", "Altro"]
