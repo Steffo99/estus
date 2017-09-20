@@ -1,13 +1,15 @@
 {% extends "base.htm" %}
 {% block title %}Modifica impiegato • estus{% endblock %}
 {% block content %}
-    <h1>
-        {% if action == "add" %}
-            Crea impiegato
-        {% elif action == "show" %}
-            Modifica impiegato
-        {% endif %}
-    </h1>
+    <div class="page-header">
+        <h1>
+            {% if action == "add" %}
+                Crea impiegato
+            {% elif action == "show" %}
+                Modifica impiegato
+            {% endif %}
+        </h1>
+    </div>
     <form class="form-inline" {% if imp %}action="/imp_show/{{ imp.iid }}"{% endif %} method="post">
         <select class="form-control" name="sid">
             {% for servizio in servizi %}

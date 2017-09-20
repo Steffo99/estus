@@ -53,15 +53,17 @@
     </script>
 {% endblock %}
 {% block content %}
-    <h1>
-        {% if action == "add" %}
-            Crea dispositivo
-        {% elif action == "show" %}
-            Modifica dispositivo
-        {% elif action == "clone" %}
-            Clona dispositivo
-        {% endif %}
-    </h1>
+    <div class="page-header">
+        <h1>
+            {% if action == "add" %}
+                Crea dispositivo
+            {% elif action == "show" %}
+                Modifica dispositivo
+            {% elif action == "clone" %}
+                Clona dispositivo
+            {% endif %}
+        </h1>
+    </div>
     <form class="form-horizontal" action="/disp_{{ action }}{% if dispositivo %}/{{ dispositivo.did }}{% endif %}" method="post">
         <div class="form-group">
             <label class="col-xs-2" for="form-tipo">Tipo dispositivo</label>

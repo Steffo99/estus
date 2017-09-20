@@ -1,11 +1,16 @@
 {% extends 'base.htm' %}
 {% block title %}Query • estus{% endblock %}
 {% block content %}
+    <div class="page-header">
+        <h1>
+            Query manuale
+        </h1>
+    </div>
     <form action="/query" method="post">
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon">SELECT</span>
-                <input type="text" class="form-control" placeholder="* FROM enti" name="query" {% if query %}value="{{ query }}{% endif %}">
+                <input type="text" class="form-control" placeholder="* FROM ..." name="query" {% if query %}value="{{ query }}{% endif %}">
                 <span class="input-group-addon">;</span>
             </div>
         </div>

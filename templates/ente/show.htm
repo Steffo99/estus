@@ -1,13 +1,15 @@
 {% extends "base.htm" %}
 {% block title %}Modifica ente • estus{% endblock %}
 {% block content %}
-    <h1>
-        {% if action == "add" %}
-            Crea ente
-        {% elif action == "show" %}
-            Modifica ente
-        {% endif %}
-    </h1>
+    <div class="page-header">
+        <h1>
+            {% if action == "add" %}
+                Crea ente
+            {% elif action == "show" %}
+                Modifica ente
+            {% endif %}
+        </h1>
+    </div>
     <form class="form-inline" {% if ente %}action="/ente_show/{{ ente.eid }}"{% endif %} method="post">
         <input class="form-control" type="text" placeholder="Nome ente" name="nomeente" {% if ente %}value="{{ ente.nomeente }}"{% endif %}>
         <input class="form-control" type="text" placeholder="Nome breve" name="nomebreveente" {% if ente %}value="{{ ente.nomebreveente }}"{% endif %}>

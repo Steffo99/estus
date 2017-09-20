@@ -1,9 +1,17 @@
 {% extends "base.htm" %}
 {% block title %}Dettagli rete • estus{% endblock %}
 {% block content %}
-    <h1>
-        Dettagli della rete
-    </h1>
+    <div class="page-header">
+        <h1>
+            {{ net }}
+            <a href="/net_show/{{ net.nid }}" class="btn btn-primary">
+                <span class="glyphicon glyphicon-pencil"></span> Modifica
+            </a>
+            <a href="/net_del/{{ net.nid }}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span> Elimina
+            </a>
+        </h1>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
             <h4 class="list-group-item-heading">
@@ -40,10 +48,4 @@
             </div>
         </li>
     </ul>
-    <a href="/net_show/{{ net.nid }}" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span> Modifica
-    </a>
-    <a href="/net_del/{{ net.nid }}" class="btn btn-danger">
-        <span class="glyphicon glyphicon-remove"></span> Elimina
-    </a>
 {% endblock %}

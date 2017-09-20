@@ -1,6 +1,7 @@
 {% extends "base.htm" %}
 {% block title %}Modifica servizio • estus{% endblock %}
 {% block content %}
+    <div class="page-header">
       <h1>
         {% if action == "add" %}
           Aggiungi servizio
@@ -8,6 +9,7 @@
           Modifica servizio
         {% endif %}
       </h1>
+    </div>
       <form class="form-inline" {% if serv %}action="/serv_show/{{serv.sid}}"{% endif %} method="post">
         <select class="form-control" name="eid">
           {% for ente in enti %}
