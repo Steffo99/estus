@@ -1,6 +1,6 @@
 import datetime
 import os
-from flask import Flask, session, url_for, redirect, request, render_template, abort, g
+from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 import bcrypt
