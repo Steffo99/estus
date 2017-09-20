@@ -2,7 +2,7 @@
 {% block title %}Elenco reti • estus{% endblock %}
 {% block content %}
     <h1>
-        Reti esistenti
+        Reti
     </h1>
         {% for rete in reti if rete.network_ip == "0.0.0.0" %}
             <div class="alert alert-info">
