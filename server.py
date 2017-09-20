@@ -422,7 +422,8 @@ def page_serv_show(sid):
     if request.method == "GET":
         serv = Servizio.query.get_or_404(sid)
         enti = Ente.query.all()
-        return render_template("servizio/show.htm", action="show", serv=serv, enti=enti)
+        servizi = Servizio.query.order_by(Servizio.locazione).all()
+        return render_template("servizio/show.htm", action="show", serv=serv, servizi=servizi, enti=enti)
     else:
         serv = Servizio.query.get_or_404(sid)
         serv.eid = request.form["eid"]
