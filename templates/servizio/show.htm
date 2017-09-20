@@ -2,22 +2,53 @@
 {% block title %}Modifica servizio • estus{% endblock %}
 {% block content %}
     <div class="page-header">
-      <h1>
-        {% if action == "add" %}
-          Aggiungi servizio
-        {% elif action == "show" %}
-          Modifica servizio
-        {% endif %}
-      </h1>
+        <h1>
+            {% if action == "add" %}
+                Aggiungi servizio
+            {% elif action == "show" %}
+                Modifica servizio
+            {% endif %}
+        </h1>
     </div>
-      <form class="form-inline" {% if serv %}action="/serv_show/{{serv.sid}}"{% endif %} method="post">
-        <select class="form-control" name="eid">
-          {% for ente in enti %}
-            <option value="{{ente.eid}}" {% if serv and serv.eid == ente.eid %}selected="selected"{% endif %}>{{ente.nomeente}}</option>
-          {% endfor %}
-        </select>
-        <input class="form-control" type="text" placeholder="Nome servizio" name="nomeservizio" {% if serv %}value="{{serv.nomeservizio}}"{% endif %}>
-      <input class="form-control" type="text" placeholder="locazione" name="locazione" {% if serv %}value="{{serv.locazione}}"{% endif %}>
+    <form class="form-horizontal" {% if serv %}action="/serv_show/{{serv.sid}}"{% endif %} method="post">
+        <div class="form-group">
+            <label class="col-xs-2" for="form-tipo">Ente</label>
+            <div class="col-xs-10">
+                <select class="form-control" name="eid">
+                    {% for ente in enti %}
+                        <option value="{{ente.eid}}" {% if serv and serv.eid == ente.eid %}selected="selected"{% endif %}>{{ente}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2" for="form-tipo">Nome servizio</label>
+            <div class="col-xs-10">
+                <input class="form-control" type="text" placeholder="Nome servizio" name="nomeservizio" {% if serv %}value="{{serv.nomeservizio}}"{% endif %}>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2" for="form-tipo">Sede</label>
+            <div class="col-xs-10">
+                <input type="text" class="form-control" placeholder="Sede [...]" name="locazione" list="form-locazione" {% if dispositivo %}value="{{ serv.locazione }}"{% endif %}>
+                <datalist id="form-locazione">
+                    {% for servizio in servizi %}
+                        <option value="{{ servizio.locazione }}">{{ servizio.locazione }}</option>
+                    {% endfor %}
+                </datalist></div>
+        </div>
         <input class="btn btn-primary" type="submit">
-      </form>
+    </form>
+    {#
+    <form class="form-inline" {% if serv %}action="/serv_show/{{serv.sid}}"{% endif %} method="post">
+      <select class="form-control" name="eid">
+        {% for ente in enti %}
+          <option value="{{ente.eid}}" {% if serv and serv.eid == ente.eid %}selected="selected"{% endif %}>{{ente.nomeente}}</option>
+        {% endfor %}
+      </select>
+      <input class="form-control" type="text" placeholder="Nome servizio" name="nomeservizio" {% if serv %}value="{{serv.nomeservizio}}"{% endif %}>
+    <input class="form-control" type="text" placeholder="locazione" name="locazione" {% if serv %}value="{{serv.locazione}}"{% endif %}>
+      <input class="btn btn-primary" type="submit">
+    </form>
+    #}
 {% endblock %}

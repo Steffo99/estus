@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 sistemioperativi = ["CentOS", "Fedora", "OpenSUSE", "Red Hat", "Ubuntu", "Debian", "Windows Server 2003",
                     "Windows Server 2007", "Windows Server 2010", "Windows Server 2012", "Windows Server 2016",
                     "Windows 98", "Windows ME", "Windows 2000", "Windows XP", "Windows Vista", "Windows 7", "Windows 8",
-                    "Windows 8.1", "Windows 10", "Altro"]
+                    "Windows 8.1", "Windows 10"]
 
 
 old_wd = os.getcwd()
@@ -373,7 +373,8 @@ def page_serv_add():
         return abort(403)
     if request.method == 'GET':
         enti = Ente.query.order_by(Ente.nomeente).all()
-        return render_template("servizio/show.htm", action="add", enti=enti, pagetype="serv")
+        servizi = Servizio.query.order_by(Servizio.locazione).all()
+        return render_template("servizio/show.htm", action="add", enti=enti, servizi=servizi, pagetype="serv")
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)

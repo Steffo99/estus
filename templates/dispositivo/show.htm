@@ -68,7 +68,7 @@
         <div class="form-group">
             <label class="col-xs-2" for="form-tipo">Tipo dispositivo</label>
             <div class="col-xs-10">
-                <input type="text" class="form-control" name="tipo" list="form-tipo" {% if dispositivo %}value="{{ dispositivo.tipo }}"{% endif %}>
+                <input type="text" class="form-control" placeholder="Tipo dispositivo [...]" name="tipo" list="form-tipo" {% if dispositivo %}value="{{ dispositivo.tipo }}"{% endif %}>
                 <datalist id="form-tipo" name="tipo">
                     {% for opzione in opzioni %}
                         <option value="{{ opzione }}">{{ opzione }}</option>
@@ -90,7 +90,7 @@
         <div class="form-group">
             <label class="col-xs-2" for="form-so">Sistema operativo</label>
             <div class="col-xs-10">
-                <input type="text" class="form-control" name="so" list="form-so" {% if dispositivo %}value="{{ dispositivo.so }}"{% endif %}>
+                <input type="text" class="form-control" placeholder="Sistema operativo [...]" name="so" list="form-so" {% if dispositivo %}value="{{ dispositivo.so }}"{% endif %}>
                 <datalist id="form-so" name="so">
                     {% for sistema in sistemi %}
                         <option value="{{ sistema }}">{{ sistema }}</option>
