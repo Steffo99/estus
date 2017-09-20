@@ -13,7 +13,7 @@
     <form class="form-inline" {% if net %}action="/net_show/{{ net.nid }}"{% endif %} method="post">
         <input class="form-control" type="text" placeholder="Nome rete" name="nome" {% if net %}value="{{ net.nome }}"{% endif %}>
         <input class="form-control" type="text" placeholder="Network IP" name="network_ip" {% if net %}value="{{ net.network_ip }}"{% endif %}>
-        <input class="form-control" type="text" placeholder="Subnet mask" name="subnet" {% if net %}value="{{ net.subnet }}"{% endif %}>
+        <input class="form-control" type="text" placeholder="Subnet mask (/XX)" pattern="/?[0-9]{2}" name="subnet" {% if net %}value="{{ net.subnet }}"{% endif %}>
         <input class="form-control" type="text" placeholder="DNS primario" name="primary_dns" {% if net %}value="{{ net.primary_dns }}"{% endif %}>
         <input class="form-control" type="text" placeholder="DNS secondario" name="secondary_dns" {% if net %}value="{{ net.secondary_dns }}"{% endif %}>
         <input class="btn btn-primary" type="submit">
