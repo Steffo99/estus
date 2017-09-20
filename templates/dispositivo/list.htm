@@ -26,7 +26,7 @@
                 <td>{% if d[0].dispositivo.inv_ced %}{{ d[0].dispositivo.inv_ced }}{% endif %}</td>
                 <td>{{ d[0].dispositivo.marca }}</td>
                 <td>{{ d[0].dispositivo.modello }}</td>
-                <td>{{ d[0].dispositivo.seriale }}</td>
+                <td>{% if d[0].dispositivo.seriale %}{{ d[0].dispositivo.seriale }}{% endif %}</td>
                 <td>
                     <a href="/disp_details/{{ d[0].did }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
                     <a href="/disp_show/{{ d[0].did }}" title="Modifica"><span class="glyphicon glyphicon-pencil"></span></a>
