@@ -1,10 +1,11 @@
 import datetime
 import os
-from flask import Flask, session, url_for, redirect, request, render_template, abort
+from flask import Flask, session, url_for, redirect, request, render_template, abort, g
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 import bcrypt
 import random
+import subprocess
 
 app = Flask(__name__)
 app.secret_key = os.environ["flask_secret_key"]
@@ -19,6 +20,16 @@ sistemioperativi = ["CentOS", "Fedora", "OpenSUSE", "Red Hat", "Ubuntu", "Debian
                     "Windows Server 2007", "Windows Server 2010", "Windows Server 2012", "Windows Server 2016",
                     "Windows 98", "Windows ME", "Windows 2000", "Windows XP", "Windows Vista", "Windows 7", "Windows 8",
                     "Windows 8.1", "Windows 10", "Altro"]
+
+
+old_wd = os.getcwd()
+try:
+    os.chdir(os.path.dirname(__file__))
+    estus_version = str(subprocess.check_output(["git", "describe", "--tags"]), encoding="utf8").strip()
+except Exception:
+    estus_version = "Unknown"
+finally:
+    os.chdir(old_wd)
 
 
 class User(db.Model):
@@ -289,7 +300,7 @@ def page_dashboard():
     conteggioutenti = dict()
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
-    return render_template("dashboard.htm", pagetype="main", user=session.get("username"),
+    return render_template("dashboard.htm", pagetype="main",
                            conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish)
 
 
@@ -302,7 +313,7 @@ def page_ente_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("ente/show.htm", action="add", pagetype="ente", user=session.get("username"))
+        return render_template("ente/show.htm", action="add", pagetype="ente")
     else:
         nuovoent = Ente(request.form['nomeente'], request.form['nomebreveente'])
         db.session.add(nuovoent)
@@ -334,7 +345,7 @@ def page_ente_list():
     if 'username' not in session:
         return abort(403)
     enti = Ente.query.order_by(Ente.nomeente).all()
-    return render_template("ente/list.htm", enti=enti, pagetype="ente", user=session.get("username"))
+    return render_template("ente/list.htm", enti=enti, pagetype="ente")
 
 
 @app.route('/ente_show/<int:eid>', methods=['GET', 'POST'])
@@ -343,7 +354,7 @@ def page_ente_show(eid):
         return abort(403)
     if request.method == "GET":
         ente = Ente.query.get_or_404(eid)
-        return render_template("ente/show.htm", action="show", ente=ente, user=session.get("username"))
+        return render_template("ente/show.htm", action="show", ente=ente)
     else:
         ente = Ente.query.get_or_404(eid)
         ente.nomeente = request.form["nomeente"]
@@ -362,8 +373,7 @@ def page_serv_add():
         return abort(403)
     if request.method == 'GET':
         enti = Ente.query.order_by(Ente.nomeente).all()
-        return render_template("servizio/show.htm", action="add", enti=enti, pagetype="serv",
-                               user=session.get("username"))
+        return render_template("servizio/show.htm", action="add", enti=enti, pagetype="serv")
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
         db.session.add(nuovoserv)
@@ -392,7 +402,7 @@ def page_serv_list():
     if 'username' not in session:
         return abort(403)
     serv = Servizio.query.join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio).all()
-    return render_template("servizio/list.htm", serv=serv, pagetype="serv", user=session.get("username"))
+    return render_template("servizio/list.htm", serv=serv, pagetype="serv")
 
 
 @app.route('/serv_list/<int:eid>')
@@ -401,7 +411,7 @@ def page_serv_list_plus(eid):
     if 'username' not in session:
         return abort(403)
     serv = Servizio.query.join(Ente).filter_by(eid=eid).order_by(Servizio.nomeservizio).all()
-    return render_template("servizio/list.htm", serv=serv, pagetype="serv", user=session.get("username"))
+    return render_template("servizio/list.htm", serv=serv, pagetype="serv")
 
 
 @app.route('/serv_show/<int:sid>', methods=['GET', 'POST'])
@@ -411,7 +421,7 @@ def page_serv_show(sid):
     if request.method == "GET":
         serv = Servizio.query.get_or_404(sid)
         enti = Ente.query.all()
-        return render_template("servizio/show.htm", action="show", serv=serv, enti=enti, user=session.get("username"))
+        return render_template("servizio/show.htm", action="show", serv=serv, enti=enti)
     else:
         serv = Servizio.query.get_or_404(sid)
         serv.eid = request.form["eid"]
@@ -431,8 +441,7 @@ def page_imp_add():
         return abort(403)
     if request.method == 'GET':
         servizi = Servizio.query.join(Ente).order_by(Ente.nomeente, Servizio.nomeservizio).all()
-        return render_template("impiegato/show.htm", action="add", servizi=servizi, pagetype="imp",
-                               user=session.get("username"))
+        return render_template("impiegato/show.htm", action="add", servizi=servizi, pagetype="imp")
     else:
         nuovoimp = Impiegato(request.form['sid'], request.form['nomeimpiegato'], request.form['username'],
                              request.form['passwd'],)
@@ -460,7 +469,7 @@ def page_imp_list():
         return abort(403)
     impiegati = Impiegato.query.join(Servizio).join(Ente)\
         .order_by(Ente.nomeente, Servizio.nomeservizio, Impiegato.nomeimpiegato).all()
-    return render_template("impiegato/list.htm", impiegati=impiegati, pagetype="imp", user=session.get("username"))
+    return render_template("impiegato/list.htm", impiegati=impiegati, pagetype="imp")
 
 
 @app.route('/imp_list/<int:sid>')
@@ -469,7 +478,7 @@ def page_imp_list_plus(sid):
     if 'username' not in session:
         return abort(403)
     impiegati = Impiegato.query.join(Servizio).filter_by(sid=sid).join(Ente).order_by(Impiegato.nomeimpiegato).all()
-    return render_template("impiegato/list.htm", impiegati=impiegati, user=session.get("username"))
+    return render_template("impiegato/list.htm", impiegati=impiegati)
 
 
 @app.route('/imp_show/<int:iid>', methods=['GET', 'POST'])
@@ -479,8 +488,7 @@ def page_imp_show(iid):
     if request.method == "GET":
         imp = Impiegato.query.get_or_404(iid)
         servizi = Servizio.query.all()
-        return render_template("impiegato/show.htm", action="show", imp=imp, servizi=servizi,
-                               user=session.get("username"))
+        return render_template("impiegato/show.htm", action="show", imp=imp, servizi=servizi)
     else:
         imp = Impiegato.query.get_or_404(iid)
         imp.sid = request.form["sid"]
@@ -497,7 +505,7 @@ def page_imp_details(iid):
         return abort(403)
     imp = Impiegato.query.filter_by(iid=iid).join(Servizio).join(Ente).first_or_404()
     accessi = Accesso.query.filter_by(iid=imp.iid).join(Dispositivo).all()
-    return render_template("impiegato/details.htm", accessi=accessi, impiegato=imp, user=session.get("username"))
+    return render_template("impiegato/details.htm", accessi=accessi, impiegato=imp)
 
 
 @app.route('/disp_add', methods=['GET', 'POST'])
@@ -516,7 +524,7 @@ def page_disp_add():
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         ordini = Ordine.query.order_by(Ordine.data).all()
         return render_template("dispositivo/show.htm", action="add", impiegati=impiegati, opzioni=opzioni, reti=reti,
-                               pagetype="dev", user=session.get("username"), serial=serial, sistemi=sistemioperativi,
+                               pagetype="dev", serial=serial, sistemi=sistemioperativi,
                                ordini=ordini)
     else:
         if request.form["inv_ced"]:
@@ -586,7 +594,7 @@ def page_disp_list():
             accessi.append([FakeAccesso(dispositivo)])
         else:
             accessi.append(accesso)
-    return render_template("dispositivo/list.htm", accessi=accessi, pagetype="disp", user=session.get("username"))
+    return render_template("dispositivo/list.htm", accessi=accessi, pagetype="disp")
 
 
 @app.route('/disp_details/<int:did>')
@@ -598,8 +606,7 @@ def page_disp_details(did):
     if disp.oid is not None:
         disp = Dispositivo.query.filter_by(did=did).join(Ordine).first()
     accessi = Accesso.query.filter_by(did=did).all()
-    return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, pagetype="disp",
-                           user=session.get("username"))
+    return render_template("dispositivo/details.htm", disp=disp, accessi=accessi, pagetype="disp")
 
 
 @app.route('/disp_show/<int:did>', methods=['GET', 'POST'])
@@ -615,7 +622,7 @@ def page_disp_show(did):
                    "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi,
-                               impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
+                               impiegati=impiegati, pagetype="disp", opzioni=opzioni,
                                reti=reti, sistemi=sistemioperativi, ordini=ordini)
     else:
         disp = Dispositivo.query.get_or_404(did)
@@ -673,7 +680,7 @@ def page_disp_clone(did):
         ordini = Ordine.query.order_by(Ordine.data).all()
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi,
-                               impiegati=impiegati, pagetype="disp", user=session.get("username"), opzioni=opzioni,
+                               impiegati=impiegati, pagetype="disp", opzioni=opzioni,
                                reti=reti, sistemi=sistemioperativi, ordini=ordini)
     else:
         if request.form["inv_ced"]:
@@ -724,7 +731,7 @@ def page_net_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("net/show.htm", action="add", pagetype="net", user=session.get("username"))
+        return render_template("net/show.htm", action="add", pagetype="net")
     else:
         try:
             int(request.form["subnet"])
@@ -761,7 +768,7 @@ def page_net_list():
     if 'username' not in session:
         return abort(403)
     reti = Rete.query.order_by(Rete.nome).all()
-    return render_template("net/list.htm", reti=reti, pagetype="net", user=session.get("username"))
+    return render_template("net/list.htm", reti=reti, pagetype="net")
 
 
 @app.route('/net_details/<int:nid>')
@@ -771,8 +778,7 @@ def page_net_details(nid):
     net = Rete.query.get_or_404(nid)
     dispositivi = Dispositivo.query.join(Rete).filter_by(nid=nid).all()
     subnet = subnet_to_string(net.subnet)
-    return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, pagetype="net",
-                           user=session.get("username"))
+    return render_template("net/details.htm", net=net, subnet=subnet, dispositivi=dispositivi, pagetype="net")
 
 
 @app.route('/net_show/<int:nid>', methods=['GET', 'POST'])
@@ -781,7 +787,7 @@ def page_net_show(nid):
         return abort(403)
     if request.method == 'GET':
         net = Rete.query.filter_by(nid=nid).first_or_404()
-        return render_template("net/show.htm", action="show", net=net, pagetype="net", user=session.get("username"))
+        return render_template("net/show.htm", action="show", net=net, pagetype="net")
     else:
         net = Rete.query.filter_by(nid=nid).first_or_404()
         net.nome = request.form['nome']
@@ -800,7 +806,7 @@ def page_user_list():
     if 'username' not in session:
         return abort(403)
     utenti = User.query.order_by(User.username).all()
-    return render_template("user/list.htm", utenti=utenti, pagetype="user", user=session.get("username"))
+    return render_template("user/list.htm", utenti=utenti, pagetype="user")
 
 
 @app.route('/user_del/<int:uid>')
@@ -810,12 +816,10 @@ def page_user_del(uid):
     if 'username' not in session:
         return abort(403)
     if User.query.count() <= 1:
-        return render_template("error.htm", error="Non puoi cancellare l'ultimo utente rimasto!",
-                               user=session.get("username"))
+        return render_template("error.htm", error="Non puoi cancellare l'ultimo utente rimasto!")
     utente = User.query.get_or_404(uid)
     if utente.username == session["username"]:
-        return render_template("error.htm", error="Non puoi cancellare l'utente con cui sei loggato!",
-                               user=session.get("username"))
+        return render_template("error.htm", error="Non puoi cancellare l'utente con cui sei loggato!")
     db.session.delete(utente)
     db.session.commit()
     return redirect(url_for('page_user_list'))
@@ -831,7 +835,7 @@ def page_user_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("user/add.htm", pagetype="user", user=session.get("username"))
+        return render_template("user/add.htm", pagetype="user")
     else:
         p = bytes(request.form["passwd"], encoding="utf-8")
         cenere = bcrypt.hashpw(p, bcrypt.gensalt())
@@ -847,7 +851,7 @@ def page_order_list():
     if 'username' not in session:
         return abort(403)
     ordini = Ordine.query.order_by(Ordine.data.desc()).all()
-    return render_template("ordine/list.htm", orders=ordini, pagetype="order", user=session.get("username"),
+    return render_template("ordine/list.htm", orders=ordini, pagetype="order",
                            today=datetime.date.today(), soon=datetime.date.today() + datetime.timedelta(7))
 
 
@@ -857,7 +861,7 @@ def page_order_add():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("ordine/show.htm", action="add", pagetype="order", user=session.get("username"))
+        return render_template("ordine/show.htm", action="add", pagetype="order")
     else:
         if request.form["data"] != "":
             yyyy, mm, dd = request.form["data"].split("-", 2)
@@ -883,8 +887,7 @@ def page_order_show(oid):
         return abort(403)
     if request.method == 'GET':
         order = Ordine.query.get_or_404(oid)
-        return render_template("ordine/show.htm", order=order, action="show", pagetype="order",
-                               user=session.get("username"))
+        return render_template("ordine/show.htm", order=order, action="show", pagetype="order")
     else:
         order = Ordine.query.get_or_404(oid)
         if request.form["data"] != "":
@@ -923,8 +926,7 @@ def page_order_details(oid):
     ordine = Ordine.query.get_or_404(oid)
     dispositivi = Dispositivo.query.join(Ordine).filter_by(oid=oid).all()
     return render_template("ordine/details.htm", dispositivi=dispositivi, pagetype="order", today=datetime.date.today(),
-                           user=session.get("username"), ordine=ordine,
-                           soon=datetime.date.today() + datetime.timedelta(7))
+                           ordine=ordine, soon=datetime.date.today() + datetime.timedelta(7))
 
 
 @app.route('/query', methods=['GET', 'POST'])
@@ -935,21 +937,20 @@ def page_query():
     if 'username' not in session:
         return abort(403)
     if request.method == 'GET':
-        return render_template("query.htm", user=session.get("username"), pagetype="query")
+        return render_template("query.htm", pagetype="query")
     else:
         try:
             result = db.engine.execute("SELECT" + request.form["query"] + ";")
         except Exception as e:
-            return render_template("query.htm", query=request.form["query"], error=repr(e),
-                                   user=session.get("username"), pagetype="query")
-        return render_template("query.htm", query=request.form["query"], result=result, user=session.get("username"),
+            return render_template("query.htm", query=request.form["query"], error=repr(e), pagetype="query")
+        return render_template("query.htm", query=request.form["query"], result=result,
                                pagetype="query")
 
 
 @app.route('/smecds')
 def page_smecds():
     """Pagina che visualizza i credits del sito"""
-    return render_template("smecds.htm", pagetype="main", user=session.get("username"))
+    return render_template("smecds.htm", pagetype="main")
 
 
 @app.route('/pheesh')
@@ -987,27 +988,35 @@ def page_pheesh():
     for obj in ordini:
         random.seed(hash(obj.numero_ordine))
         pesci.append(Pesce(obj, 1.2, 0.4, f"/order_details/{obj.oid}"))
-    return render_template("pheesh.htm", user=session.get("username"), pheesh=pesci, footer=False)
+    return render_template("pheesh.htm", pheesh=pesci, footer=False)
 
 
 @app.errorhandler(400)
 def page_400(_):
-    return render_template('400.htm', user=session.get("username"))
+    return render_template('400.htm')
 
 
 @app.errorhandler(403)
 def page_403(_):
-    return render_template('403.htm', user=session.get("username"))
+    return render_template('403.htm')
 
 
 @app.errorhandler(404)
 def page_404(_):
-    return render_template('404.htm', user=session.get("username"))
+    return render_template('404.htm')
 
 
 @app.errorhandler(500)
 def page_500(e):
-    return render_template('500.htm', e=e, user=session.get("username"))
+    return render_template('500.htm', e=e)
+
+
+@app.context_processor
+def inject_vars():
+    return {
+        "user": session.get("username"),
+        "estus_version": estus_version
+    }
 
 
 if __name__ == "__main__":
