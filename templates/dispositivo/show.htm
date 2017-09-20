@@ -82,7 +82,7 @@
                 <select id="form-ordine" class="form-control" name="ordine">
                     <option value=""></option>
                     {% for ordine in ordini %}
-                        <option value="{{ ordine.oid }}" {% if dispositivo and ordine.oid == dispositivo.oid %}selected{% endif %}>{{ ordine.data }} #{{ ordine.numero_ordine }}</option>
+                        <option value="{{ ordine.oid }}" {% if dispositivo and ordine.oid == dispositivo.oid %}selected{% endif %}>{{ ordine.data }} {{ ordine.fornitore }} #{{ ordine.numero_ordine }}</option>
                     {% endfor %}
                 </select>
             </div>
