@@ -43,7 +43,7 @@
             </h4>
             <div class="list-group-item-text">
                 {% for dispositivo in dispositivi %}
-                    <a href="{{ url_for("page_disp_show", did=dispositivo.did) }}">{{ dispositivo }} {% if dispositivo.ip %}- {{ dispositivo.ip }}{% endif %}</a><br>
+                    <a href="{{ url_for("page_disp_details", did=dispositivo.did) }}">{{ dispositivo }} {% if dispositivo.ip %}- {{ dispositivo.ip }}{% endif %}</a><br>
                 {% endfor %}
             </div>
         </li>
