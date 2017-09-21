@@ -645,6 +645,7 @@ def page_disp_show(did):
         disp.hostname = request.form['hostname'] if request.form['hostname'] else None
         disp.so = request.form['so']
         disp.oid = int(request.form['ordine']) if request.form['ordine'] else None
+        disp.seriale = request.form['seriale']
         # Trova tutti gli utenti, edizione sporco hack in html
         users = list()
         while True:
