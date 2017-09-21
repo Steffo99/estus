@@ -936,7 +936,7 @@ def page_query():
         return render_template("query.htm", pagetype="query")
     else:
         try:
-            result = db.engine.execute("SELECT" + request.form["query"] + ";")
+            result = db.engine.execute("SELECT " + request.form["query"] + ";")
         except Exception as e:
             return render_template("query.htm", query=request.form["query"], error=repr(e), pagetype="query")
         return render_template("query.htm", query=request.form["query"], result=result,
