@@ -30,7 +30,7 @@
         <div class="form-group">
             <label class="col-xs-2" for="form-tipo">Sede</label>
             <div class="col-xs-10">
-                <input type="text" class="form-control" placeholder="Sede [...]" name="locazione" list="form-locazione" {% if dispositivo %}value="{{ serv.locazione }}"{% endif %}>
+                <input type="text" class="form-control" placeholder="Sede [...]" name="locazione" list="form-locazione" {% if serv %}value="{{ serv.locazione }}"{% endif %}>
                 <datalist id="form-locazione">
                     {% for servizio in servizi %}
                         <option value="{{ servizio.locazione }}">{{ servizio.locazione }}</option>

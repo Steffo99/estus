@@ -373,7 +373,7 @@ def page_serv_add():
         return abort(403)
     if request.method == 'GET':
         enti = Ente.query.order_by(Ente.nomeente).all()
-        servizi = Servizio.query.order_by(Servizio.locazione).all()
+        servizi = db.engine.execute("SELECT locazione FROM servizi GROUP BY locazione;")
         return render_template("servizio/show.htm", action="add", enti=enti, servizi=servizi, pagetype="serv")
     else:
         nuovoserv = Servizio(request.form['eid'], request.form['nomeservizio'], request.form['locazione'])
