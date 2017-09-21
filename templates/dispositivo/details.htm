@@ -123,13 +123,15 @@
                 </div>
             </li>
         {% endif %}
-        <li class="list-group-item">
-            <h4 class="list-group-item-heading">
-                Network
-            </h4>
-            <div class="list-group-item-text">
-                <a href="{{ url_for("page_net_details", nid=disp.rete.nid) }}">{{ disp.rete.nome }} - {{ disp.rete.network_ip }}/{{ disp.rete.subnet }}</a>
-            </div>
-        </li>
+        {% if disp.nid %}
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">
+                    Network
+                </h4>
+                <div class="list-group-item-text">
+                    <a href="{{ url_for("page_net_details", nid=disp.rete.nid) }}">{{ disp.rete.nome }} - {{ disp.rete.network_ip }}/{{ disp.rete.subnet }}</a>
+                </div>
+            </li>
+        {% endif %}
     </ul>
 {% endblock %}
