@@ -13,8 +13,8 @@
             <th>Tipo dispositivo</th>
             <th>Utenti</th>
             <th>Inventario CED</th>
-            <th>Marca</th>
-            <th>Modello</th>
+            <th>S.O.</th>
+            <th>IP</th>
             <th>Seriale</th>
             <th>Azioni</th>
         </tr>
@@ -24,8 +24,8 @@
                 <td>{{ d[0].dispositivo.tipo }}</td>
                 <td>{% for u in d %}<p>{{ u.impiegato.nomeimpiegato }}</p>{% endfor %}</td>
                 <td>{% if d[0].dispositivo.inv_ced %}{{ d[0].dispositivo.inv_ced }}{% endif %}</td>
-                <td>{{ d[0].dispositivo.marca }}</td>
-                <td>{{ d[0].dispositivo.modello }}</td>
+                <td>{{ d[0].dispositivo.so }}</td>
+                <td>{{ d[0].dispositivo.ip }}</td>
                 <td>{% if d[0].dispositivo.seriale %}{{ d[0].dispositivo.seriale }}{% endif %}</td>
                 <td>
                     <a href="{{ url_for("page_disp_details", did=d[0].did) }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
