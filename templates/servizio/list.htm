@@ -21,7 +21,7 @@
                 <td>{{ servizio.ente.nomeente }}</td>
                 <td>{{ servizio.nomeservizio }}</td>
                 <td>{{ servizio.locazione }}</td>
-                <td><a href="/imp_list/{{ servizio.sid }}"><span class="glyphicon glyphicon-list-alt"></span></a> <a href="/serv_show/{{ servizio.sid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/serv_del/{{ servizio.sid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="{{ url_for("page_imp_list_plus", sid=servizio.sid) }}"><span class="glyphicon glyphicon-list-alt"></span></a> <a href="{{ url_for("page_serv_show", sid=servizio.sid) }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="{{ url_for("page_serv_del", sid=servizio.sid) }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
     </table>

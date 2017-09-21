@@ -67,7 +67,7 @@
     <div class="alert alert-info">
         Sapevi che puoi fare doppio click sui campi con <b>[...]</b> per attivare il completamento automatico?
     </div>
-    <form class="form-horizontal" action="/disp_{{ action }}{% if dispositivo %}/{{ dispositivo.did }}{% endif %}" method="post">
+    <form class="form-horizontal" action="{% if dispositivo %}{{ url_for("page_disp_show", did=dispositivo.did) }}{% else %}{{ url_for("page_disp_add") }}{% endif %}" method="post">
         <div class="form-group">
             <label class="col-xs-2" for="form-tipo">Tipo dispositivo</label>
             <div class="col-xs-10">

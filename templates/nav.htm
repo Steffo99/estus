@@ -5,28 +5,28 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span></button>
             {% if user %}
-                <a class="navbar-brand" href="/dashboard"><img alt="Inventario" src="{{ url_for('static', filename='UTdClogo.png') }}"></a>
+                <a class="navbar-brand" href="{{ url_for("page_dashboard") }}"><img alt="Inventario" src="{{ url_for('static', filename='UTdClogo.png') }}"></a>
             {% else %}
-                <a class="navbar-brand" href="/login"><img alt="Inventario" src="{{ url_for('static', filename='UTdClogo.png') }}"></a>
+                <a class="navbar-brand" href="{{ url_for("page_login") }}"><img alt="Inventario" src="{{ url_for('static', filename='UTdClogo.png') }}"></a>
             {% endif %}
         </div>
         <div id="navcollapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 {% if user %}
-                        <li class="{% if pagetype is equalto "ente" %}active{% endif %}"><a href="/ente_list">Enti</a></li>
-                        <li class="{% if pagetype is equalto "serv" %}active{% endif %}"><a href="/serv_list">Servizi</a></li>
-                        <li class="{% if pagetype is equalto "imp" %}active{% endif %}"><a href="/imp_list">Impiegati</a></li>
-                        <li class="{% if pagetype is equalto "net" %}active{% endif %}"><a href="/net_list">Reti</a></li>
-                        <li class="{% if pagetype is equalto "order" %}active{% endif %}"><a href="/order_list">Ordini</a></li>
-                        <li class="{% if pagetype is equalto "disp" %}active{% endif %}"><a href="/disp_list">Dispositivi</a></li>
+                        <li class="{% if pagetype is equalto "ente" %}active{% endif %}"><a href="{{ url_for("page_ente_list") }}">Enti</a></li>
+                        <li class="{% if pagetype is equalto "serv" %}active{% endif %}"><a href="{{ url_for("page_serv_list") }}">Servizi</a></li>
+                        <li class="{% if pagetype is equalto "imp" %}active{% endif %}"><a href="{{ url_for("page_imp_list") }}">Impiegati</a></li>
+                        <li class="{% if pagetype is equalto "net" %}active{% endif %}"><a href="{{ url_for("page_net_list") }}">Reti</a></li>
+                        <li class="{% if pagetype is equalto "order" %}active{% endif %}"><a href="{{ url_for("page_order_list") }}">Ordini</a></li>
+                        <li class="{% if pagetype is equalto "disp" %}active{% endif %}"><a href="{{ url_for("page_disp_list") }}">Dispositivi</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="{% if pagetype is equalto "user" %}active{% endif %}"><a href="/user_list">Utenti</a></li>
-                        <li class="{% if pagetype is equalto "query" %}active{% endif %}"><a href="/query">Query</a></li>
+                        <li class="{% if pagetype is equalto "user" %}active{% endif %}"><a href="{{ url_for("page_user_list") }}">Utenti</a></li>
+                        <li class="{% if pagetype is equalto "query" %}active{% endif %}"><a href="{{ url_for("page_query") }}">Query</a></li>
                         <li class="navbar-text">
                             Sei connesso come <b>{{user}}</b>
                         </li>
-                        <a href="/logout" class="btn btn-danger navbar-btn btn-right">Logout</a>
+                        <a href="{{ url_for("page_logout") }}" class="btn btn-danger navbar-btn btn-right">Logout</a>
                 {% endif %}
             </ul>
         </div>

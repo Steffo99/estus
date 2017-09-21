@@ -4,10 +4,10 @@
     <div class="page-header">
         <h1>
             {{ impiegato }}
-            <a href="/imp_show/{{ impiegato.iid }}" class="btn btn-primary">
+            <a href="{{ url_for("page_imp_show", iid=impiegato.iid) }}" class="btn btn-primary">
                 <span class="glyphicon glyphicon-pencil"></span> Modifica
             </a>
-            <a href="/imp_del/{{ impiegato.nid }}" class="btn btn-danger">
+            <a href="{{ url_for("page_imp_del", iid=impiegato.iid) }}" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span> Elimina
             </a>
         </h1>

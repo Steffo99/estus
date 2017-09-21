@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ ente.nomeente }}</td>
                 <td>{{ ente.nomebreveente }}</td>
-                <td><a href="/serv_list/{{ ente.eid }}"><span class="glyphicon glyphicon-list-alt"></span></a> <a href="/ente_show/{{ ente.eid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/ente_del/{{ ente.eid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="{{ url_for("page_serv_list_plus", eid=ente.eid) }}"><span class="glyphicon glyphicon-list-alt"></span></a> <a href="{{ url_for("page_ente_show", eid=ente.eid) }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="{{ url_for("page_ente_del", eid=ente.eid) }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
         </tbody>

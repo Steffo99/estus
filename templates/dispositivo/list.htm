@@ -4,7 +4,7 @@
     <div class="page-header">
         <h1>
             Dispositivi
-            <a class="btn btn-success" href="/disp_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
+            <a class="btn btn-success" href="{{ url_for("page_disp_add") }}"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
         </h1>
     </div>
     <table class="table table-hover">
@@ -28,10 +28,10 @@
                 <td>{{ d[0].dispositivo.modello }}</td>
                 <td>{% if d[0].dispositivo.seriale %}{{ d[0].dispositivo.seriale }}{% endif %}</td>
                 <td>
-                    <a href="/disp_details/{{ d[0].did }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
-                    <a href="/disp_show/{{ d[0].did }}" title="Modifica"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a href="/disp_clone/{{ d[0].did }}" title="Clona"><span class="glyphicon glyphicon-duplicate"></span></a>
-                    <a href="/disp_del/{{ d[0].did }}" title="Elimina"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a href="{{ url_for("page_disp_details", did=d[0].did) }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
+                    <a href="{{ url_for("page_disp_show", did=d[0].did) }}" title="Modifica"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="{{ url_for("page_disp_clone", did=d[0].did) }}" title="Clona"><span class="glyphicon glyphicon-duplicate"></span></a>
+                    <a href="{{ url_for("page_disp_del", did=d[0].did) }}" title="Elimina"><span class="glyphicon glyphicon-remove"></span></a>
                 </td>
             </tr>
         {% endfor %}

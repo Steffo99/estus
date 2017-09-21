@@ -4,7 +4,7 @@
     <div class="page-header">
         <h1>
             Impiegati
-            <a class="btn btn-success" href="/imp_add">
+            <a class="btn btn-success" href="{{ url_for("page_imp_add") }}">
                 <span class="glyphicon glyphicon-plus"></span> Aggiungi
             </a>
         </h1>
@@ -27,7 +27,7 @@
                 <td>{{ imp.nomeimpiegato }}</td>
                 <td>{% if imp.username %}<code>{{ imp.username }}</code>{% endif %}</td>
                 <td>{% if imp.passwd %}<code>{{ imp.passwd }}</code>{% endif %}</td>
-                <td><a href="/imp_details/{{ imp.iid }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/imp_show/{{ imp.iid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/imp_del/{{ imp.iid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="{{ url_for("page_imp_details", iid=imp.iid) }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="{{ url_for("page_imp_show", iid=imp.iid) }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="{{ url_for("page_imp_del", iid=imp.iid) }}"><span class="glyphicon glyphicon-remove"></span></a></td>
             </tr>
         {% endfor %}
     </table>

@@ -4,10 +4,10 @@
     <div class="page-header">
         <h1>
             {{ net }}
-            <a href="/net_show/{{ net.nid }}" class="btn btn-primary">
+            <a href="{{ url_for("page_net_show", nid=net.nid) }}" class="btn btn-primary">
                 <span class="glyphicon glyphicon-pencil"></span> Modifica
             </a>
-            <a href="/net_del/{{ net.nid }}" class="btn btn-danger">
+            <a href="{{ url_for("page_net_del", nid=net.nid) }}" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span> Elimina
             </a>
         </h1>
@@ -43,7 +43,7 @@
             </h4>
             <div class="list-group-item-text">
                 {% for dispositivo in dispositivi %}
-                    <a href="/disp_details/{{ dispositivo.did }}">{{ dispositivo }}</a><br>
+                    <a href="{{ url_for("page_disp_show", did=dispositivo.did) }}">{{ dispositivo }} {% if dispositivo.ip %}- {{ dispositivo.ip }}{% endif %}</a><br>
                 {% endfor %}
             </div>
         </li>

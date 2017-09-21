@@ -13,7 +13,7 @@
     <div class="alert alert-warning">
         Il campo data non è ancora <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1366188">correttamente supportato da Firefox</a>, Internet Explorer 11 e probabilmente altri browser. Se il calendario non viene fuori, inserite le date nel formato AAAA-MM-GG.
     </div>
-    <form class="form-horizontal" {% if order %}action="/order_show/{{ order.oid }}"{% endif %} method="post">
+    <form class="form-horizontal" method="post">
         <div class="form-group">
             <label class="col-xs-2" for="form-tipo">Data di acquisto</label>
             <div class="col-xs-10">

@@ -10,7 +10,7 @@
             {% endif %}
         </h1>
     </div>
-    <form class="form-inline" {% if ente %}action="/ente_show/{{ ente.eid }}"{% endif %} method="post">
+    <form class="form-inline" method="post">
         <input class="form-control" type="text" placeholder="Nome ente" name="nomeente" {% if ente %}value="{{ ente.nomeente }}"{% endif %}>
         <input class="form-control" type="text" placeholder="Nome breve" name="nomebreveente" {% if ente %}value="{{ ente.nomebreveente }}"{% endif %}>
         <input class="btn btn-primary" type="submit">

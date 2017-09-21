@@ -13,7 +13,7 @@
     <div class="alert alert-info">
         Sapevi che puoi fare doppio click sui campi con <b>[...]</b> per attivare il completamento automatico?
     </div>
-    <form class="form-horizontal" {% if serv %}action="/serv_show/{{serv.sid}}"{% endif %} method="post">
+    <form class="form-horizontal" method="post">
         <div class="form-group">
             <label class="col-xs-2" for="form-tipo">Ente</label>
             <div class="col-xs-10">
@@ -42,16 +42,4 @@
         </div>
         <input class="btn btn-primary" type="submit">
     </form>
-    {#
-    <form class="form-inline" {% if serv %}action="/serv_show/{{serv.sid}}"{% endif %} method="post">
-      <select class="form-control" name="eid">
-        {% for ente in enti %}
-          <option value="{{ente.eid}}" {% if serv and serv.eid == ente.eid %}selected="selected"{% endif %}>{{ente.nomeente}}</option>
-        {% endfor %}
-      </select>
-      <input class="form-control" type="text" placeholder="Nome servizio" name="nomeservizio" {% if serv %}value="{{serv.nomeservizio}}"{% endif %}>
-    <input class="form-control" type="text" placeholder="locazione" name="locazione" {% if serv %}value="{{serv.locazione}}"{% endif %}>
-      <input class="btn btn-primary" type="submit">
-    </form>
-    #}
 {% endblock %}

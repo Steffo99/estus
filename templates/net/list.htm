@@ -4,7 +4,7 @@
     <div class="page-header">
         <h1>
             Reti
-            <a class="btn btn-success" href="/net_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
+            <a class="btn btn-success" href=" {{ url_for("page_net_add") }}"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
         </h1>
     </div>
         {% for rete in reti if rete.network_ip == "0.0.0.0" %}
@@ -28,7 +28,7 @@
             <tr>
                 <td>{{ rete.nome }}</td>
                 <td>{{ rete.network_ip }}/{{ rete.subnet }}</td>
-                <td><a href="/net_details/{{ rete.nid }}"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/net_show/{{ rete.nid }}"><span class="glyphicon glyphicon-pencil"></span></a> {% if reti|length > 1 %}<a href="/net_del/{{ rete.nid }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                <td><a href="{{ url_for("page_net_details", nid=rete.nid) }}"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="{{ url_for("page_net_show", nid=rete.nid) }}"><span class="glyphicon glyphicon-pencil"></span></a> {% if reti|length > 1 %}<a href="{{ url_for("page_net_del", nid=rete.nid) }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
             </tr>
         {% endfor %}
     </table>

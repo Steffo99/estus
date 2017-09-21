@@ -10,7 +10,7 @@
             {% endif %}
         </h1>
     </div>
-    <form class="form-inline" {% if imp %}action="/imp_show/{{ imp.iid }}"{% endif %} method="post">
+    <form class="form-inline" method="post">
         <select class="form-control" name="sid">
             {% for servizio in servizi %}
                 <option value="{{ servizio.sid }}"

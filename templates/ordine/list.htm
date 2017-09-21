@@ -4,7 +4,7 @@
     <div class="page-header">
         <h1>
             Ordini
-            <a class="btn btn-success" href="/order_add"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
+            <a class="btn btn-success" href="{{ url_for("page_order_add") }}"><span class="glyphicon glyphicon-plus"></span> Aggiungi</a>
         </h1>
     </div>
     <table class="table table-hover">
@@ -35,7 +35,7 @@
                             {{ order.garanzia }}
                         {% endif %}
                     </td>
-                    <td><a href="/order_details/{{ order.oid }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="/order_show/{{ order.oid }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="/order_del/{{ order.oid }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                    <td><a href="{{ url_for("page_order_details", oid=order.oid) }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="{{ url_for("page_order_show", oid=order.oid) }}"><span class="glyphicon glyphicon-pencil"></span></a> <a href="{{ url_for("page_order_del", oid=order.oid) }}"><span class="glyphicon glyphicon-remove"></span></a></td>
                 </tr>
             {% endfor %}
         </tbody>
