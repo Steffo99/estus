@@ -16,12 +16,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-sistemioperativi = ["CentOS", "Fedora", "OpenSUSE", "Red Hat", "Ubuntu", "Debian", "Windows Server 2003",
-                    "Windows Server 2007", "Windows Server 2010", "Windows Server 2012", "Windows Server 2016",
-                    "Windows 98", "Windows ME", "Windows 2000", "Windows XP", "Windows Vista", "Windows 7", "Windows 8",
-                    "Windows 8.1", "Windows 10"]
-
-
 old_wd = os.getcwd()
 try:
     os.chdir(os.path.dirname(__file__))
@@ -422,7 +416,7 @@ def page_serv_show(sid):
     if request.method == "GET":
         serv = Servizio.query.get_or_404(sid)
         enti = Ente.query.all()
-        servizi = Servizio.query.order_by(Servizio.locazione).all()
+        servizi = db.engine.execute("SELECT locazione FROM servizi GROUP BY locazione;")
         return render_template("servizio/show.htm", action="show", serv=serv, servizi=servizi, enti=enti)
     else:
         serv = Servizio.query.get_or_404(sid)
@@ -520,13 +514,13 @@ def page_disp_add():
         return abort(403)
     if request.method == 'GET':
         serial = request.args.get("scanned_barcode")
-        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
-                   "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        opzioni = db.engine.execute("SELECT tipo FROM dispositivi GROUP BY tipo;")
+        sistemi = db.engine.execute("SELECT so FROM dispositivi GROUP BY so;")
         reti = Rete.query.order_by(Rete.nome).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         ordini = Ordine.query.order_by(Ordine.data).all()
         return render_template("dispositivo/show.htm", action="add", impiegati=impiegati, opzioni=opzioni, reti=reti,
-                               pagetype="dev", serial=serial, sistemi=sistemioperativi,
+                               pagetype="dev", serial=serial, sistemi=sistemi,
                                ordini=ordini)
     else:
         if request.form["inv_ced"]:
@@ -620,12 +614,12 @@ def page_disp_show(did):
         accessi = Accesso.query.filter_by(did=did).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
         ordini = Ordine.query.order_by(Ordine.data).all()
-        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
-                   "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        opzioni = db.engine.execute("SELECT tipo FROM dispositivi GROUP BY tipo;")
+        sistemi = db.engine.execute("SELECT so FROM dispositivi GROUP BY so;")
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="show", dispositivo=disp, accessi=accessi,
                                impiegati=impiegati, pagetype="disp", opzioni=opzioni,
-                               reti=reti, sistemi=sistemioperativi, ordini=ordini)
+                               reti=reti, sistemi=sistemi, ordini=ordini)
     else:
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
@@ -677,13 +671,13 @@ def page_disp_clone(did):
         disp = Dispositivo.query.get_or_404(did)
         accessi = Accesso.query.filter_by(did=did).all()
         impiegati = Impiegato.query.order_by(Impiegato.nomeimpiegato).all()
-        opzioni = ["Centralino", "Dispositivo generico di rete", "Marcatempo", "PC", "Portatile", "POS", "Router",
-                   "Server", "Stampante di rete", "Switch", "Telefono IP", "Monitor", "Scanner", "Stampante locale"]
+        opzioni = db.engine.execute("SELECT tipo FROM dispositivi GROUP BY tipo;")
+        sistemi = db.engine.execute("SELECT so FROM dispositivi GROUP BY so;")
         ordini = Ordine.query.order_by(Ordine.data).all()
         reti = Rete.query.order_by(Rete.nome).all()
         return render_template("dispositivo/show.htm", action="clone", dispositivo=disp, accessi=accessi,
                                impiegati=impiegati, pagetype="disp", opzioni=opzioni,
-                               reti=reti, sistemi=sistemioperativi, ordini=ordini)
+                               reti=reti, sistemi=sistemi, ordini=ordini)
     else:
         if request.form["inv_ced"]:
             try:
