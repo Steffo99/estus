@@ -54,7 +54,7 @@
                     <a href="{{ url_for("page_disp_details", did=d[0].did) }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
                     <a href="{{ url_for("page_disp_show", did=d[0].did) }}" title="Modifica"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a href="{{ url_for("page_disp_clone", did=d[0].did) }}" title="Clona"><span class="glyphicon glyphicon-duplicate"></span></a>
-                    <a href="{{ url_for("page_disp_del", did=d[0].did) }}" title="Elimina"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a href="javascript:void(0)" onclick="delet(&quot;{{ url_for("page_disp_del", did=12341234) }}&quot;, {{ d[0].did }}, &quot;il dispositivo&quot;);" title="Elimina"><span class="glyphicon glyphicon-remove"></span></a>
                 </td>
             </tr>
         {% endfor %}

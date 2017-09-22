@@ -9,11 +9,11 @@
     </div>
         {% for rete in reti if rete.network_ip == "0.0.0.0" %}
             <div class="alert alert-info">
-                La rete con IP 0.0.0.0 sarà usata come rete di default durante l'eliminazione di altre reti con dispositivi assegnati. Cancellarla potrebbe avere effetti indesiderati.
+                La rete con IP 0.0.0.0 sarà usata come rete di default durante l'eliminazione di altre reti con dispositivi assegnati. Cancellarla o modificare il suo ip potrebbe avere effetti indesiderati.
             </div>
         {% else %}
             <div class="alert alert-danger">
-                Non è presente nessuna rete con IP 0.0.0.0! Non sarà possibile eliminare altre reti finchè non sarà ricreata.
+                Non è presente nessuna rete con IP 0.0.0.0! Non sarà possibile eliminare altre reti finchè non sarà ricreata, e potrebbero comparire altri bug strani.
             </div>
         {% endfor %}
     <table class="table table-hover">
@@ -28,7 +28,7 @@
             <tr>
                 <td>{{ rete.nome }}</td>
                 <td>{{ rete.network_ip }}/{{ rete.subnet }}</td>
-                <td><a href="{{ url_for("page_net_details", nid=rete.nid) }}"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="{{ url_for("page_net_show", nid=rete.nid) }}"><span class="glyphicon glyphicon-pencil"></span></a> {% if reti|length > 1 %}<a href="{{ url_for("page_net_del", nid=rete.nid) }}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                <td><a href="{{ url_for("page_net_details", nid=rete.nid) }}"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="{{ url_for("page_net_show", nid=rete.nid) }}"><span class="glyphicon glyphicon-pencil"></span></a> {% if rete.network_ip != "0.0.0.0" %}<a href="javascript:void(0)" onclick="delet(&quot;{{ url_for("page_net_del", nid=12341234) }}&quot;, {{ rete.nid }}, &quot;{{ rete }}&quot;);"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
             </tr>
         {% endfor %}
     </table>

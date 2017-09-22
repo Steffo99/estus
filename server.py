@@ -10,6 +10,9 @@ import subprocess
 app = Flask(__name__)
 app.secret_key = os.environ["flask_secret_key"]
 
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
+
 # SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
