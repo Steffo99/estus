@@ -145,7 +145,7 @@
             <div class="col-xs-10">
                 <select id="form-rete" class="form-control" name="rete">
                     {% for rete in reti %}
-                        <option value="{{ rete.nid }}" {% if (dispositivo and rete.nid == dispositivo.nid) or (action == "add" and rete.network_ip == "0.0.0.0" %}selected{% endif %}>{{ rete.nome }} - {{ rete.network_ip }}/{{ rete.subnet }}</option>
+                        <option value="{{ rete.nid }}" {% if (dispositivo and rete.nid == dispositivo.nid) or (action == "add" and rete.network_ip == "0.0.0.0") %}selected{% endif %}>{{ rete.nome }} - {{ rete.network_ip }}/{{ rete.subnet }}</option>
                     {% endfor %}
                 </select>
             </div>
