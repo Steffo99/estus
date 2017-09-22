@@ -64,11 +64,11 @@
                         <i class="fa fa-windows"
                            {% if "server" not in disp.lower() %}
                            style="color:
-                                   {% if "XP" in d[0].dispositivo.so %}#0046FF
-                                   {% elif "Vista" in d[0].dispositivo.so %}#69797E
-                                   {% elif "7" in d[0].dispositivo.so %}#30C6CC
-                                   {% elif "8" in d[0].dispositivo.so %}#F03A17
-                                   {% elif "10" in d[0].dispositivo.so %}#0078D7
+                                   {% if "XP" in disp.so %}#0046FF
+                                   {% elif "Vista" in disp.so %}#69797E
+                                   {% elif "7" in disp.so %}#30C6CC
+                                   {% elif "8" in disp.so %}#F03A17
+                                   {% elif "10" in disp.so %}#0078D7
                                    {% endif %};"
                            {% endif %}></i>
                     {% elif "linux" in disp.lower() or "ubuntu" in disp.lower() or "debian" in disp.lower() %}

@@ -25,7 +25,7 @@
         {% for d in accessi %}
             <tr>
                 <td>{{ d[0].dispositivo.tipo }}</td>
-                <td>{% for u in d %}<p>{{ u.impiegato.nomeimpiegato }}</p>{% endfor %}</td>
+                <td>{% for u in d %}{% if u.iid != None %}<a href="{{ url_for("page_imp_details", iid=u.impiegato.iid) }}">{% endif %}{{ u.impiegato.nomeimpiegato }}{% if u.iid != None %}</a>{% endif %}{% if loop.index < d|length %}<br>{% endif %}{% endfor %}</td>
                 <td>{% if d[0].dispositivo.inv_ced %}{{ d[0].dispositivo.inv_ced }}{% endif %}</td>
                 <td>
                     {% if "windows" in d[0].dispositivo.so.lower() %}
