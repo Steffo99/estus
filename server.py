@@ -850,7 +850,7 @@ def page_order_list():
         return abort(403)
     ordini = Ordine.query.order_by(Ordine.data.desc()).all()
     return render_template("ordine/list.htm", orders=ordini, pagetype="order",
-                           today=datetime.date.today(), soon=datetime.date.today() + datetime.timedelta(7))
+                           today=datetime.date.today(), soon=datetime.date.today() + datetime.timedelta(30))
 
 
 @app.route('/order_add', methods=['GET', 'POST'])
