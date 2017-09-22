@@ -1,5 +1,8 @@
 {% extends "base.htm" %}
 {% block title %}Dettagli dispositivo • estus{% endblock %}
+{% block extrahead %}
+    <script src="https://use.fontawesome.com/f463ccd2d9.js"></script>
+{% endblock %}
 {% block content %}
     <div class="page-header">
         <h1>
@@ -51,12 +54,30 @@
                 </div>
             </li>
         {% endif %}
-        {% if disp.so != " " %}
+        {% if disp.so %}
             <li class="list-group-item">
                 <h4 class="list-group-item-heading">
                     Sistema Operativo
                 </h4>
                 <div class="list-group-item-text">
+                    {% if "windows" in d[0].dispositivo.so.lower() %}
+                        <i class="fa fa-windows"
+                           {% if "server" not in d[0].dispositivo.so.lower() %}
+                           style="color:
+                                   {% if "XP" in d[0].dispositivo.so %}#0046FF
+                                   {% elif "Vista" in d[0].dispositivo.so %}#69797E
+                                   {% elif "7" in d[0].dispositivo.so %}#30C6CC
+                                   {% elif "8" in d[0].dispositivo.so %}#F03A17
+                                   {% elif "10" in d[0].dispositivo.so %}#0078D7
+                                   {% endif %};"
+                           {% endif %}></i>
+                    {% elif "linux" in d[0].dispositivo.so.lower() or "ubuntu" in d[0].dispositivo.so.lower() or "debian" in d[0].dispositivo.so.lower() %}
+                        <i class="fa fa-linux"></i>
+                    {% elif "mac" in d[0].dispositivo.so.lower() or "iOS" in d[0].dispositivo.so %}
+                        <i class="fa fa-apple"></i>
+                    {% elif "android" in d[0].dispositivo.so.lower() %}
+                        <i class="fa fa-android"></i>
+                    {% endif %}
                     {{ disp.so }}
                 </div>
             </li>

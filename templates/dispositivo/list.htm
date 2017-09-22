@@ -1,5 +1,8 @@
 {% extends "base.htm" %}
 {% block title %}Elenco dispositivi • estus{% endblock %}
+{% block extrahead %}
+    <script src="https://use.fontawesome.com/f463ccd2d9.js"></script>
+{% endblock %}
 {% block content %}
     <div class="page-header">
         <h1>
@@ -24,7 +27,27 @@
                 <td>{{ d[0].dispositivo.tipo }}</td>
                 <td>{% for u in d %}<p>{{ u.impiegato.nomeimpiegato }}</p>{% endfor %}</td>
                 <td>{% if d[0].dispositivo.inv_ced %}{{ d[0].dispositivo.inv_ced }}{% endif %}</td>
-                <td>{{ d[0].dispositivo.so }}</td>
+                <td>
+                    {% if "windows" in d[0].dispositivo.so.lower() %}
+                        <i class="fa fa-windows"
+                           {% if "server" not in d[0].dispositivo.so.lower() %}
+                           style="color:
+                                   {% if "XP" in d[0].dispositivo.so %}#0046FF
+                                   {% elif "Vista" in d[0].dispositivo.so %}#69797E
+                                   {% elif "7" in d[0].dispositivo.so %}#30C6CC
+                                   {% elif "8" in d[0].dispositivo.so %}#F03A17
+                                   {% elif "10" in d[0].dispositivo.so %}#0078D7
+                                   {% endif %};"
+                           {% endif %}></i>
+                    {% elif "linux" in d[0].dispositivo.so.lower() or "ubuntu" in d[0].dispositivo.so.lower() or "debian" in d[0].dispositivo.so.lower() %}
+                        <i class="fa fa-linux"></i>
+                    {% elif "mac" in d[0].dispositivo.so.lower() or "iOS" in d[0].dispositivo.so %}
+                        <i class="fa fa-apple"></i>
+                    {% elif "android" in d[0].dispositivo.so.lower() %}
+                        <i class="fa fa-android"></i>
+                    {% endif %}
+                    {{ d[0].dispositivo.so }}
+                </td>
                 <td>{{ d[0].dispositivo.ip }}</td>
                 <td>{% if d[0].dispositivo.seriale %}{{ d[0].dispositivo.seriale }}{% endif %}</td>
                 <td>
