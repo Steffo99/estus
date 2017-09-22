@@ -2,18 +2,38 @@
 {% block title %}Acquario • estus{% endblock %}
 {% block extrahead %}
     <style>
+        @keyframes fish {
+            0% {
+                transform: translate(0px, 0px);
+            }
+            50% {
+                transform: translate(0px, 20px);
+            }
+            100% {
+                transform: translate(0px, 0px);
+            }
+        }
+
+        .fish {
+            animation: fish 5s infinite;
+            animation-direction: alternate;
+            animation-timing-function: cubic-bezier(.46,.03,.52,.96);
+        }
+
         {% for fish in pheesh %}
             #fish{{ loop.index }}
             {
                 color: #{{ fish.color }};
                 position: absolute;
-                top: {{ fish.position[1] }};
-                left: {{ fish.position[0] }};
+                top: {{ fish.position[1] }}px;
+                left: {{ fish.position[0] }}px;
+                animation-delay: -{{ fish.delay }}s;
             }
         {% endfor %}
 
         body {
-                background-color: royalblue !important;
+            backround-repeat: no-repeat;
+            background: linear-gradient(#003366, darkblue) fixed;
         }
     </style>
     <script>

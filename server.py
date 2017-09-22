@@ -226,7 +226,8 @@ class Pesce:
         self.name = str(origin_obj)
         self.size = random.gauss(avgsize, variation)
         self.color = "{:02x}".format(random.randrange(0, 16777216))
-        self.position = (random.randrange(0, 1423), random.randrange(52, 600))
+        self.position = (random.randrange(0, 1260 - int(100 * self.size)), random.randrange(72, 620))
+        self.delay = random.random() * 10
         self.link = link
 
     def __repr__(self):
