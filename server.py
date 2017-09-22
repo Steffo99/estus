@@ -731,11 +731,12 @@ def page_net_add():
         return render_template("net/show.htm", action="add", pagetype="net")
     else:
         try:
-            int(request.form["subnet"])
+            int(request.form["subnet"].lstrip("/"))
         except ValueError:
             return render_template("error.htm", error="Il campo Subnet deve contenere il numero di bit della subnet. "
                                                       "(8, 16, 24...)")
-        nuovonet = Rete(nome=request.form["nome"], network_ip=request.form["network_ip"], subnet=request.form["subnet"].lstrip("/"),
+        nuovonet = Rete(nome=request.form["nome"], network_ip=request.form["network_ip"],
+                        subnet=int(request.form["subnet"].lstrip("/")),
                         primary_dns=request.form["primary_dns"], secondary_dns=request.form["secondary_dns"])
         db.session.add(nuovonet)
         db.session.commit()
