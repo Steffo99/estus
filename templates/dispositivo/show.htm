@@ -94,7 +94,7 @@
             <label class="col-xs-2" for="form-so">Sistema operativo</label>
             <div class="col-xs-10">
                 <input type="text" class="form-control" placeholder="Sistema operativo [...]" name="so" list="form-so" {% if dispositivo %}value="{{ dispositivo.so }}"{% endif %}>
-                <datalist id="form-so" name="so">
+                <datalist id="form-so">
                     {% for sistema in sistemi %}
                         <option value="{{ sistema.so }}">{{ sistema.so }}</option>
                     {% endfor %}
@@ -145,7 +145,7 @@
             <div class="col-xs-10">
                 <select id="form-rete" class="form-control" name="rete">
                     {% for rete in reti %}
-                        <option value="{{ rete.nid }}" {% if dispositivo and rete.nid == dispositivo.nid %}selected{% endif %}>{{ rete.nome }} - {{ rete.network_ip }}/{{ rete.subnet }}</option>
+                        <option value="{{ rete.nid }}" {% if (dispositivo and rete.nid == dispositivo.nid) or (action == "add" and rete.network_ip == "0.0.0.0" %}selected{% endif %}>{{ rete.nome }} - {{ rete.network_ip }}/{{ rete.subnet }}</option>
                     {% endfor %}
                 </select>
             </div>
