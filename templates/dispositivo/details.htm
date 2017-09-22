@@ -60,9 +60,9 @@
                     Sistema Operativo
                 </h4>
                 <div class="list-group-item-text">
-                    {% if "windows" in disp.lower() %}
+                    {% if "windows" in disp.so.lower() %}
                         <i class="fa fa-windows"
-                           {% if "server" not in disp.lower() %}
+                           {% if "server" not in disp.so.lower() %}
                            style="color:
                                    {% if "XP" in disp.so %}#0046FF
                                    {% elif "Vista" in disp.so %}#69797E
@@ -71,11 +71,11 @@
                                    {% elif "10" in disp.so %}#0078D7
                                    {% endif %};"
                            {% endif %}></i>
-                    {% elif "linux" in disp.lower() or "ubuntu" in disp.lower() or "debian" in disp.lower() %}
+                    {% elif "linux" in disp.so.lower() or "ubuntu" in disp.so.lower() or "debian" in disp.so.lower() %}
                         <i class="fa fa-linux"></i>
-                    {% elif "mac" in disp.lower() or "iOS" in d[0].dispositivo.so %}
+                    {% elif "mac" in disp.so.lower() or "iOS" in disp.so %}
                         <i class="fa fa-apple"></i>
-                    {% elif "android" in disp.lower() %}
+                    {% elif "android" in disp.so.lower() %}
                         <i class="fa fa-android"></i>
                     {% endif %}
                     {{ disp.so }}
