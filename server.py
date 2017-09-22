@@ -288,14 +288,14 @@ def page_dashboard():
     Sì, è un po' inutile."""
     enti = Ente.query.all()
     conteggioservizi = dict()
-    goldfish = url_for("static", filename="goldfish.png")
     for ente in enti:
         conteggioservizi[ente.nomeente] = Servizio.query.join(Ente).filter_by(eid=ente.eid).count()
     conteggioutenti = dict()
     for ente in enti:
         conteggioutenti[ente.nomeente] = Impiegato.query.join(Servizio).join(Ente).filter_by(eid=ente.eid).count()
-    return render_template("dashboard.htm", pagetype="main",
-                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi, goldfish=goldfish)
+    conteggiotipi = db.session.query(Dispositivo.tipo, db.func.count(Dispositivo.tipo)).group_by(Dispositivo.tipo).all()
+    return render_template("dashboard.htm", pagetype="main", conteggiotipi=conteggiotipi,
+                           conteggioutenti=conteggioutenti, conteggioservizi=conteggioservizi)
 
 
 @app.route('/ente_add', methods=['GET', 'POST'])

@@ -55,6 +55,11 @@
     color: #660000;
 }
 
+.badge-nousers
+{
+    background-color: darkred;
+}
+
 .container-lower
 {
     margin-top: 10px;

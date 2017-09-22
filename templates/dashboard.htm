@@ -2,7 +2,7 @@
 {% block title %}Pagina principale • estus{% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <h2>
                 Servizi per ente
             </h2>
@@ -11,7 +11,7 @@
                     {% for ente in conteggioservizi %}
                         <li class="list-group-item">
                             {{ ente }}
-                            <span class="badge">{{ conteggioservizi[ente] }}</span>
+                            <span class="badge {% if conteggioservizi[ente] == 0 %}badge-nousers{% endif %}">{{ conteggioservizi[ente] }}</span>
                         </li>
                     {% endfor %}
                 </ul>
@@ -19,7 +19,7 @@
                 Non c'è nessun ente registrato nell'inventario...
             {% endif %}
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <h2>
                 Impiegati per ente
             </h2>
@@ -28,12 +28,29 @@
                     {% for ente in conteggioutenti %}
                         <li class="list-group-item">
                             {{ ente }}
-                            <span class="badge">{{ conteggioutenti[ente] }}</span>
+                            <span class="badge {% if conteggioutenti[ente] == 0 %}badge-nousers{% endif %}">{{ conteggioutenti[ente] }}</span>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
                 Non c'è nessun ente registrato nell'inventario...
+            {% endif %}
+        </div>
+        <div class="col-sm-4">
+            <h2>
+                Dispositivi per tipo
+            </h2>
+            {% if conteggiotipi %}
+                <ul class="list-group">
+                    {% for tipo in conteggiotipi %}
+                        <li class="list-group-item">
+                            {{ tipo[0] }}
+                            <span class="badge">{{ tipo[1] }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                Non c'è nessun dispositivo registrato nell'inventario...
             {% endif %}
         </div>
     </div>
