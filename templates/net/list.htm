@@ -28,7 +28,13 @@
             <tr>
                 <td>{{ rete.nome }}</td>
                 <td>{{ rete.network_ip }}/{{ rete.subnet }}</td>
-                <td><a href="{{ url_for("page_net_details", nid=rete.nid) }}"><span class="glyphicon glyphicon-zoom-in"></span></a> <a href="{{ url_for("page_net_show", nid=rete.nid) }}"><span class="glyphicon glyphicon-pencil"></span></a> {% if rete.network_ip != "0.0.0.0" %}<a href="javascript:void(0)" onclick="delet(&quot;{{ url_for("page_net_del", nid=12341234) }}&quot;, {{ rete.nid }}, &quot;{{ rete }}&quot;);"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                <td>
+                    <a href="{{ url_for("page_net_details", nid=rete.nid) }}" title="Dettagli"><span class="glyphicon glyphicon-zoom-in"></span></a>
+                    <a href="{{ url_for("page_net_show", nid=rete.nid) }}" title="Modifica"><span class="glyphicon glyphicon-pencil"></span></a>
+                    {% if rete.network_ip != "0.0.0.0" %}
+                        <a href="javascript:void(0)" onclick="delet(&quot;{{ url_for("page_net_del", nid=12341234) }}&quot;, {{ rete.nid }}, &quot;{{ rete }}&quot;);" title="Elimina"><span class="glyphicon glyphicon-remove"></span></a>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>

@@ -19,7 +19,12 @@
         {% for utente in utenti %}
             <tr>
                 <td>{{ utente.username }}</td>
-                <td>{% if utenti|length >= 2 and utente.username != user %}<a href="javascript:void(0)" onclick="delet(&quot;{{ url_for("page_user_del", uid=12341234) }}&quot;, {{ utente.uid }}, &quot;{{ utente }}&quot;);"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
+                <td>
+                    {% if utenti|length >= 2 and utente.username != user %}
+                        <a href="javascript:void(0)" onclick="delet(&quot;{{ url_for("page_user_del", uid=12341234) }}&quot;, {{ utente.uid }}, &quot;{{ utente }}&quot;);"><span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>
