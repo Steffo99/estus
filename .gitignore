@@ -3,3 +3,4 @@ db.sqlite
 db.sqlite-journal
 data.db
 .idea
+.venv

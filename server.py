@@ -1024,18 +1024,19 @@ def inject_vars():
 if __name__ == "__main__":
     # Se non esiste il database, crealo e inizializzalo!
     if not os.path.isfile("db.sqlite"):
-        db.create_all()
-        try:
-            # L'utente predefinito è "stagista" "smecds".
-            nuovapassword = bcrypt.hashpw(b"smecds", bcrypt.gensalt())
-            nuovouser = User('stagista', nuovapassword)
-            db.session.add(nuovouser)
-            # Crea una rete nulla da utilizzare quando non ci sono altre reti disponibili
-            retenulla = Rete(nome="Sconosciuta", network_ip="0.0.0.0", subnet=0, primary_dns="0.0.0.0",
-                             secondary_dns="0.0.0.0")
-            db.session.add(retenulla)
-            db.session.commit()
-        except IntegrityError:
-            # Se queste operazioni sono già state compiute in precedenza, annullale
-            db.session.rollback()
+        with app.app_context():
+            db.create_all()
+            try:
+                # L'utente predefinito è "stagista" "smecds".
+                nuovapassword = bcrypt.hashpw(b"smecds", bcrypt.gensalt())
+                nuovouser = User('stagista', nuovapassword)
+                db.session.add(nuovouser)
+                # Crea una rete nulla da utilizzare quando non ci sono altre reti disponibili
+                retenulla = Rete(nome="Sconosciuta", network_ip="0.0.0.0", subnet=0, primary_dns="0.0.0.0",
+                                secondary_dns="0.0.0.0")
+                db.session.add(retenulla)
+                db.session.commit()
+            except IntegrityError:
+                # Se queste operazioni sono già state compiute in precedenza, annullale
+                db.session.rollback()
     app.run()

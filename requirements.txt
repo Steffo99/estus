@@ -1,4 +1,4 @@
-flask
-flask_sqlalchemy
-sqlalchemy
-bcrypt
+flask>=3
+flask_sqlalchemy>=3
+sqlalchemy>=1.4,<=2
+bcrypt>=4
