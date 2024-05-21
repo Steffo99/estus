@@ -1,5 +1,11 @@
+<div align="center">
+
+![](.media/icon-128x128_round.png)
+
 # estus
-Il nuovo inventario per il CED dell'[Unione Terre di Castelli](http://www.terredicastelli.mo.it/)!
+Software inventario per il CED dell'[Unione Terre di Castelli](http://www.terredicastelli.mo.it/)
+
+</div>
 
 ## Nuove funzioni rispetto all'inventario vecchio
 - _Quasi_ responsivo
