@@ -14,7 +14,7 @@ app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
 
 # SQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -1023,7 +1023,7 @@ def inject_vars():
 
 if __name__ == "__main__":
     # Se non esiste il database, crealo e inizializzalo!
-    if not os.path.isfile("db.sqlite"):
+    if not os.path.isfile("data/db.sqlite"):
         with app.app_context():
             db.create_all()
             try:
